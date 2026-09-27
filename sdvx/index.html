@@ -93,11 +93,18 @@ h1 .plate{display:inline-block;margin-top:10px;font-size:.36em;letter-spacing:.3
 .keys{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:16px}
 .key{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 2px;border:1px solid var(--line);background:rgba(255,255,255,.03);font-size:10px;letter-spacing:.18em;color:var(--mute);transition:background .06s,border-color .06s}
 .key kbd{font-family:"Orbitron",sans-serif;font-weight:900;font-size:18px;color:var(--ink)}
-.key.fx{grid-column:span 2}
 .key.fx kbd{color:var(--fx)}
-.key.vol kbd{font-size:14px}
 .key.vol.l kbd{color:var(--cyan)} .key.vol.r kbd{color:var(--pink)}
 .key.on{background:rgba(255,255,255,.18);border-color:#fff}
+.key.vol.l.on{background:rgba(41,228,255,.25);border-color:var(--cyan)}
+.key.vol.r.on{background:rgba(255,61,166,.25);border-color:var(--pink)}
+.song{position:relative;display:flex;justify-content:space-between;margin-top:14px;padding:8px 10px 12px;border:1px solid var(--line);background:rgba(0,0,0,.35);font-weight:700;font-size:11px;letter-spacing:.16em;color:var(--gold)}
+.song span+span{color:var(--mute)}
+.song i{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.06)}
+.song i b{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--pink));transform-origin:0 50%;transform:scaleX(0)}
+.hint{margin-top:10px;font-size:13px;color:var(--mute)}
+.hint .c{color:var(--cyan)} .hint .p{color:var(--pink)}
+.mode .btns{display:flex;gap:6px}
 .key.fx.on{background:rgba(255,138,31,.3);border-color:var(--fx)}
 .stats{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:6px;margin-top:14px;font-size:10px;letter-spacing:.16em;color:var(--mute);text-transform:uppercase}
 .stats div{padding:8px 10px;border:1px solid var(--line);background:rgba(0,0,0,.35)}
@@ -140,7 +147,7 @@ h1 .plate{display:inline-block;margin-top:10px;font-size:.36em;letter-spacing:.3
   .cue{display:none}
   .panel{position:sticky;top:54vh;margin:0 12px;width:auto;max-height:calc(46vh - 12px);overflow-y:auto;overscroll-behavior:contain;padding:18px 18px}
   .panel h2{font-size:21px;margin:8px 0 10px}
-  .keys,.hide-m{display:none!important}
+  .keys,.hide-m,.song span+span{display:none!important}
   #playPanel{top:66vh;max-height:calc(34vh - 12px)}
   #proj .spacer,#play .spacer{height:60vh}
   .w-sticky{position:relative;height:auto;padding:12vh 0 8vh}
@@ -209,17 +216,18 @@ h1 .plate{display:inline-block;margin-top:10px;font-size:.36em;letter-spacing:.3
     <div class="panel" id="playPanel" data-lenis-prevent>
       <span class="stg pink">STAGE 02</span>
       <h2>Play it</h2>
-      <p class="hide-m">It's been playing itself. Take over with your keyboard, or tap the buttons on the model.</p>
-      <p class="show-m">It's been playing itself. Tap the buttons on the model to take over.</p>
+      <p class="hide-m">It plays itself until you take over. Turn the sound on and play along on your keyboard.</p>
+      <p class="show-m">It plays itself. Tap the buttons and knobs on the model to take over.</p>
+      <div class="song"><span>♪ PLEXI DRIVE</span><span>150 BPM · ORIGINAL</span><i><b id="songProg"></b></i></div>
       <div class="keys" id="keys">
-        <div class="key" data-l="0"><kbd>D</kbd>BT-A</div><div class="key" data-l="1"><kbd>F</kbd>BT-B</div><div class="key" data-l="2"><kbd>J</kbd>BT-C</div><div class="key" data-l="3"><kbd>K</kbd>BT-D</div>
-        <div class="key fx" data-l="4"><kbd>C</kbd>FX-L</div><div class="key fx" data-l="5"><kbd>M</kbd>FX-R</div>
-        <div class="key vol l hide-m" style="grid-column:span 2"><kbd>Q · W</kbd>VOL-L</div><div class="key vol r hide-m" style="grid-column:span 2"><kbd>O · P</kbd>VOL-R</div>
+        <div class="key" data-code="KeyS"><kbd>S</kbd>BT-A</div><div class="key" data-code="KeyD"><kbd>D</kbd>BT-B</div><div class="key" data-code="KeyK"><kbd>K</kbd>BT-C</div><div class="key" data-code="KeyL"><kbd>L</kbd>BT-D</div>
+        <div class="key vol l" data-code="KeyZ"><kbd>Z</kbd>VOL-L</div><div class="key fx" data-code="KeyC"><kbd>C</kbd>FX-L</div><div class="key fx" data-code="KeyM"><kbd>M</kbd>FX-R</div><div class="key vol r" data-code="Slash"><kbd>/</kbd>VOL-R</div>
       </div>
+      <p class="hint hide-m">Hold <b class="c">Z</b> while the blue laser is live, <b class="p">/</b> for the pink one.</p>
       <div class="stats">
         <div class="sc">Score<b id="sScore">00000000</b></div><div class="cr">Crit<b id="sCrit">0</b></div><div class="nr">Near<b id="sNear">0</b></div><div class="er">Error<b id="sErr">0</b></div>
       </div>
-      <div class="mode"><span>Mode: <b id="mode">AUTO</b></span><button class="toggle" id="sound" aria-pressed="true">Sound on</button></div>
+      <div class="mode"><span>Mode: <b id="mode">AUTO</b></span><span class="btns"><button class="toggle" id="restart">↺ Restart</button><button class="toggle" id="sound" aria-pressed="false">♪ Sound off</button></span></div>
     </div>
   </section>
 </main>
@@ -427,7 +435,7 @@ const board=part('board',[0,-10,40]);
 /* ============================================================
    NOTE HIGHWAY + CHART (autoplays; you can take over in §3)
    ============================================================ */
-const HW_Y=TOP+1, J=-175, LEN=3300, SPEED=1450, BPM=170, STEP=60/BPM/4;
+const HW_Y=TOP+1, J=-175, LEN=3300, SPEED=1450, BPM=150;
 const LANE_X=[-120,-40,40,120], FX_X=[-80,80];
 const hwU={time:{value:0}, alpha:{value:1}, flash:{value:new Float32Array(6)}, beat:{value:60/BPM}};
 const hw=new THREE.Mesh(new THREE.PlaneGeometry(330,LEN,1,1), new THREE.ShaderMaterial({
@@ -468,26 +476,197 @@ chipM.frustumCulled=longM.frustumCulled=false; scene.add(chipM,longM);
 const hitFx=[...Array(6)].map((_,i)=>{ const m=new THREE.Mesh(new THREE.RingGeometry(20,30,32),new THREE.MeshBasicMaterial({color:i<4?0xffffff:0xff8a1f,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false}));
   m.rotation.x=-Math.PI/2; m.position.set(i<4?LANE_X[i]:FX_X[i-4],HW_Y+4,J); scene.add(m); return {m,t:-9}; });
 
-let notes=[], nextStep=0, t0=0, lastLane=-1;
-function genUntil(tEnd){
-  while(t0+nextStep*STEP<tEnd){
-    const s=nextStep, t=t0+s*STEP, bar=Math.floor(s/16), p=s%16; nextStep++;
-    if(bar%8===7){ if(p%2===0) notes.push({t,lane:[0,1,2,3,2,1,0,1][p/2%8]}); continue; }   // stream every 8 bars
-    const pick=()=>{ let l; do l=Math.random()*4|0; while(l===lastLane); lastLane=l; return l; };
-    if(p%4===0 && Math.random()<.72){ notes.push({t,lane:pick()}); if(p===0 && Math.random()<.35) notes.push({t,lane:(lastLane+2)%4}); }
-    else if(p%2===0 && Math.random()<.32) notes.push({t,lane:pick()});
-    if(p===0 && bar%2===0 && Math.random()<.5) notes.push({t,lane:4+(Math.random()*2|0),len:STEP*8});
+/* ============================================================
+   THE TRACK: "PLEXI DRIVE" (original, 150 BPM, A minor, 32 bars).
+   One score drives both the Web Audio synth and the chart, so every
+   note, FX hold and laser lands exactly on the music.
+   ============================================================ */
+const B=60/BPM, S16=B/4, BAR=B*4, BARS=32, SONG_LEN=BARS*BAR;
+const at=(bar,step)=>bar*BAR+step*S16;
+const SONG=[], CHART=[], LASERS=[];
+const ev=(bar,step,type,a,b)=>SONG.push({t:at(bar,step),type,a,b});
+const bt=(bar,step,lane)=>CHART.push({t:at(bar,step),lane});
+const fx=(bar,step,side,steps)=>CHART.push({t:at(bar,step),lane:4+side,len:steps*S16});
+const laser=(side,pts)=>LASERS.push({side,pts:pts.map(([bar,step,x])=>({t:at(bar,step),x}))});
+const PROG=[[45,[57,60,64]],[41,[53,57,60]],[48,[55,60,64]],[43,[55,59,62]]];   // Am F C G: bass root + chord
+const SCALE_IDX={9:0,11:1,0:2,2:3,4:4,5:5,7:6};
+const laneOf=m=>SCALE_IDX[((m%12)+12)%12]%4;
+const MEL=[                                                    // verse lead, one bar per chord: [step, midi]
+  [[0,76],[3,74],[6,72],[8,74],[10,76],[14,79]],
+  [[0,77],[3,76],[6,72],[8,69],[12,72]],
+  [[0,79],[3,76],[6,74],[8,72],[10,74],[12,76]],
+  [[0,74],[4,71],[8,74],[10,79],[12,74]],
+];
+const ARP=[0,1,2,3,2,1,0,1];
+const chordTone=(chord,i)=>i<3?chord[i]+12:chord[0]+24;
+const STAB=[0,3,6,8,11,14];
+
+for(let bar=0;bar<BARS;bar++){
+  const [root,chord]=PROG[bar%4];
+  const sec=bar<4?'intro':bar<12?'A':bar<20?'B':bar<28?'drop':'outro';
+  // drums
+  if(bar<31) for(let q=0;q<4;q++) if(!(sec==='intro'&&bar===0&&q>0)) ev(bar,q*4,'kick');
+  if(sec==='A'||sec==='B'||sec==='drop'){ ev(bar,4,'snare'); ev(bar,12,'snare'); }
+  if(sec==='intro'&&bar>=2) [2,6,10,14].forEach(s=>ev(bar,s,'hat'));
+  if(sec==='A') for(let s=0;s<16;s+=2) ev(bar,s,'hat',s%4?0:1);
+  if(sec==='B') for(let s=0;s<16;s++) ev(bar,s,'hat',s%4===2?1:0);
+  if(sec==='drop'){ [2,6,10,14].forEach(s=>ev(bar,s,'hat',2)); if(bar===27) for(let s=8;s<16;s++) ev(bar,s,'snare'); }
+  if(sec==='outro'&&bar<30) [2,6,10,14].forEach(s=>ev(bar,s,'hat'));
+  if(bar===12||bar===20||bar===28) ev(bar,0,'crash');
+  if(bar===19) ev(bar,0,'riser',BAR);
+  // pad
+  if(sec!=='drop') ev(bar,0,'pad',chord,BAR*(bar===31?2:1));
+  // bass
+  if(sec==='A') for(let s=0;s<16;s+=2) ev(bar,s,'bass',root+(s===6||s===14?12:0),S16*2);
+  if(sec==='B') for(let s=0;s<16;s+=2) ev(bar,s,'bass',root+(s%4?12:0),S16*2);
+  if(sec==='drop') [2,3,6,7,10,11,14,15].forEach(s=>ev(bar,s,'bass',root+(s%2?12:0),S16));
+  if(sec==='outro'&&bar<30){ ev(bar,0,'bass',root,S16*8); ev(bar,8,'bass',root,S16*8); }
+  // lead
+  const mel=MEL[bar%4];
+  if(sec==='A'||(sec==='outro'&&bar<30)) mel.forEach(([s,m],i)=>{ const nx=mel[i+1]?mel[i+1][0]:16; ev(bar,s,'lead',m,Math.min(4,nx-s)*S16); });
+  if(sec==='B') for(let i=0;i<8;i++) ev(bar,i*2,'lead',chordTone(chord,ARP[i]),S16*2);
+  if(sec==='drop'){
+    STAB.forEach(s=>ev(bar,s,'stab',chord.map(m=>m+12)));
+    for(let s=0;s<16;s++) ev(bar,s,'arp',chord[s%3]+24+(s>=8?12:0));
   }
+}
+// ---- chart ----
+bt(1,0,1); bt(1,8,2);
+[0,1,2,3].forEach((l,i)=>bt(2,i*4,l)); [3,2,1,0].forEach((l,i)=>bt(3,i*4,l));
+for(let bar=4;bar<12;bar++) MEL[bar%4].forEach(([s,m])=>bt(bar,s,laneOf(m)));
+fx(7,8,1,8); fx(11,8,0,8);
+for(let bar=12;bar<20;bar++){ const chord=PROG[bar%4][1];
+  (bar<16?[0,4,8,12]:[0,8]).forEach(s=>bt(bar,s,laneOf(chordTone(chord,ARP[s/2])))); }
+for(let bar=20;bar<28;bar++){
+  if(bar===24||bar===25){ bt(bar,0,bar===24?2:1); bt(bar,8,bar===24?3:0); continue; }
+  STAB.forEach((s,i)=>{ if(s===0){ bt(bar,0,0); bt(bar,0,3); } else bt(bar,s,[1,2,1,2,1][i-1]); });
+}
+fx(21,8,0,8); fx(23,8,1,8); fx(27,0,0,8); fx(27,0,1,8);
+for(let bar=28;bar<30;bar++) MEL[bar%4].forEach(([s,m])=>bt(bar,s,laneOf(m)));
+[3,2,1,0].forEach((l,i)=>bt(30,i*4,l)); bt(31,0,1); bt(31,0,2);
+// ---- lasers (x: -1 left … +1 right; repeated step = slam) ----
+laser(0,[[12,0,-1],[12,8,-.2],[13,0,-.7],[13,8,.1],[13,14,-.4]]);
+laser(1,[[14,0,1],[14,8,.2],[15,0,.7],[15,8,-.1],[15,14,.4]]);
+laser(0,[[16,0,-1],[17,0,-.1],[18,0,.6],[19,0,-.3],[19,12,-1]]);
+laser(1,[[16,0,1],[17,0,.1],[18,0,-.6],[19,0,.3],[19,12,1]]);
+laser(0,[[24,0,-1],[24,0,1],[24,8,1],[24,8,-1],[24,12,-1]]);
+laser(1,[[25,0,1],[25,0,-1],[25,8,-1],[25,8,1],[25,12,1]]);
+laser(0,[[28,0,-1],[28,8,-.3],[29,0,-.8],[29,8,-.2]]);
+laser(1,[[28,8,1],[29,0,.3],[29,8,.8],[29,14,.2]]);
+// laser ticks: hold the knob button on every 8th while a laser is live
+LASERS.forEach(L=>{ const a=L.pts[0].t, b=L.pts[L.pts.length-1].t; for(let t=a;t<b-1e-4;t+=S16*2) CHART.push({t,lane:7+L.side,tick:true}); });
+SONG.sort((a,b)=>a.t-b.t);
+
+/* ---------- synth ---------- */
+let actx=null, bus=null, master=null, delayIn=null, noise=null, audioOn=false, audioStart=0, soundPref=null;
+const mtof=m=>440*Math.pow(2,(m-69)/12);
+function initAudio(){
+  if(actx) return;
+  actx=new (window.AudioContext||window.webkitAudioContext)();
+  const comp=actx.createDynamicsCompressor(); comp.threshold.value=-14; comp.ratio.value=4; comp.connect(actx.destination);
+  master=actx.createGain(); master.gain.value=0; master.connect(comp);
+  const d=actx.createDelay(1); d.delayTime.value=S16*3; const fb=actx.createGain(); fb.gain.value=.32; const wet=actx.createGain(); wet.gain.value=.28;
+  d.connect(fb).connect(d); d.connect(wet).connect(master); delayIn=d;
+  const nb=actx.createBuffer(1,actx.sampleRate,actx.sampleRate), nd=nb.getChannelData(0); for(let i=0;i<nd.length;i++) nd[i]=Math.random()*2-1; noise=nb;
+  newBus();
+}
+function newBus(){ if(bus){ const old=bus; old.gain.setTargetAtTime(0,actx.currentTime,.02); setTimeout(()=>old.disconnect(),300); } bus=actx.createGain(); bus.connect(master); }
+const lat=()=>actx?(actx.outputLatency||actx.baseLatency||0):0;
+function envGain(T,peak,a,d,to=bus){ const g=actx.createGain(); g.gain.setValueAtTime(.0001,T); g.gain.linearRampToValueAtTime(peak,T+a); g.gain.exponentialRampToValueAtTime(.0001,T+a+d); g.connect(to); return g; }
+function osc(type,f,T,dur,dest,detune=0){ const o=actx.createOscillator(); o.type=type; o.frequency.setValueAtTime(f,T); o.detune.value=detune; o.connect(dest); o.start(T); o.stop(T+dur+.05); return o; }
+function noiseSrc(T,dur,dest){ const s=actx.createBufferSource(); s.buffer=noise; s.connect(dest); s.start(T,Math.random()*.5); s.stop(T+dur+.05); return s; }
+function filt(type,f,q,dest){ const b=actx.createBiquadFilter(); b.type=type; b.frequency.value=f; b.Q.value=q; b.connect(dest); return b; }
+const INST={
+  kick(T){ const g=envGain(T,.95,.003,.32); const o=osc('sine',150,T,.35,g); o.frequency.exponentialRampToValueAtTime(42,T+.13); },
+  snare(T){ noiseSrc(T,.18,filt('bandpass',1900,.8,envGain(T,.42,.002,.16))); const o=osc('triangle',190,T,.12,envGain(T,.28,.002,.1)); o.frequency.exponentialRampToValueAtTime(110,T+.1); },
+  hat(T,a){ const open=a===2, acc=a===1; noiseSrc(T,open?.22:.05,filt('highpass',7600,.7,envGain(T,open?.1:acc?.1:.06,.001,open?.2:.035))); },
+  crash(T){ noiseSrc(T,1.6,filt('highpass',4200,.5,envGain(T,.22,.003,1.5))); },
+  riser(T,a,dur){ const g=actx.createGain(); g.gain.setValueAtTime(.0001,T); g.gain.exponentialRampToValueAtTime(.2,T+dur); g.gain.linearRampToValueAtTime(0,T+dur+.02); g.connect(bus);
+    const f=filt('bandpass',300,2,g); f.frequency.exponentialRampToValueAtTime(7000,T+dur); noiseSrc(T,dur,f); },
+  bass(T,m,dur){ const g=envGain(T,.26,.004,Math.max(.08,dur*.9)); const f=filt('lowpass',900,6,g); f.frequency.setValueAtTime(1100,T); f.frequency.exponentialRampToValueAtTime(220,T+dur); osc('sawtooth',mtof(m),T,dur,f); osc('square',mtof(m-12),T,dur,f); },
+  lead(T,m,dur){ const g=actx.createGain(); g.gain.setValueAtTime(.0001,T); g.gain.linearRampToValueAtTime(.11,T+.006); g.gain.setTargetAtTime(.07,T+.03,.05); g.gain.setTargetAtTime(.0001,T+dur,.05); g.connect(bus); g.connect(delayIn);
+    const f=filt('lowpass',3200,2,g); osc('sawtooth',mtof(m),T,dur+.3,f,-7); osc('sawtooth',mtof(m),T,dur+.3,f,7); osc('square',mtof(m-12),T,dur+.3,f); },
+  pad(T,ch,dur){ const g=actx.createGain(); g.gain.setValueAtTime(.0001,T); g.gain.linearRampToValueAtTime(.05,T+.35); g.gain.setTargetAtTime(.0001,T+dur-.1,.25); g.connect(bus);
+    const f=filt('lowpass',950,.7,g); ch.forEach(m=>{ osc('sawtooth',mtof(m),T,dur+1,f,-11); osc('sawtooth',mtof(m),T,dur+1,f,11); }); },
+  stab(T,ch){ const g=envGain(T,.1,.004,.24); g.connect(delayIn); const f=filt('lowpass',3400,3,g); f.frequency.setValueAtTime(3400,T); f.frequency.exponentialRampToValueAtTime(500,T+.24);
+    ch.forEach(m=>{ osc('sawtooth',mtof(m),T,.3,f,-9); osc('sawtooth',mtof(m),T,.3,f,9); }); },
+  arp(T,m){ osc('square',mtof(m),T,.1,filt('lowpass',3800,1,envGain(T,.035,.002,.08))); },
+};
+// look-ahead scheduler (runs on a timer so audio keeps time even if frames drop)
+let schedLoop=0, schedIdx=0;
+function seekScheduler(st){ schedLoop=Math.max(0,Math.floor(st/SONG_LEN)); const inLoop=st-schedLoop*SONG_LEN; schedIdx=SONG.findIndex(e=>e.t>=inLoop); if(schedIdx<0){ schedIdx=0; schedLoop++; } }
+setInterval(()=>{
+  if(!audioOn) return;
+  const st=songNow(), until=st+.3;
+  for(let guard=0;guard<400;guard++){
+    const e=SONG[schedIdx], et=schedLoop*SONG_LEN+e.t;
+    if(et>until) break;
+    if(et>=st-.03) INST[e.type](audioStart+et, e.a, e.b);
+    if(++schedIdx>=SONG.length){ schedIdx=0; schedLoop++; }
+  }
+},25);
+
+/* ---------- song clock: perf time until the audio starts, then the audio clock ---------- */
+let perfStart=performance.now()/1000+1.5;
+function songNow(){ return audioOn ? actx.currentTime-lat()-audioStart : performance.now()/1000-perfStart; }
+function startAudio(){
+  initAudio(); if(actx.state==='suspended') actx.resume();
+  if(audioOn) return;
+  const st=songNow(); audioStart=actx.currentTime-lat()-st; audioOn=true; seekScheduler(st);
+}
+function setSound(on){
+  soundPref=on; if(on) startAudio();
+  const b=$('#sound'); b.setAttribute('aria-pressed',String(on)); b.textContent=on?'♪ Sound on':'♪ Sound off';
+}
+
+/* ---------- chart instances (the track loops) ---------- */
+let notes=[], lasers=[], loopGen=0;
+function genUntil(tEnd){
+  while(loopGen*SONG_LEN<tEnd){
+    const off=loopGen*SONG_LEN;
+    for(const n of CHART) notes.push({...n,t:n.t+off});
+    for(const L of LASERS) lasers.push({side:L.side, pts:L.pts.map(p=>({t:p.t+off,x:p.x}))});
+    loopGen++;
+  }
+}
+function laserX(side,t){
+  for(const L of lasers){ if(L.side!==side) continue; const p=L.pts; if(t<p[0].t||t>p[p.length-1].t) continue;
+    for(let i=p.length-1;i>0;i--) if(t>=p[i-1].t){ const a=p[i-1], b=p[i]; return b.t===a.t?b.x:lerp(a.x,b.x,(t-a.t)/(b.t-a.t)); } }
+  return null;
+}
+function restart(){
+  const lead=1.6;
+  if(audioOn){ newBus(); audioStart=actx.currentTime-lat()+lead; seekScheduler(0); } else perfStart=performance.now()/1000+lead;
+  notes=[]; lasers=[]; loopGen=0; score=chain=crit=near=err=0; updateStats();
+}
+
+// laser ribbons: one dynamic mesh, rebuilt each frame for what's on screen
+const LQ=320, lpos=new Float32Array(LQ*18), lcol=new Float32Array(LQ*18);
+const lgeo=new THREE.BufferGeometry(); lgeo.setAttribute('position',new THREE.BufferAttribute(lpos,3)); lgeo.setAttribute('color',new THREE.BufferAttribute(lcol,3));
+const laserMesh=new THREE.Mesh(lgeo,new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,opacity:.7,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide}));
+laserMesh.frustumCulled=false; laserMesh.renderOrder=3; scene.add(laserMesh);
+const LCOL=[[.16,.89,1],[1,.24,.65]];
+function buildLasers(st,held){
+  let q=0; const y=HW_Y+3, w=22, tMax=st+LEN/SPEED, Z=t=>J-(t-st)*SPEED;
+  const quad=(ax,az,bx,bz,cx,cz,dx,dz,c,k)=>{ if(q>=LQ) return; const o=q*18, v=[ax,y,az,bx,y,bz,cx,y,cz, ax,y,az,cx,y,cz,dx,y,dz];
+    for(let i=0;i<18;i++) lpos[o+i]=v[i]; for(let i=0;i<6;i++){ lcol[o+i*3]=c[0]*k; lcol[o+i*3+1]=c[1]*k; lcol[o+i*3+2]=c[2]*k; } q++; };
+  for(const L of lasers){
+    const p=L.pts, c=LCOL[L.side], k=held[L.side]?1.35:.8;
+    if(p[p.length-1].t<st||p[0].t>tMax) continue;
+    for(let i=1;i<p.length;i++){
+      const a=p[i-1], b=p[i];
+      if(b.t===a.t){ if(a.t<st||a.t>tMax) continue; const z=Z(a.t); quad(Math.min(a.x,b.x)*150-w,z+14,Math.max(a.x,b.x)*150+w,z+14,Math.max(a.x,b.x)*150+w,z-14,Math.min(a.x,b.x)*150-w,z-14,c,k); continue; }
+      const t0=Math.max(a.t,st), t1=Math.min(b.t,tMax); if(t1<=t0) continue;
+      const x0=lerp(a.x,b.x,(t0-a.t)/(b.t-a.t))*150, x1=lerp(a.x,b.x,(t1-a.t)/(b.t-a.t))*150, z0=Z(t0), z1=Z(t1)-2;
+      quad(x0-w,z0,x0+w,z0,x1+w,z1,x1-w,z1,c,k);
+    }
+  }
+  lgeo.setDrawRange(0,q*6); lgeo.attributes.position.needsUpdate=true; lgeo.attributes.color.needsUpdate=true;
 }
 
 /* ---------- input + judging ---------- */
-let auto=true, lastInput=-99, score=0, chain=0, crit=0, near=0, err=0, soundOn=true, actx=null;
-function click(lane){
-  if(!soundOn) return;
-  try{ actx=actx||new AudioContext(); const o=actx.createOscillator(), g=actx.createGain(), t=actx.currentTime;
-    o.type='square'; o.frequency.setValueAtTime(lane>=4?220:lane===6?660:440+lane*60,t); o.frequency.exponentialRampToValueAtTime(90,t+.06);
-    g.gain.setValueAtTime(.06,t); g.gain.exponentialRampToValueAtTime(.0001,t+.08); o.connect(g).connect(actx.destination); o.start(t); o.stop(t+.09); }catch(e){}
-}
+let auto=true, lastInput=-99, score=0, chain=0, crit=0, near=0, err=0;
+const knobDown=[false,false];
 const judgeEl=$('#judge'), chainEl=$('#chain'); let judgeT=-9;
 function showJudge(kind,early){
   judgeT=performance.now()/1000;
@@ -497,14 +676,13 @@ function showJudge(kind,early){
 function hit(n,kind,early){
   n.done=true; n.hit=kind!=='ERROR';
   if(kind==='ERROR'){ err++; chain=0; }
-  else { chain++; if(kind==='CRITICAL'){ crit++; score+=5000; } else { near++; score+=2500; } const h=hitFx[n.lane]; h.t=performance.now()/1000; }
+  else { chain++; if(kind==='CRITICAL'){ crit++; score+=n.tick?1000:5000; } else { near++; score+=2500; } const h=hitFx[n.lane]; if(h) h.t=performance.now()/1000; }
   showJudge(kind,early);
   if(!auto) updateStats();
 }
 function press(lane,down,t){
   const b=btns[lane]; if(!b) return;
-  b.held=down; if(down) b.press=1;
-  if(lane<6) hwU.flash.value[lane]=down?1:hwU.flash.value[lane];
+  b.held=down;
   if(!down || lane===6) return;
   const cand=notes.filter(n=>!n.done && n.lane===lane && Math.abs(n.t-t)<.14).sort((a,b)=>Math.abs(a.t-t)-Math.abs(b.t-t))[0];
   if(cand){ const dt=t-cand.t; hit(cand, Math.abs(dt)<.05?'CRITICAL':'NEAR', dt<0); }
@@ -512,42 +690,42 @@ function press(lane,down,t){
 function userInput(){
   if(auto){ auto=false; score=chain=crit=near=err=0; updateStats(); }
   lastInput=performance.now()/1000; $('#mode').textContent='YOU';
+  if(soundPref===null) setSound(true);            // first key press in the section starts the music
 }
 function updateStats(){
   $('#sScore').textContent=String(Math.min(99999999,score)).padStart(8,'0');
   $('#sCrit').textContent=crit; $('#sNear').textContent=near; $('#sErr').textContent=err;
 }
-const KEYMAP={KeyD:0,KeyF:1,KeyJ:2,KeyK:3,KeyC:4,KeyM:5,Enter:6};
-const KNOBKEYS={KeyQ:[0,-1],KeyW:[0,1],KeyO:[1,-1],KeyP:[1,1]};
-const knobHeld=[0,0];
-const keyEls=[...document.querySelectorAll('#keys .key[data-l]')];
+const KEYMAP={KeyS:0,KeyD:1,KeyK:2,KeyL:3,KeyC:4,KeyM:5};
+const KNOBMAP={KeyZ:0,Slash:1};
+const keyEl=code=>document.querySelector(`#keys .key[data-code="${code}"]`);
 function playing(){ return S.play>.5; }
 addEventListener('keydown',e=>{
   if(!playing() || e.repeat || e.metaKey || e.ctrlKey || e.altKey) return;
-  const t=performance.now()/1000;
-  if(e.code in KEYMAP){ e.preventDefault(); userInput(); const l=KEYMAP[e.code]; press(l,true,t); click(l); keyEls.find(k=>+k.dataset.l===l)?.classList.add('on'); }
-  else if(e.code in KNOBKEYS){ e.preventDefault(); userInput(); const [k,d]=KNOBKEYS[e.code]; knobHeld[k]=d; }
+  if(e.code in KEYMAP){ e.preventDefault(); userInput(); press(KEYMAP[e.code],true,songNow()); keyEl(e.code)?.classList.add('on'); }
+  else if(e.code in KNOBMAP){ e.preventDefault(); userInput(); knobDown[KNOBMAP[e.code]]=true; keyEl(e.code)?.classList.add('on'); }
 });
 addEventListener('keyup',e=>{
-  if(e.code in KEYMAP){ const l=KEYMAP[e.code]; press(l,false,performance.now()/1000); keyEls.find(k=>+k.dataset.l===l)?.classList.remove('on'); }
-  if(e.code in KNOBKEYS){ const [k,d]=KNOBKEYS[e.code]; if(knobHeld[k]===d) knobHeld[k]=0; }
+  if(e.code in KEYMAP){ press(KEYMAP[e.code],false,songNow()); keyEl(e.code)?.classList.remove('on'); }
+  if(e.code in KNOBMAP){ knobDown[KNOBMAP[e.code]]=false; keyEl(e.code)?.classList.remove('on'); }
 });
-// tap / click the 3D buttons, drag the knobs
-const ray=new THREE.Raycaster(), ndc=new THREE.Vector2(); let drag=null, tapLane=-1;
+addEventListener('blur',()=>{ knobDown[0]=knobDown[1]=false; btns.forEach(b=>b.held=false); document.querySelectorAll('#keys .key.on').forEach(k=>k.classList.remove('on')); });
+// tap / click the 3D buttons and knobs
+const ray=new THREE.Raycaster(), ndc=new THREE.Vector2(); let tapLane=-1, tapKnob=-1;
 const caps=()=>btns.map(b=>b.cap);
 function pick(e){ ndc.set(e.clientX/innerWidth*2-1, -(e.clientY/innerHeight)*2+1); ray.setFromCamera(ndc,camera); return ray; }
 addEventListener('pointerdown',e=>{
   if(!playing() || e.target.closest('.panel,a,button,.hud')) return;
   const r=pick(e);
   const kh=r.intersectObjects(knobs.map(k=>k.g),true)[0];
-  if(kh){ const i=knobs.findIndex(k=>k.g===kh.object.parent); drag={i,x:e.clientX}; userInput(); return; }
+  if(kh){ tapKnob=knobs.findIndex(k=>k.g===kh.object.parent); knobDown[tapKnob]=true; userInput(); return; }
   const h=r.intersectObjects(caps(),false)[0];
-  if(h){ tapLane=h.object.userData.lane; userInput(); press(tapLane,true,performance.now()/1000); click(tapLane); }
+  if(h && h.object.userData.lane<6){ tapLane=h.object.userData.lane; userInput(); press(tapLane,true,songNow()); }
 });
-addEventListener('pointermove',e=>{ mouse.x=e.clientX/innerWidth*2-1; mouse.y=e.clientY/innerHeight*2-1;
-  if(drag){ knobs[drag.i].angle+=(e.clientX-drag.x)*.02; drag.x=e.clientX; lastInput=performance.now()/1000; } });
-addEventListener('pointerup',()=>{ drag=null; if(tapLane>=0){ press(tapLane,false,performance.now()/1000); tapLane=-1; } });
-$('#sound').addEventListener('click',e=>{ soundOn=!soundOn; e.currentTarget.setAttribute('aria-pressed',soundOn); e.currentTarget.textContent=soundOn?'Sound on':'Sound off'; });
+addEventListener('pointermove',e=>{ mouse.x=e.clientX/innerWidth*2-1; mouse.y=e.clientY/innerHeight*2-1; });
+addEventListener('pointerup',()=>{ if(tapLane>=0){ press(tapLane,false,songNow()); tapLane=-1; } if(tapKnob>=0){ knobDown[tapKnob]=false; tapKnob=-1; } });
+$('#sound').addEventListener('click',()=>setSound(!(soundPref===true)));
+$('#restart').addEventListener('click',()=>{ userInput(); restart(); });
 
 /* ============================================================
    SCROLL CHOREOGRAPHY
@@ -626,6 +804,7 @@ function frame(now){
   const y=lenis?lenis.animatedScroll:scrollY;
   sample(y);
   renderer.domElement.style.opacity=String(1-S.dim); ink.style.opacity=String(1-S.dim);
+  if(master) master.gain.setTargetAtTime(soundPref&&S.play>.3&&S.dim<.5&&!document.hidden?.6:0, actx.currentTime, .12);
   if(S.dim>.985){ updateHud(y); return; }
 
   // focus close-ups
@@ -650,47 +829,56 @@ function frame(now){
   // explode
   for(const k in groups){ const G=groups[k]; G.g.position.set(G.ex[0]*S.ex, G.ex[1]*S.ex, G.ex[2]*S.ex); }
 
-  // chart + autoplay / judging
+  // chart + autoplay / judging, all on the song clock
+  const st=songNow();
   if(!auto && t-lastInput>6){ auto=true; $('#mode').textContent='AUTO'; }
-  if(!t0){ t0=t+1.2; }
-  genUntil(t+LEN/SPEED+.5);
+  genUntil(st+LEN/SPEED+.5);
   const vis=S.hw>.02;
+  const lx=[laserX(0,st),laserX(1,st)];
+  const knobOn=[0,1].map(i=>knobDown[i]||(auto&&lx[i]!==null));
   for(const n of notes){
-    if(n.done) continue;
-    if(auto && t>=n.t){ hit(n,'CRITICAL'); const b=btns[n.lane]; b.press=1; b.autoUntil=t+(n.len||.07); hwU.flash.value[n.lane]=1; }
-    else if(!auto && t>n.t+.14){ hit(n,'ERROR'); }
+    if(n.done || st<n.t) { if(!n.done && !auto && !n.tick && st>n.t+.14) hit(n,'ERROR'); continue; }
+    if(n.tick){ hit(n, knobOn[n.lane-7]?'CRITICAL':'ERROR'); continue; }
+    if(auto){ hit(n,'CRITICAL'); btns[n.lane].autoUntil=st+(n.len||.07); }
+    else if(st>n.t+.14) hit(n,'ERROR');
   }
-  notes=notes.filter(n=>!(n.done && t>n.t+(n.len||0)+.2));
+  notes=notes.filter(n=>!(n.done && st>n.t+(n.len||0)+.2));
+  lasers=lasers.filter(L=>L.pts[L.pts.length-1].t>st-1);
   let ci=0, li=0;
   for(const n of notes){
-    if(n.lane<4){ if(n.done) continue; const z=J-(n.t-t)*SPEED; if(z<J-LEN+60||ci>=MAXN) continue;
+    if(n.tick) continue;
+    if(n.lane<4){ if(n.done) continue; const z=J-(n.t-st)*SPEED; if(z<J-LEN+60||ci>=MAXN) continue;
       _m.makeTranslation(LANE_X[n.lane],HW_Y+4,z); chipM.setMatrixAt(ci++,_m); }
-    else { let zs=J-(n.t-t)*SPEED, ze=J-(n.t+n.len-t)*SPEED;
+    else { let zs=J-(n.t-st)*SPEED, ze=J-(n.t+n.len-st)*SPEED;
       if(n.hit) zs=Math.min(zs,J); if(zs<ze||ze>J+40||li>=24) continue;
       zs=Math.min(zs,J+10); ze=Math.max(ze,J-LEN+60); if(zs<=ze) continue;
       _p.set(FX_X[n.lane-4],HW_Y+2,(zs+ze)/2); _s.set(1,1,zs-ze); _m.compose(_p,_q.identity(),_s); longM.setMatrixAt(li++,_m); }
   }
   chipM.count=vis?ci:0; longM.count=vis?li:0; chipM.instanceMatrix.needsUpdate=true; longM.instanceMatrix.needsUpdate=true;
+  buildLasers(st,knobOn); laserMesh.visible=vis;
   hw.material.uniforms.alpha.value=S.hw; hw.visible=jl.visible=jlGlow.visible=vis; cursors.forEach(c=>c.visible=vis);
-  hw.material.uniforms.time.value=t;
+  hw.material.uniforms.time.value=st;
   jlGlow.material.opacity=.25+.15*Math.sin(t*9.4);
   hitFx.forEach(h=>{ const a=t-h.t; h.m.visible=vis&&a<.3; if(a<.3){ h.m.scale.setScalar(1+a*5); h.m.material.opacity=(1-a/.3)*.9; } });
 
   // buttons
   for(const b of btns){
-    const on=b.held || (b.autoUntil&&t<b.autoUntil);
+    const on=b.held || (b.autoUntil&&st<b.autoUntil);
     b.lit+=((on?1:0)-b.lit)*Math.min(1,dt*(on?40:9));
     b.mat.emissiveIntensity=b.lit*(b.lane<4?1.6:2.2)+(b.lane>=4?.15:.0);
     b.cap.position.y=TOP+15-(on?3:0);
     if(b.lane<6) hwU.flash.value[b.lane]=Math.max(on?.8:0,hwU.flash.value[b.lane]*Math.exp(-dt*10));
   }
-  // knobs: keys / drag in play mode, a gentle sway while autoplaying
+  // knobs follow the live laser; the cursor rides the laser when its button is held
   knobs.forEach((k,i)=>{
-    if(knobHeld[i]) k.angle+=knobHeld[i]*dt*4;
-    else if(auto && !drag) k.angle=lerp(k.angle, Math.sin(t*(.9+i*.37)+i*2)*1.4, dt*2);
-    k.g.rotation.y=-k.angle;
-    cursors[i].position.x=lerp(cursors[i].position.x, clamp(Math.sin(k.angle),-1,1)*150, Math.min(1,dt*12));
+    const target=lx[i]!==null?lx[i]*2.2:0;
+    k.angle=lerp(k.angle,target,Math.min(1,dt*14));
+    k.g.rotation.y=-k.angle; k.g.position.y=TOP+6-(knobOn[i]?2.5:0);
+    const cx=(lx[i]!==null?lx[i]:(i?1:-1))*150;
+    cursors[i].position.x=lerp(cursors[i].position.x,cx,Math.min(1,dt*20));
+    cursors[i].scale.setScalar(knobOn[i]&&lx[i]!==null?1.35:.85);
   });
+  $('#songProg').style.transform=`scaleX(${(((st%SONG_LEN)+SONG_LEN)%SONG_LEN)/SONG_LEN})`;
 
   LED.time.value=t; LED.bright.value=lerp(.9,1.3,S.play);
 
