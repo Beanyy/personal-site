@@ -110,14 +110,25 @@ section{position:relative}
 .work{margin-top:48px}
 .wlabel{color:var(--mute);padding-bottom:14px;border-bottom:1px solid var(--line)}
 .jobs{list-style:none}
-.jobs li{display:grid;grid-template-columns:130px minmax(0,1fr) auto;gap:20px;align-items:baseline;padding:16px 0;border-bottom:1px solid var(--line)}
+.jobs li{display:grid;grid-template-columns:190px minmax(0,1fr) auto;gap:20px;align-items:center;padding:16px 0;border-bottom:1px solid var(--line)}
 .jobs b{font-weight:500;font-size:18px;letter-spacing:-.01em}
+.jobs .co{display:flex;align-items:center;gap:14px}
+.jobs .tile{flex:none;width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--bg2);display:grid;place-items:center;transition:border-color .3s,background .3s}
+.jobs .tile .lg{width:22px;height:22px;background:var(--ink2);transition:background .3s}
+.jobs li:hover .tile{border-color:#3a3a40}
+.jobs li:hover .tile .lg{background:var(--brand)}
+.lg{display:block;-webkit-mask:var(--i) center/contain no-repeat;mask:var(--i) center/contain no-repeat}
+.btn.icon{width:46px;padding:0;justify-content:center;border:1px solid var(--line);color:var(--ink)}
+.btn.icon .lg{width:18px;height:18px;background:var(--ink2);transition:background .2s}
+.btn.icon:hover{border-color:var(--ink2)}
+.btn.icon:hover .lg{background:var(--ink)}
 .jobs .focus{color:var(--ink2);font-size:15px;line-height:1.45}
+.jobs li{padding:14px 0}
 .jobs .yrs{color:var(--mute);white-space:nowrap}
 .facts{margin-top:40px}
 @media (max-width:860px){
   .jobs li{grid-template-columns:1fr auto;grid-template-areas:"c y" "f f";gap:4px 12px}
-  .jobs b{grid-area:c} .jobs .yrs{grid-area:y} .jobs .focus{grid-area:f}
+  .jobs .co{grid-area:c} .jobs .yrs{grid-area:y;align-self:center} .jobs .focus{grid-area:f;padding-left:54px}
 }
 @media (max-width:560px){ .eyebrow .loc{display:none} }
 
@@ -126,6 +137,8 @@ footer{border-top:1px solid var(--line);padding:30px 0 40px;color:var(--mute)}
 footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 footer a{text-decoration:none;color:var(--ink2)}
 footer a:hover{color:var(--ink)}
+footer .fl{display:flex;gap:24px;flex-wrap:wrap}
+.facts .links{display:flex;gap:22px;flex-wrap:wrap}
 
 /* page transition */
 #curtain{position:fixed;inset:0;z-index:100;pointer-events:none;clip-path:inset(100% 0 0 0);background:#000}
@@ -174,7 +187,8 @@ footer a:hover{color:var(--ink)}
       <p class="lede" data-rv style="--d:.9s">I build things you can hold. Usually things that <b>spin</b>, <b>glow</b>, or both.</p>
       <div class="cta" data-rv style="--d:1.05s">
         <a class="btn primary" href="#work">See the work <span class="arr">↓</span></a>
-        <a class="btn ghost" href="https://www.linkedin.com/in/edward-lee-kim-koon-92340727/" target="_blank" rel="noopener">LinkedIn <span class="arr">↗</span></a>
+        <a class="btn icon" href="https://www.linkedin.com/in/edward-lee-kim-koon-92340727/" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn"><span class="lg" style="--i:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/linkedin.svg)"></span></a>
+        <a class="btn icon" href="https://www.instagram.com/eddy.lkk" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram"><span class="lg" style="--i:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/instagram.svg)"></span></a>
       </div>
     </div>
   </section>
@@ -229,16 +243,16 @@ footer a:hover{color:var(--ink)}
           <div class="work" data-rv style="--d:.2s">
             <div class="wlabel mono">Work</div>
             <ol class="jobs">
-              <li><b>Snap</b><span class="focus">Multimedia team lead for Specs, Snap's AR glasses</span><span class="yrs mono">2019 – Now</span></li>
-              <li><b>AMD</b><span class="focus">GPU drivers and the ROCm stack for machine learning</span><span class="yrs mono">2018 – 2019</span></li>
-              <li><b>Qualcomm</b><span class="focus">Embedded drivers for Snapdragon: graphics, hypervisor, NPU</span><span class="yrs mono">2012 – 2018</span></li>
+              <li style="--brand:#FFFC00"><span class="co"><span class="tile"><span class="lg" style="--i:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/snapchat.svg)"></span></span><b>Snap</b></span><span class="focus">Multimedia team lead for Specs, Snap's AR glasses</span><span class="yrs mono">2019 – Now</span></li>
+              <li style="--brand:#ED1C24"><span class="co"><span class="tile"><span class="lg" style="--i:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/amd.svg);width:32px;height:32px"></span></span><b>AMD</b></span><span class="focus">GPU drivers and the ROCm stack for machine learning</span><span class="yrs mono">2018 – 2019</span></li>
+              <li style="--brand:#3253DC"><span class="co"><span class="tile"><span class="lg" style="--i:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/qualcomm.svg)"></span></span><b>Qualcomm</b></span><span class="focus">Embedded drivers for Snapdragon: graphics, hypervisor, NPU</span><span class="yrs mono">2012 – 2018</span></li>
             </ol>
           </div>
           <ul class="facts" data-rv style="--d:.26s">
             <li><span class="mono">Home</span><span>From Toronto, now in Orange County.</span></li>
             <li><span class="mono">Off the bench</span><span>Husband, dad, and home cook of a lot of Asian food.</span></li>
             <li><span class="mono">Also</span><span>Poi dancer. <span class="later">Page coming soon.</span></span></li>
-            <li><span class="mono">Elsewhere</span><span><a href="https://www.linkedin.com/in/edward-lee-kim-koon-92340727/" target="_blank" rel="noopener">LinkedIn ↗</a></span></li>
+            <li><span class="mono">Elsewhere</span><span class="links"><a href="https://www.linkedin.com/in/edward-lee-kim-koon-92340727/" target="_blank" rel="noopener">LinkedIn ↗</a><a href="https://www.instagram.com/eddy.lkk" target="_blank" rel="noopener">Instagram ↗</a></span></li>
           </ul>
         </div>
       </div>
@@ -247,7 +261,7 @@ footer a:hover{color:var(--ink)}
 </main>
 
 <footer>
-  <div class="wrap mono"><span>© <span id="yr"></span> Edward Lee Kim Koon</span><a href="#hero">Back to top ↑</a></div>
+  <div class="wrap mono"><span>© <span id="yr"></span> Edward Lee Kim Koon</span><span class="fl"><a href="https://www.linkedin.com/in/edward-lee-kim-koon-92340727/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.instagram.com/eddy.lkk" target="_blank" rel="noopener">Instagram</a><a href="#hero">Back to top ↑</a></span></div>
 </footer>
 
 <div id="peek" aria-hidden="true"></div>
