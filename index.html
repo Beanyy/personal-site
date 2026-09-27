@@ -5,177 +5,188 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Edward Lee Kim Koon</title>
 <meta name="description" content="Edward Lee Kim Koon works in software and builds things you can hold: LED totems, a four-dimensional cube in light, arcade controllers.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230b0b0d'/%3E%3Crect x='5' y='5' width='6' height='6' fill='%23ff4fa3'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23ff5fa2' stroke='%23fff' stroke-width='3'/%3E%3Cpath d='M16 8l2.4 5.2 5.6.6-4.2 3.8 1.2 5.6L16 20.4l-5 2.8 1.2-5.6L8 13.8l5.6-.6z' fill='%23fff'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=DM+Sans:opsz,wght@9..40,400..700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0b0b0d; --bg2:#121215; --ink:#ededf0; --ink2:#b4b4bd; --mute:#76767f; --line:#232327;
-  --led:#fff1d6; --accent:#ff4fa3;
-  --wrap:min(1200px, 100vw - 10vw);
+  --paper:#fbf3e6; --paper2:#f4e8d3; --ink:#221c19; --ink2:#5b504a; --mute:#8f8378; --grid:rgba(120,90,60,.09);
+  --pink:#ff5fa2; --sun:#ffc93c; --sky:#4fb3ff; --mint:#34cfa0; --orange:#ff8a3d; --lilac:#a98bff; --red:#ff4b4b;
+  --wrap:min(1180px, 100vw - 8vw);
+  --shadow:0 2px 0 rgba(34,28,25,.08), 0 10px 22px -10px rgba(60,40,20,.35);
+  --shadow-lift:0 4px 0 rgba(34,28,25,.06), 0 26px 40px -16px rgba(60,40,20,.45);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{background:var(--bg);scroll-behavior:smooth}
-body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-::selection{background:var(--accent);color:#fff}
+html{background:var(--paper);scroll-behavior:smooth}
+body{
+  color:var(--ink);font-family:"DM Sans",system-ui,sans-serif;font-size:18px;line-height:1.55;overflow-x:hidden;
+  background:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:32px 32px;background-position:-1px -1px;
+}
+::selection{background:var(--sun);color:var(--ink)}
 a{color:inherit}
-.mono{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
-.sq{display:inline-block;width:7px;height:7px;background:var(--accent);vertical-align:1px;flex:none}
 .wrap{width:var(--wrap);margin:0 auto}
+.disp{font-family:"Bricolage Grotesque",sans-serif;font-optical-sizing:auto}
+.mono{font-family:"DM Mono",ui-monospace,monospace;font-size:13px;letter-spacing:.04em}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:2px}
+:focus-visible{outline:3px solid var(--sky);outline-offset:4px;border-radius:6px}
 
 /* ---------- top bar ---------- */
-.bar{position:fixed;top:0;left:0;right:0;z-index:20;transition:background .3s,border-color .3s;border-bottom:1px solid transparent}
-.bar.scrolled{background:rgba(11,11,13,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom-color:var(--line)}
-.bar .wrap{display:flex;justify-content:space-between;align-items:center;height:64px}
-.bar .me{display:flex;align-items:center;gap:12px;text-decoration:none;font-weight:600;font-size:15px;letter-spacing:-.01em}
-.bar nav{display:flex;gap:28px;font-size:15px}
-.bar nav a{text-decoration:none;color:var(--ink2);transition:color .2s}
-.bar nav a:hover{color:var(--ink)}
+.bar{position:sticky;top:0;z-index:30;padding:14px 0;transition:background .3s,box-shadow .3s}
+.bar.scrolled{background:rgba(251,243,230,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 1px 0 rgba(34,28,25,.08)}
+.bar .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.logo{display:inline-flex;align-items:center;gap:10px;text-decoration:none;font-weight:700;font-size:16px}
+.logo i{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--pink);color:#fff;border:3px solid #fff;box-shadow:var(--shadow);font-style:normal;font-family:"Bricolage Grotesque";font-weight:800;font-size:15px;transform:rotate(-8deg)}
+.bar nav{display:flex;align-items:center;gap:6px}
+.bar nav a{text-decoration:none;font-weight:600;font-size:15px;padding:8px 14px;border-radius:999px;transition:background .2s}
+.bar nav a:hover{background:rgba(34,28,25,.07)}
+
+/* ---------- stickers ---------- */
+.sticker{position:absolute;z-index:3;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;
+  transform:translate(var(--dx,0px),var(--dy,0px)) rotate(var(--r,0deg));}
+.sticker .in{display:block;transition:transform .35s cubic-bezier(.3,1.6,.5,1),filter .35s;filter:drop-shadow(0 2px 0 rgba(34,28,25,.08)) drop-shadow(0 10px 12px rgba(60,40,20,.25))}
+.sticker:hover .in{transform:scale(1.08) rotate(calc(var(--r,0deg) * -.5));filter:drop-shadow(0 4px 0 rgba(34,28,25,.06)) drop-shadow(0 22px 20px rgba(60,40,20,.3))}
+.sticker.drag{cursor:grabbing;z-index:20}
+.sticker.drag .in{transform:scale(1.12)}
+.sticker svg{display:block;overflow:visible}
+.pop{animation:slap .7s cubic-bezier(.3,1.5,.5,1) both;animation-delay:var(--d,0s)}
+@keyframes slap{0%{opacity:0;transform:scale(1.6) rotate(-14deg)}60%{opacity:1}100%{opacity:1;transform:none}}
+.spin{animation:spin 18s linear infinite;transform-origin:50% 50%}
+@keyframes spin{to{transform:rotate(360deg)}}
+.label{display:inline-block;padding:10px 18px;border:5px solid #fff;border-radius:16px;font-weight:700;font-family:"Bricolage Grotesque";white-space:nowrap}
 
 /* ---------- hero ---------- */
-#hero{min-height:100svh;display:flex;align-items:center;padding:110px 0 80px}
-.eyebrow{color:var(--mute);display:flex;align-items:center;gap:12px}
-#light{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
-main,footer{position:relative;z-index:1}
-.name{margin:26px 0 30px;font-family:"Roboto Flex",Inter,sans-serif;font-weight:300;font-size:clamp(56px,10.6vw,168px);line-height:.9;letter-spacing:-.035em;
-  font-variation-settings:"wght" 300,"wdth" 100,"opsz" 144;user-select:none}
-.name .line{display:block;white-space:nowrap}
-.name .w{display:inline-block;white-space:nowrap}
-.name .c{display:inline-block;opacity:0;transform:translateY(.25em);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1);transition-delay:var(--d,0s)}
-.name.in .c{opacity:1;transform:none}
-.lede{font-size:clamp(20px,2.1vw,26px);line-height:1.4;letter-spacing:-.015em;color:var(--ink2);max-width:640px}
-.lede b{color:var(--ink);font-weight:500}
-.cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:40px}
-.btn{display:inline-flex;align-items:center;gap:10px;height:46px;padding:0 20px;border-radius:999px;font-size:15px;font-weight:500;text-decoration:none;transition:background .2s,color .2s,border-color .2s,transform .2s}
-.btn.primary{background:var(--ink);color:var(--bg)}
-.btn.primary:hover{background:#fff;transform:translateY(-1px)}
-.btn.ghost{border:1px solid var(--line);color:var(--ink)}
-.btn.ghost:hover{border-color:var(--ink2)}
-.btn .arr{display:inline-block;transition:transform .25s}
-.btn.primary:hover .arr{transform:translateY(2px)}
-.btn.ghost:hover .arr{transform:translate(2px,-2px)}
-
-/* reveal */
-[data-rv]{opacity:0;transform:translateY(22px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1);transition-delay:var(--d,0s)}
-[data-rv].in{opacity:1;transform:none}
+#hero{position:relative;min-height:calc(100svh - 70px);display:flex;align-items:center;padding:40px 0 90px}
+#hero .wrap{position:relative}
+.hi{display:inline-block;transform:rotate(-4deg);background:var(--sun);color:var(--ink);margin-bottom:18px;font-size:22px}
+h1.name{font-family:"Bricolage Grotesque";font-weight:800;font-size:clamp(58px,10.4vw,156px);line-height:.88;letter-spacing:-.045em;position:relative;z-index:2}
+h1.name span{display:block}
+h1.name .u{position:relative;display:inline-block}
+h1.name .u svg{position:absolute;left:-2%;bottom:-.08em;width:104%;height:.28em;z-index:-1}
+h1.name .u path{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1s .9s cubic-bezier(.6,.1,.2,1) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.tagline{margin-top:30px;max-width:560px;font-size:clamp(20px,2vw,24px);line-height:1.4;color:var(--ink2);position:relative;z-index:2}
+.tagline b{color:var(--ink)}
+.tagline .hl{background:linear-gradient(transparent 58%,rgba(255,201,60,.7) 58%);padding:0 .1em}
+.hl.p{background:linear-gradient(transparent 58%,rgba(255,95,162,.45) 58%)}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px;position:relative;z-index:2}
+.btn{display:inline-flex;align-items:center;gap:10px;height:52px;padding:0 22px;border-radius:999px;font-weight:700;font-size:16px;text-decoration:none;border:3px solid var(--ink);transition:transform .25s cubic-bezier(.3,1.6,.5,1),box-shadow .25s}
+.btn.solid{background:var(--ink);color:var(--paper);box-shadow:4px 4px 0 var(--pink)}
+.btn.solid:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--pink)}
+.btn.line{background:#fff;box-shadow:4px 4px 0 var(--ink)}
+.btn.line:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+.btn .lg{width:18px;height:18px}
+.hint{position:absolute;right:0;bottom:-54px;color:var(--mute);display:flex;align-items:center;gap:8px}
+.hint svg{width:34px;height:20px}
 
 /* ---------- section heads ---------- */
 section{position:relative}
-.shead{display:flex;align-items:baseline;justify-content:space-between;gap:20px;padding-bottom:22px;border-bottom:1px solid var(--line)}
-.shead h2{font-size:15px;font-weight:500}
-.shead .mono{color:var(--mute)}
+.shead{display:flex;align-items:flex-end;gap:18px;margin-bottom:40px}
+.shead h2{font-family:"Bricolage Grotesque";font-weight:800;font-size:clamp(38px,5vw,64px);line-height:1;letter-spacing:-.035em}
+.shead .tagx{transform:rotate(3deg);margin-bottom:8px;font-size:15px}
 
-/* ---------- project index ---------- */
-#work{padding:120px 0 140px}
-.list{list-style:none}
-.row{position:relative;border-bottom:1px solid var(--line)}
-.row a{display:grid;grid-template-columns:70px minmax(0,1.1fr) minmax(0,1fr) 80px 40px;align-items:center;gap:24px;padding:34px 0;text-decoration:none;transition:opacity .35s}
-.row .n{color:var(--mute)}
-.row h3{font-size:clamp(26px,3.6vw,48px);font-weight:500;letter-spacing:-.035em;line-height:1.05;display:flex;align-items:center}
-.row h3 .sq{width:0;height:12px;margin-right:0;transition:width .35s cubic-bezier(.2,.7,.2,1),margin .35s cubic-bezier(.2,.7,.2,1)}
-.row p{color:var(--ink2);font-size:16px;line-height:1.45}
-.row .yr{color:var(--mute);text-align:right}
-.row .go{justify-self:end;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;transition:background .3s,border-color .3s,transform .45s cubic-bezier(.2,.7,.2,1)}
-.row .go svg{width:14px;height:14px;stroke:var(--ink);transition:stroke .3s}
-.row .thumb{display:none}
-.row:after{content:"";position:absolute;left:0;right:100%;bottom:-1px;height:1px;background:var(--ink);transition:right .6s cubic-bezier(.2,.7,.2,1)}
-@media (hover:hover){
-  .list:hover .row a{opacity:.35}
-  .list .row:hover a{opacity:1}
-  .row:hover h3 .sq{width:12px;margin-right:18px}
-  .row:hover .go{background:var(--ink);border-color:var(--ink);transform:rotate(-45deg)}
-  .row:hover .go svg{stroke:var(--bg)}
-  .row:hover:after{right:0}
-}
-.soon{margin-top:26px;color:var(--mute);display:flex;align-items:center;gap:10px}
-.soon .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 1.8s ease-in-out infinite}
-@keyframes pulse{50%{opacity:.25}}
-
-/* floating preview */
-#peek{position:fixed;left:0;top:0;z-index:15;width:300px;aspect-ratio:16/10;border-radius:10px;overflow:hidden;pointer-events:none;opacity:0;
-  transform:translate(0,-50%) scale(.85);transform-origin:0 50%;transition:opacity .3s ease,transform .3s cubic-bezier(.2,.7,.2,1);box-shadow:0 30px 60px -20px rgba(0,0,0,.8);background:#000}
-#peek.on{opacity:1;transform:translate(0,-50%) scale(1)}
-#peek video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .25s}
-#peek video.on{opacity:1}
+/* ---------- projects ---------- */
+#work{padding:70px 0 90px}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:34px}
+.card{position:relative;display:flex;flex-direction:column;text-decoration:none;border-radius:26px;border:5px solid #fff;background:var(--c);box-shadow:var(--shadow);
+  transform:rotate(var(--r));transition:transform .45s cubic-bezier(.3,1.5,.5,1),box-shadow .45s}
+.card:hover,.card:focus-visible{transform:rotate(0) translateY(-10px) scale(1.02);box-shadow:var(--shadow-lift)}
+.card .shot{position:relative;margin:10px 10px 0;border-radius:16px;overflow:hidden;aspect-ratio:4/3;background:var(--sbg)}
+.card canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.card .meta{padding:18px 22px 22px;color:var(--ct,var(--ink))}
+.card .top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.card .yr{font-weight:700;font-size:13px;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.55)}
+.card .num{font-family:"DM Mono";font-size:13px;opacity:.7}
+.card h3{font-family:"Bricolage Grotesque";font-weight:800;font-size:32px;line-height:1;letter-spacing:-.03em;margin:12px 0 8px}
+.card p{font-size:16px;line-height:1.45;opacity:.85}
+.card .go{display:inline-flex;align-items:center;gap:8px;margin-top:16px;font-weight:700;font-size:15px;padding:9px 16px;border-radius:999px;background:var(--ink);color:#fff;transition:gap .25s}
+.card:hover .go{gap:14px}
+.card .tape{position:absolute;top:-16px;left:50%;width:96px;height:30px;margin-left:-48px;background:rgba(255,255,255,.55);transform:rotate(-3deg);border-left:2px dashed rgba(255,255,255,.7);border-right:2px dashed rgba(255,255,255,.7);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.more{margin-top:44px;display:flex;justify-content:center}
+.more .label{background:#fff;color:var(--ink2);border-color:var(--ink);border-width:3px;border-style:dashed;font-size:16px;transform:rotate(-1.5deg)}
 
 /* ---------- about ---------- */
-#about{padding:40px 0 150px}
-.about{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:6vw;padding-top:56px}
-.about .big{font-size:clamp(28px,3.4vw,44px);font-weight:500;letter-spacing:-.03em;line-height:1.15}
-.about .big em{font-style:normal;color:var(--led);text-shadow:0 0 18px rgba(255,214,160,.35)}
-.about .body p{font-size:19px;line-height:1.6;color:var(--ink2);max-width:600px}
-.about .body p+p{margin-top:18px}
-.facts{list-style:none;margin-top:44px;border-top:1px solid var(--line)}
-.facts li{display:grid;grid-template-columns:130px 1fr;gap:20px;padding:16px 0;border-bottom:1px solid var(--line);font-size:16px}
-.facts .mono{color:var(--mute);padding-top:3px}
-.facts a{text-decoration:none;border-bottom:1px solid var(--line);transition:border-color .2s}
-.facts a:hover{border-color:var(--ink)}
-.facts .later{color:var(--mute)}
-.work{margin-top:48px}
-.wlabel{color:var(--mute);padding-bottom:14px;border-bottom:1px solid var(--line)}
-.jobs{list-style:none}
-.jobs li{display:grid;grid-template-columns:190px minmax(0,1fr) auto;gap:20px;align-items:center;padding:16px 0;border-bottom:1px solid var(--line)}
-.jobs b{font-weight:500;font-size:18px;letter-spacing:-.01em}
-.jobs .co{display:flex;align-items:center;gap:14px}
-.jobs .tile{flex:none;width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--bg2);display:grid;place-items:center;transition:border-color .3s,background .3s}
-.jobs .tile .lg{width:22px;height:22px;background:var(--ink2);transition:background .3s}
-.jobs li:hover .tile{border-color:#3a3a40}
-.jobs li:hover .tile .lg{background:var(--brand)}
-.lg{display:block;-webkit-mask:var(--i) center/contain no-repeat;mask:var(--i) center/contain no-repeat}
-.btn.icon{width:46px;padding:0;justify-content:center;border:1px solid var(--line);color:var(--ink)}
-.btn.icon .lg{width:18px;height:18px;background:var(--ink2);transition:background .2s}
-.btn.icon:hover{border-color:var(--ink2)}
-.btn.icon:hover .lg{background:var(--ink)}
-.jobs .focus{color:var(--ink2);font-size:15px;line-height:1.45}
-.jobs li{padding:14px 0}
-.jobs .yrs{color:var(--mute);white-space:nowrap}
-.facts{margin-top:40px}
-@media (max-width:860px){
-  .jobs li{grid-template-columns:1fr auto;grid-template-areas:"c y" "f f";gap:4px 12px}
-  .jobs .co{grid-area:c} .jobs .yrs{grid-area:y;align-self:center} .jobs .focus{grid-area:f;padding-left:54px}
-}
-@media (max-width:560px){ .eyebrow .loc{display:none} }
+#about{padding:70px 0 90px}
+.about{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:48px;align-items:start}
+.note{position:relative;background:#fff;border-radius:6px;padding:48px 44px 40px;box-shadow:var(--shadow);transform:rotate(-1deg);
+  background-image:repeating-linear-gradient(transparent 0 35px,rgba(79,179,255,.18) 35px 36px);background-position:0 30px}
+.note:before{content:"";position:absolute;left:30px;top:0;bottom:0;width:2px;background:rgba(255,95,162,.35)}
+.note .t1,.note .t2{position:absolute;width:110px;height:32px;background:rgba(255,201,60,.65);top:-14px}
+.note .t1{left:-18px;transform:rotate(-24deg)}
+.note .t2{right:-18px;transform:rotate(20deg);background:rgba(79,179,255,.55)}
+.note h3{font-family:"Bricolage Grotesque";font-weight:800;font-size:clamp(30px,3.2vw,42px);line-height:1.05;letter-spacing:-.03em;margin-bottom:18px}
+.note p{font-size:19px;line-height:1.85;color:var(--ink2)}
+.note p+p{margin-top:0}
+.facts{display:flex;flex-direction:column;gap:18px}
+.fact{display:flex;align-items:center;gap:16px;background:#fff;border:4px solid #fff;border-radius:20px;padding:14px 18px;box-shadow:var(--shadow);transform:rotate(var(--r,0deg));transition:transform .35s cubic-bezier(.3,1.6,.5,1)}
+.fact:hover{transform:rotate(0) scale(1.03)}
+.fact .ic{flex:none;width:52px;height:52px;border-radius:14px;display:grid;place-items:center;background:var(--c)}
+.fact .ic svg{width:30px;height:30px}
+.fact b{display:block;font-weight:700;font-size:17px;line-height:1.25}
+.fact span{color:var(--ink2);font-size:15px}
+.fact a{font-weight:700}
+
+/* ---------- jobs ---------- */
+#jobs{padding:40px 0 110px}
+.jobs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:26px}
+.job{position:relative;background:#fff;border-radius:22px;padding:24px 24px 22px;box-shadow:var(--shadow);transform:rotate(var(--r));transition:transform .4s cubic-bezier(.3,1.5,.5,1),box-shadow .4s}
+.job:hover{transform:rotate(0) translateY(-6px);box-shadow:var(--shadow-lift)}
+.job .head{display:flex;align-items:center;gap:14px}
+.job .logo-t{flex:none;width:58px;height:58px;border-radius:16px;display:grid;place-items:center;background:var(--bg)}
+.job .lg{width:32px;height:32px;background:var(--fg)}
+.job h3{font-family:"Bricolage Grotesque";font-weight:800;font-size:26px;letter-spacing:-.02em;line-height:1}
+.job .yrs{display:inline-block;margin-top:6px;font-size:13px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--paper2)}
+.job p{margin-top:16px;font-size:16px;color:var(--ink2);line-height:1.5}
+.job.now:after{content:"NOW";position:absolute;top:-12px;right:18px;font-family:"Bricolage Grotesque";font-weight:800;font-size:13px;letter-spacing:.06em;color:#fff;background:var(--pink);padding:5px 12px;border-radius:999px;border:3px solid #fff;transform:rotate(6deg);box-shadow:var(--shadow)}
+.lg{display:block;-webkit-mask:var(--i) center/contain no-repeat;mask:var(--i) center/contain no-repeat;background:currentColor}
 
 /* ---------- footer ---------- */
-footer{border-top:1px solid var(--line);padding:30px 0 40px;color:var(--mute)}
-footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
-footer a{text-decoration:none;color:var(--ink2)}
-footer a:hover{color:var(--ink)}
-footer .fl{display:flex;gap:24px;flex-wrap:wrap}
-.facts .links{display:flex;gap:22px;flex-wrap:wrap}
+footer{padding:0 0 50px}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:20px;background:var(--ink);color:var(--paper);border-radius:28px;padding:34px 38px}
+.foot h4{font-family:"Bricolage Grotesque";font-weight:800;font-size:clamp(26px,3vw,36px);letter-spacing:-.03em;line-height:1.05}
+.foot h4 span{color:var(--sun)}
+.foot .links{display:flex;flex-wrap:wrap;gap:12px}
+.foot .btn{border-color:var(--paper);color:var(--paper);height:48px}
+.foot .btn:hover{background:var(--paper);color:var(--ink)}
+.foot .btn .lg{background:currentColor}
+.small{margin-top:18px;display:flex;justify-content:space-between;color:var(--mute)}
+.small a{text-decoration:none}
 
-/* page transition */
-#curtain{position:fixed;inset:0;z-index:100;pointer-events:none;clip-path:inset(100% 0 0 0);background:#000}
-#curtain.go{transition:clip-path .55s cubic-bezier(.7,0,.3,1);clip-path:inset(0 0 0 0)}
+/* reveal */
+[data-rv]{opacity:0;translate:0 30px;transition:opacity .8s cubic-bezier(.2,.7,.2,1),translate .9s cubic-bezier(.3,1.3,.5,1);transition-delay:var(--d,0s)}
+[data-rv].in{opacity:1;translate:0 0}
 
-@media (max-width:860px){
-  :root{--wrap:calc(100vw - 40px)}
-  .bar nav{gap:18px}
-  .bar nav a.hide-m{display:none}
-  #hero{padding-top:96px}
-  .name .line{white-space:normal}
-  .name{font-size:clamp(46px,15.5vw,120px);margin:22px 0 26px}
-  #hero{align-items:flex-end;padding-bottom:9vh}
-  .row a{grid-template-columns:30px minmax(0,1fr) 84px;grid-template-areas:"n t th" "n p th" "n y th";gap:4px 14px;padding:24px 0}
-  .row .n{grid-area:n;align-self:start;padding-top:8px}
-  .row h3{grid-area:t}
-  .row p{grid-area:p;font-size:15px}
-  .row .yr{grid-area:y;text-align:left}
-  .row .go{display:none}
-  .row .thumb{grid-area:th;display:block;width:84px;aspect-ratio:1;border-radius:8px;overflow:hidden;background:#000}
-  .row .thumb img{width:100%;height:100%;object-fit:cover;display:block}
-  .about{grid-template-columns:1fr;gap:28px;padding-top:36px}
-  .about .body p{font-size:17px}
-  .facts li{grid-template-columns:104px 1fr}
-  #work{padding:80px 0 100px}
+/* curtain */
+#curtain{position:fixed;inset:0;z-index:100;pointer-events:none;clip-path:circle(0 at var(--cx,50%) var(--cy,50%))}
+#curtain.go{transition:clip-path .6s cubic-bezier(.7,0,.3,1);clip-path:circle(150% at var(--cx,50%) var(--cy,50%))}
+
+@media (max-width:980px){
+  .cards{grid-template-columns:1fr 1fr}
+  .jobs{grid-template-columns:1fr}
+  .about{grid-template-columns:1fr}
+}
+@media (max-width:680px){
+  :root{--wrap:calc(100vw - 36px)}
+  body{font-size:17px}
+  .bar nav a.opt{display:none}
+  #hero{min-height:auto;padding:30px 0 70px;align-items:flex-start}
+  .hi{font-size:18px}
+  .cards{grid-template-columns:1fr;gap:30px}
+  .note{padding:40px 24px 30px 40px}
+  .note p{font-size:17px}
+  .hint{display:none}
+  .foot{padding:28px 24px}
+  .sticker.m-hide{display:none}
+  #desk{padding-top:132px;padding-bottom:104px}
+  .logo .nm{display:none}
 }
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  [data-rv]{opacity:1;transform:none;transition:none}
-  .soon .dot{animation:none}
+  .pop,.spin,h1.name .u path{animation:none}
+  h1.name .u path{stroke-dashoffset:0}
+  [data-rv]{opacity:1;translate:none;transition:none}
 }
 </style>
 </head>
@@ -183,87 +194,161 @@ footer .fl{display:flex;gap:24px;flex-wrap:wrap}
 
 <header class="bar" id="bar">
   <div class="wrap">
-    <a class="me" href="#hero"><span class="sq"></span>Edward Lee Kim Koon</a>
-    <nav><a href="#work">Work</a><a href="#about">About</a><a class="hide-m" href="https://www.linkedin.com/in/edward-lee-kim-koon-92340727/" target="_blank" rel="noopener">LinkedIn ↗</a></nav>
+    <a class="logo" href="#hero" aria-label="Edward Lee Kim Koon"><i>E</i><span class="nm">Edward Lee Kim Koon</span></a>
+    <nav>
+      <a href="#work">Projects</a>
+      <a href="#about">About</a>
+      <a class="opt" href="#jobs">Work</a>
+    </nav>
   </div>
 </header>
 
-<canvas id="light" aria-hidden="true"></canvas>
 <main>
+  <!-- ================= HERO ================= -->
   <section id="hero">
+    <div class="wrap" id="desk">
+      <div class="label hi pop" style="--d:.1s">Hello, I'm</div>
+      <h1 class="name"><span>Edward</span><span><span class="u">Lee Kim Koon<svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path d="M1 7 C 20 2, 45 9, 60 5 S 90 3, 99 6" fill="none" stroke="#ff5fa2" stroke-width="3.2" stroke-linecap="round" pathLength="1"/></svg></span></span></h1>
+      <p class="tagline">I work in software and build things you can hold. Usually things that <span class="hl"><b>spin</b></span>, <span class="hl p"><b>glow</b></span>, or both.</p>
+      <div class="cta">
+        <a class="btn solid" href="#work">See my projects ↓</a>
+        <a class="btn line" href="https://www.linkedin.com/in/edward-lee-kim-koon-92340727/" target="_blank" rel="noopener" aria-label="LinkedIn"><span class="lg" style="--i:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/linkedin.svg);background:#0a66c2"></span>LinkedIn</a>
+        <a class="btn line" href="https://www.instagram.com/eddy.lkk" target="_blank" rel="noopener" aria-label="Instagram"><span class="lg" style="--i:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/instagram.svg);background:#e1306c"></span>Instagram</a>
+      </div>
+      <div class="hint mono" aria-hidden="true"><svg viewBox="0 0 34 20" fill="none" stroke="#8f8378" stroke-width="1.6" stroke-linecap="round"><path d="M2 16 C 10 4, 22 2, 30 8"/><path d="M25 3 L30 8 L24 11"/></svg>psst, the stickers peel off</div>
+
+      <!-- stickers: data-x / data-y are % of the hero box, data-z = parallax depth -->
+      <div class="sticker" data-x="70" data-y="-6" data-z="1.2" style="--r:10deg" aria-hidden="true"><span class="in pop" style="--d:.35s">
+        <svg width="150" height="150" viewBox="0 0 150 150"><circle cx="75" cy="75" r="70" fill="#ff5fa2" stroke="#fff" stroke-width="8"/>
+          <g class="spin"><path id="ring" d="M75,75 m-50,0 a50,50 0 1,1 100,0 a50,50 0 1,1 -100,0" fill="none"/>
+          <text font-family="Bricolage Grotesque" font-weight="800" font-size="15.5" letter-spacing="2.2" fill="#fff"><textPath href="#ring">BUILT BY HAND ✦ BUILT BY HAND ✦</textPath></text></g>
+          <path d="M75 52l6.5 14 15.5 1.6-11.6 10.4 3.3 15.2L75 85.6 61.3 93.2l3.3-15.2L53 67.6l15.5-1.6z" fill="#ffc93c" stroke="#fff" stroke-width="3" stroke-linejoin="round"/></svg>
+      </span></div>
+
+      <div class="sticker" data-x="84" data-y="24" data-z="1.6" style="--r:-8deg" aria-hidden="true"><span class="in pop" style="--d:.5s">
+        <svg width="112" height="104" viewBox="0 0 112 104"><path d="M56 96 C 20 70, 6 50, 8 30 C 10 10, 34 0, 50 16 L56 22 L62 16 C 78 0, 102 10, 104 30 C 106 50, 92 70, 56 96Z" fill="#ff4b4b" stroke="#fff" stroke-width="8" stroke-linejoin="round"/><path d="M30 28 C 32 20, 40 16, 46 20" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".7"/></svg>
+      </span></div>
+
+      <div class="sticker" data-x="50" data-y="90" data-z=".8" style="--r:4deg" aria-hidden="true"><span class="in pop" style="--d:.65s">
+        <span class="label" style="background:#fff;border-color:#fff;font-size:15px;padding:12px 18px;display:flex;flex-direction:column;gap:2px;border-radius:14px;box-shadow:inset 0 0 0 2px #221c19">
+          <span class="mono" style="font-size:11px;color:#8f8378">BOARDING PASS · YYZ ✈ SNA</span>
+          <span style="font-size:19px">Toronto, Canada → Irvine, California</span>
+        </span>
+      </span></div>
+
+      <div class="sticker" data-x="92" data-y="48" data-z="1.3" style="--r:12deg" aria-hidden="true"><span class="in pop" style="--d:.8s">
+        <svg width="118" height="118" viewBox="0 0 118 118"><circle cx="59" cy="59" r="54" fill="#34cfa0" stroke="#fff" stroke-width="8"/>
+          <path d="M22 58 H96 C 94 80, 78 92, 59 92 C 40 92, 24 80, 22 58Z" fill="#fff"/>
+          <path d="M30 62 C 40 70, 50 56, 60 66 S 80 58, 88 64" fill="none" stroke="#ffc93c" stroke-width="5" stroke-linecap="round"/>
+          <path d="M70 20 L92 50 M80 16 L98 46" stroke="#221c19" stroke-width="4.5" stroke-linecap="round"/>
+          <path d="M40 30 c-6 6 6 10 0 16 M52 26 c-6 6 6 10 0 16" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/></svg>
+      </span></div>
+
+      <div class="sticker m-hide" data-x="52" data-y="-4" data-z="1.9" style="--r:-14deg" aria-hidden="true"><span class="in pop" style="--d:.95s">
+        <svg width="84" height="110" viewBox="0 0 84 110"><path d="M50 4 L10 62 H40 L30 106 L76 40 H44 Z" fill="#ffc93c" stroke="#fff" stroke-width="8" stroke-linejoin="round"/></svg>
+      </span></div>
+
+      <div class="sticker" data-x="84" data-y="74" data-z="1" style="--r:-6deg" aria-hidden="true"><span class="in pop" style="--d:1.1s">
+        <svg width="150" height="120" viewBox="0 0 150 120"><rect x="4" y="4" width="142" height="112" rx="26" fill="#a98bff" stroke="#fff" stroke-width="8"/>
+          <path d="M40 30 C 20 50, 30 90, 70 84 C 110 78, 120 40, 96 30" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 10" opacity=".85"/>
+          <path d="M60 22 L40 30 M100 22 L96 30" stroke="#221c19" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="40" cy="30" r="11" fill="#ff5fa2" stroke="#fff" stroke-width="3"/><circle cx="96" cy="30" r="11" fill="#4fb3ff" stroke="#fff" stroke-width="3"/>
+          <text x="75" y="106" text-anchor="middle" font-family="Bricolage Grotesque" font-weight="800" font-size="15" fill="#fff">POI DANCER</text></svg>
+      </span></div>
+    </div>
+  </section>
+
+  <!-- ================= PROJECTS ================= -->
+  <section id="work">
     <div class="wrap">
-      <div class="eyebrow mono" data-rv><span class="sq"></span>Works in software · Builds in hardware<span class="loc"> · Toronto → Orange County</span></div>
-      <h1 class="name" id="name" aria-label="Edward Lee Kim Koon"><span class="line">Edward</span><span class="line">Lee Kim Koon</span></h1>
-      <p class="lede" data-rv style="--d:.9s">I build things you can hold. Usually things that <b>spin</b>, <b>glow</b>, or both.</p>
-      <div class="cta" data-rv style="--d:1.05s">
-        <a class="btn primary" href="#work">See the work <span class="arr">↓</span></a>
-        <a class="btn icon" href="https://www.linkedin.com/in/edward-lee-kim-koon-92340727/" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn"><span class="lg" style="--i:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/linkedin.svg)"></span></a>
-        <a class="btn icon" href="https://www.instagram.com/eddy.lkk" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram"><span class="lg" style="--i:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/instagram.svg)"></span></a>
+      <div class="shead" data-rv><h2>Things I've built</h2><span class="label tagx" style="background:var(--sky);color:#fff">3 so far</span></div>
+      <div class="cards">
+        <a class="card" data-rv href="hyperwheel/" data-preview="wheel" data-bg="#07040f" style="--c:#ff5fa2;--sbg:#140a26;--r:-2deg">
+          <span class="tape"></span>
+          <span class="shot"><canvas></canvas></span>
+          <span class="meta">
+            <span class="top"><span class="num">01</span><span class="yr">2021</span></span>
+            <h3>Hyperwheel</h3>
+            <p>A counter-rotating LED festival totem, designed in Fusion 360 and 3D printed.</p>
+            <span class="go">Take a look <span>→</span></span>
+          </span>
+        </a>
+        <a class="card" data-rv style="--d:.08s;--c:#ffc93c;--sbg:#f5ecd9;--r:1.5deg" href="tesseract/" data-preview="tess" data-bg="#f3eee3">
+          <span class="tape"></span>
+          <span class="shot"><canvas></canvas></span>
+          <span class="meta">
+            <span class="top"><span class="num">02</span><span class="yr">2019</span></span>
+            <h3>Tesseract</h3>
+            <p>A four-dimensional cube, built in aluminium and light.</p>
+            <span class="go">Take a look <span>→</span></span>
+          </span>
+        </a>
+        <a class="card" data-rv style="--d:.16s;--c:#4fb3ff;--sbg:#140c24;--r:-1deg" href="sdvx/" data-preview="sdvx" data-bg="#05030a">
+          <span class="tape"></span>
+          <span class="shot"><canvas></canvas></span>
+          <span class="meta">
+            <span class="top"><span class="num">03</span><span class="yr">2017</span></span>
+            <h3>SDVX Controller</h3>
+            <p>A home-built arcade controller for the rhythm game Sound Voltex.</p>
+            <span class="go">Take a look <span>→</span></span>
+          </span>
+        </a>
+      </div>
+      <div class="more" data-rv><span class="label">More on the workbench…</span></div>
+    </div>
+  </section>
+
+  <!-- ================= ABOUT ================= -->
+  <section id="about">
+    <div class="wrap">
+      <div class="shead" data-rv><h2>A bit about me</h2><span class="label tagx" style="background:var(--mint);color:#fff">hi!</span></div>
+      <div class="about">
+        <div class="note" data-rv><span class="t1"></span><span class="t2"></span>
+          <h3>Software by day. Things that light up by night.</h3>
+          <p>By day I write software that sits right next to the hardware: drivers, GPUs, and now AR glasses. After hours I trade the keyboard for a soldering iron, a 3D printer and whatever else the next build needs.</p>
+          <p>Every project is an excuse to learn something new, from CAD to circuit boards to firmware. The best part is finishing it and sharing it with people.</p>
+        </div>
+        <div class="facts">
+          <div class="fact" data-rv style="--d:.05s;--r:1.5deg;--c:#ffe3ee">
+            <span class="ic"><svg viewBox="0 0 30 30"><path d="M15 26 C 5 19, 2 14, 3 9 C 4 4, 10 2, 14 7 L15 8 L16 7 C 20 2, 26 4, 27 9 C 28 14, 25 19, 15 26Z" fill="#ff4b4b"/></svg></span>
+            <span><b>Husband and dad</b><span>My favourite crew.</span></span>
+          </div>
+          <div class="fact" data-rv style="--d:.1s;--r:-1.5deg;--c:#dff7ee">
+            <span class="ic"><svg viewBox="0 0 30 30"><path d="M4 15 H26 C 25 22, 20 26, 15 26 C 10 26, 5 22, 4 15Z" fill="#34cfa0"/><path d="M18 4 L24 13 M21 3 L26 11" stroke="#221c19" stroke-width="2" stroke-linecap="round"/><path d="M7 17 C 10 19, 13 15, 16 18 S 21 16, 23 17" fill="none" stroke="#ffc93c" stroke-width="2" stroke-linecap="round"/></svg></span>
+            <span><b>Home cook</b><span>Mostly Asian food, mostly for the family.</span></span>
+          </div>
+          <div class="fact" data-rv style="--d:.15s;--r:1deg;--c:#ece6ff">
+            <span class="ic"><svg viewBox="0 0 30 30"><path d="M8 10 C 3 16, 6 26, 15 25 C 24 24, 27 14, 22 10" fill="none" stroke="#a98bff" stroke-width="2" stroke-dasharray="1 3.5" stroke-linecap="round"/><circle cx="8" cy="10" r="4" fill="#ff5fa2"/><circle cx="22" cy="10" r="4" fill="#4fb3ff"/></svg></span>
+            <span><b>Poi dancer</b><span>Its own page is coming soon.</span></span>
+          </div>
+          <div class="fact" data-rv style="--d:.2s;--r:-1deg;--c:#fff1cc">
+            <span class="ic"><svg viewBox="0 0 30 30"><path d="M4 18 L26 9 L23 6 L15 9 L8 5 L6 6 L11 11 L6 13 L4 11 L3 12Z" fill="#ff8a3d"/><path d="M4 24 H26" stroke="#221c19" stroke-width="2" stroke-linecap="round"/></svg></span>
+            <span><b>Toronto, Canada → Irvine, California</b><span>Born and raised in one, living in the other.</span></span>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <section id="work">
+  <!-- ================= JOBS ================= -->
+  <section id="jobs">
     <div class="wrap">
-      <div class="shead" data-rv><h2>Selected projects</h2><span class="mono">(03)</span></div>
-      <ul class="list" id="list">
-        <li class="row" data-rv data-video="hyperwheel/media/home.mp4" data-tint="rainbow" data-bg="#07040f">
-          <a href="hyperwheel/">
-            <span class="n mono">01</span>
-            <h3><span class="sq"></span>Hyperwheel</h3>
-            <p>A counter-rotating LED festival totem, designed in Fusion 360 and 3D printed.</p>
-            <span class="yr mono">2021</span>
-            <span class="go"><svg viewBox="0 0 14 14" fill="none" stroke-width="1.5"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span>
-            <span class="thumb"><img src="hyperwheel/media/home.jpg" alt="" loading="lazy"></span>
-          </a>
-        </li>
-        <li class="row" data-rv style="--d:.08s" data-video="tesseract/media/clip2.mp4" data-tint="#e8b95a,#fff1d6" data-bg="#f3eee3">
-          <a href="tesseract/">
-            <span class="n mono">02</span>
-            <h3><span class="sq"></span>Tesseract</h3>
-            <p>A four-dimensional cube, built in aluminium and light.</p>
-            <span class="yr mono">2019</span>
-            <span class="go"><svg viewBox="0 0 14 14" fill="none" stroke-width="1.5"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span>
-            <span class="thumb"><img src="tesseract/media/clip2.jpg" alt="" loading="lazy"></span>
-          </a>
-        </li>
-        <li class="row" data-rv style="--d:.16s" data-video="sdvx/media/hands.mp4" data-tint="#2f8bff,#ff8a1f" data-bg="#05030a">
-          <a href="sdvx/">
-            <span class="n mono">03</span>
-            <h3><span class="sq"></span>SDVX Controller</h3>
-            <p>A home-built arcade controller for the rhythm game Sound Voltex.</p>
-            <span class="yr mono">2017</span>
-            <span class="go"><svg viewBox="0 0 14 14" fill="none" stroke-width="1.5"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span>
-            <span class="thumb"><img src="sdvx/media/hands.jpg" alt="" loading="lazy"></span>
-          </a>
-        </li>
-      </ul>
-      <div class="soon mono" data-rv><span class="dot"></span>More on the workbench</div>
-    </div>
-  </section>
-
-  <section id="about">
-    <div class="wrap">
-      <div class="shead" data-rv><h2>About</h2><span class="mono">(Me)</span></div>
-      <div class="about">
-        <p class="big" data-rv>Software by day. Things that <em>light up</em> by night.</p>
-        <div class="body">
-          <p data-rv style="--d:.08s">By day I write software that sits right next to the hardware: drivers, GPUs, and now AR glasses. After hours I trade the keyboard for a soldering iron, a 3D printer and whatever else the next build needs.</p>
-          <p data-rv style="--d:.14s">Every project is an excuse to learn something new, from CAD to circuit boards to firmware. The best part is finishing it and sharing it with people.</p>
-          <div class="work" data-rv style="--d:.2s">
-            <div class="wlabel mono">Work</div>
-            <ol class="jobs">
-              <li style="--brand:#FFFC00"><span class="co"><span class="tile"><span class="lg" style="--i:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/snapchat.svg)"></span></span><b>Snap</b></span><span class="focus">Multimedia team lead for Specs, Snap's AR glasses</span><span class="yrs mono">2019 – Now</span></li>
-              <li style="--brand:#ED1C24"><span class="co"><span class="tile"><span class="lg" style="--i:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/amd.svg);width:32px;height:32px"></span></span><b>AMD</b></span><span class="focus">GPU drivers and the ROCm stack for machine learning</span><span class="yrs mono">2018 – 2019</span></li>
-              <li style="--brand:#3253DC"><span class="co"><span class="tile"><span class="lg" style="--i:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/qualcomm.svg)"></span></span><b>Qualcomm</b></span><span class="focus">Embedded drivers for Snapdragon: graphics, hypervisor, NPU</span><span class="yrs mono">2012 – 2018</span></li>
-            </ol>
-          </div>
-          <ul class="facts" data-rv style="--d:.26s">
-            <li><span class="mono">Home</span><span>From Toronto, now in Orange County.</span></li>
-            <li><span class="mono">Off the bench</span><span>Husband, dad, and home cook of a lot of Asian food.</span></li>
-            <li><span class="mono">Also</span><span>Poi dancer. <span class="later">Page coming soon.</span></span></li>
-            <li><span class="mono">Elsewhere</span><span class="links"><a href="https://www.linkedin.com/in/edward-lee-kim-koon-92340727/" target="_blank" rel="noopener">LinkedIn ↗</a><a href="https://www.instagram.com/eddy.lkk" target="_blank" rel="noopener">Instagram ↗</a></span></li>
-          </ul>
+      <div class="shead" data-rv><h2>Day jobs</h2><span class="label tagx" style="background:var(--orange);color:#fff">since 2012</span></div>
+      <div class="jobs">
+        <div class="job now" data-rv style="--r:-1.2deg;--bg:#fffbcc;--fg:#221c19">
+          <div class="head"><span class="logo-t"><span class="lg" style="--i:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/snapchat.svg)"></span></span>
+            <div><h3>Snap</h3><span class="yrs">2019 – now</span></div></div>
+          <p>Multimedia team lead for Specs, Snap's AR glasses.</p>
+        </div>
+        <div class="job" data-rv style="--d:.08s;--r:1deg;--bg:#ffe5e5;--fg:#ed1c24">
+          <div class="head"><span class="logo-t"><span class="lg" style="--i:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/amd.svg);width:42px;height:42px"></span></span>
+            <div><h3>AMD</h3><span class="yrs">2018 – 2019</span></div></div>
+          <p>GPU drivers and the ROCm stack for machine learning.</p>
+        </div>
+        <div class="job" data-rv style="--d:.16s;--r:-.8deg;--bg:#e3e9ff;--fg:#3253dc">
+          <div class="head"><span class="logo-t"><span class="lg" style="--i:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/qualcomm.svg)"></span></span>
+            <div><h3>Qualcomm</h3><span class="yrs">2012 – 2018</span></div></div>
+          <p>Embedded drivers for Snapdragon: graphics, hypervisor and NPU.</p>
         </div>
       </div>
     </div>
@@ -271,218 +356,208 @@ footer .fl{display:flex;gap:24px;flex-wrap:wrap}
 </main>
 
 <footer>
-  <div class="wrap mono"><span>© <span id="yr"></span> Edward Lee Kim Koon</span><span class="fl"><a href="https://www.linkedin.com/in/edward-lee-kim-koon-92340727/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.instagram.com/eddy.lkk" target="_blank" rel="noopener">Instagram</a><a href="#hero">Back to top ↑</a></span></div>
+  <div class="wrap">
+    <div class="foot" data-rv>
+      <h4>Want to say hi?<br><span>Find me here.</span></h4>
+      <div class="links">
+        <a class="btn" href="https://www.linkedin.com/in/edward-lee-kim-koon-92340727/" target="_blank" rel="noopener"><span class="lg" style="--i:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/linkedin.svg)"></span>LinkedIn</a>
+        <a class="btn" href="https://www.instagram.com/eddy.lkk" target="_blank" rel="noopener"><span class="lg" style="--i:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/instagram.svg)"></span>Instagram</a>
+      </div>
+    </div>
+    <div class="small mono"><span>© <span id="yr"></span> Edward Lee Kim Koon</span><a href="#hero">Back to top ↑</a></div>
+  </div>
 </footer>
 
-<div id="peek" aria-hidden="true"></div>
 <div id="curtain" aria-hidden="true"></div>
 
 <script>
 (() => {
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const HOVER = matchMedia('(hover: hover)').matches;
-const $ = s => document.querySelector(s);
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 $('#yr').textContent = new Date().getFullYear();
 
 /* ---------- top bar ---------- */
 const bar = $('#bar');
-const onScroll = () => bar.classList.toggle('scrolled', scrollY > 20);
+const onScroll = () => bar.classList.toggle('scrolled', scrollY > 10);
 addEventListener('scroll', onScroll, {passive:true}); onScroll();
 
 /* ---------- reveals ---------- */
-const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }), {threshold:.15});
-document.querySelectorAll('[data-rv]').forEach(el => io.observe(el));
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }), {threshold:.12});
+$$('[data-rv]').forEach(el => io.observe(el));
 
 /* ============================================================
-   KINETIC NAME: letters swell in weight and width near the cursor.
-   With no cursor (touch, or idle) a slow wave rolls through instead.
+   STICKERS: placed around the hero, drift a little with the
+   cursor (parallax by depth), and can be dragged anywhere.
    ============================================================ */
-const nameEl = $('#name');
-nameEl.querySelectorAll('.line').forEach(line => {
-  const words = line.textContent.split(' ');
-  line.textContent = '';
-  words.forEach((w, wi) => {
-    const ws = document.createElement('span'); ws.className = 'w';
-    [...w].forEach(ch => { const c = document.createElement('span'); c.className = 'c'; c.textContent = ch; ws.appendChild(c); });
-    line.appendChild(ws);
-    if (wi < words.length - 1) line.appendChild(document.createTextNode(' '));
+const desk = $('#desk'), stickers = $$('.sticker');
+const mob = () => innerWidth < 680;
+// on phones the stickers tuck along the top and right so they don't cover the name
+const MOB = [[0,6],[30,40],[0,-1],[53,14],[0,0],[74,30]];   // [x %, y px]; the pass (index 2) sits under the buttons
+function place(){
+  const w = desk.offsetWidth, h = desk.offsetHeight;
+  stickers.forEach((s, i) => {
+    if (mob()){
+      const [px, py] = MOB[i];
+      s.style.left = px/100*w + 'px';
+      s.style.top = (py < 0 ? h - 96 : py) + 'px';
+    } else {
+      s.style.left = Math.min(+s.dataset.x/100*w, w - s.offsetWidth*.6) + 'px';
+      s.style.top = (+s.dataset.y/100*h) + 'px';
+    }
+    s.style.scale = mob() ? .62 : innerWidth < 980 ? .8 : 1;
+    s.style.transformOrigin = mob() ? "0 0" : "50% 50%";
   });
+}
+let mx = 0, my = 0, sx = 0, sy = 0, par = 0;
+function parallax(){
+  sx += (mx - sx)*.08; sy += (my - sy)*.08;
+  stickers.forEach(s => { if (!s.classList.contains('drag')){ const z = +s.dataset.z || 1; s.style.setProperty('--dx', (sx*z*14 + (+s.dataset.ox || 0)) + 'px'); s.style.setProperty('--dy', (sy*z*10 + (+s.dataset.oy || 0)) + 'px'); } });
+  par = (Math.abs(mx - sx) > .001 || Math.abs(my - sy) > .001) ? requestAnimationFrame(parallax) : 0;
+}
+if (!RM) addEventListener('pointermove', e => {
+  if (scrollY > innerHeight) return;
+  mx = e.clientX/innerWidth - .5; my = e.clientY/innerHeight - .5;
+  if (!par) par = requestAnimationFrame(parallax);
+}, {passive:true});
+stickers.forEach(s => {
+  let start = null;
+  s.addEventListener('pointerdown', e => {
+    e.preventDefault(); s.setPointerCapture(e.pointerId); s.classList.add('drag');
+    start = {x:e.clientX, y:e.clientY, ox:+s.dataset.ox || 0, oy:+s.dataset.oy || 0,
+             dx:parseFloat(s.style.getPropertyValue('--dx')) || 0, dy:parseFloat(s.style.getPropertyValue('--dy')) || 0};
+  });
+  s.addEventListener('pointermove', e => {
+    if (!start) return;
+    const ddx = e.clientX - start.x, ddy = e.clientY - start.y;
+    s.dataset.ox = start.ox + ddx; s.dataset.oy = start.oy + ddy;
+    s.style.setProperty('--dx', (start.dx + ddx) + 'px'); s.style.setProperty('--dy', (start.dy + ddy) + 'px');
+  });
+  const end = () => { if (!start) return; start = null; s.classList.remove('drag'); };
+  s.addEventListener('pointerup', end); s.addEventListener('pointercancel', end);
 });
-const letters = [...nameEl.querySelectorAll('.c')].map((el, i) => { el.style.setProperty('--d', (.15 + i*.035) + 's'); return {el, x:0, y:0, w:300, wd:100}; });
-let cur = {x:-1e4, y:-1e4, t:-1e4}, nameVisible = true, fsz = 100;
-function measureName(){
-  fsz = parseFloat(getComputedStyle(nameEl).fontSize);
-  letters.forEach(L => { const r = L.el.getBoundingClientRect(); L.x = r.left + r.width/2; L.y = r.top + scrollY + r.height/2; });
-}
-function stepName(now){
-  const idle = !HOVER || now - cur.t > 2500, t = now/1000;
-  const sig = fsz*1.25;
-  for (let i = 0; i < letters.length; i++){
-    const L = letters[i];
-    let k;
-    if (idle) k = RM ? 0 : Math.pow(Math.max(0, Math.sin(t*.9 - L.x/(fsz*2.2))), 6)*.75;
-    else { const dx = L.x - cur.x, dy = L.y - scrollY - cur.y; k = Math.exp(-(dx*dx + dy*dy)/(2*sig*sig)); }
-    const w = 300 + 620*k, wd = 100 + 22*k;
-    L.w += (w - L.w)*.16; L.wd += (wd - L.wd)*.16;
-    L.el.style.fontVariationSettings = `"wght" ${L.w.toFixed(0)},"wdth" ${L.wd.toFixed(1)},"opsz" 144`;
-  }
-}
-addEventListener('pointermove', e => { cur.x = e.clientX; cur.y = e.clientY; cur.t = performance.now(); }, {passive:true});
 
 /* ============================================================
-   LIGHT PAINTING: two poi heads trace flower patterns (hand circle +
-   head circle at a different speed), leaving long-exposure trails;
-   the cursor paints its own fading trail. Hovering a project tints
-   the light. Full speed while the hero is on screen, 30 fps below it,
-   paused when the tab is hidden.
+   PROJECT PREVIEWS: small live illustrations of each build,
+   drawn only while on screen. Hovering a card speeds it up.
    ============================================================ */
-const lc = $('#light'), lx = lc.getContext('2d');
-let LW = 0, LH = 0, LD = 1;
-function sizeLight(){ LD = Math.min(devicePixelRatio || 1, 1.5); LW = innerWidth; LH = innerHeight; lc.width = LW*LD; lc.height = LH*LD; }
-const hexRGB = h => [1,3,5].map(i => parseInt(h.slice(i, i+2), 16));
-const DEFAULT = ['#ff4fa3', '#3cf2ff'];
-let tintTarget = DEFAULT, tintMode = 'pair';
-const tint = [hexRGB(DEFAULT[0]), hexRGB(DEFAULT[1])];
-function setTint(spec){
-  if (!spec || spec === 'default'){ tintMode = 'pair'; tintTarget = DEFAULT; return; }
-  if (spec === 'rainbow'){ tintMode = 'rainbow'; return; }
-  tintMode = 'pair'; tintTarget = spec.split(',');
-}
-const hsl = (h, s, l) => { const a = s*Math.min(l, 1 - l), f = n => { const k = (n + h*12) % 12; return 255*(l - a*Math.max(-1, Math.min(k - 3, 9 - k, 1))); }; return [f(0), f(8), f(4)]; };
-// patterns: [hand radius, head radius, head/hand speed ratio]; negative ratio = antispin flower
-const PATTERNS = [[.42, .58, -3], [.30, .70, 3], [.55, .45, -1], [.18, .82, -5]];
-const heads = [0, 1].map(i => ({pts:[], side:i ? 1 : -1}));
-const mouseTrail = [];
-let a = 0, patI = 0, patFrom = PATTERNS[0], patT = 1, lastPat = 0;
-function headPos(h, ang, pat, cx, cy, R){
-  const [r1, r2, k] = pat, s = h.side;
-  // the two hands turn in mirror image, like a two-poi weave
-  const hx = cx + s*R*r1*Math.cos(ang), hy = cy + R*r1*Math.sin(ang);
-  return [hx + s*R*r2*Math.cos(k*ang + (s > 0 ? 0 : Math.PI)), hy + R*r2*Math.sin(k*ang + (s > 0 ? 0 : Math.PI))];
-}
-function stroke(pts, rgb, now, life, wMul){
-  if (pts.length < 2) return;
-  lx.lineCap = 'butt'; lx.lineJoin = 'round';
-  const RUN = 6, col = `${rgb[0]|0},${rgb[1]|0},${rgb[2]|0}`;
-  const layers = [[9, .2, col], [3.4, .7, col], [1.5, .85, '255,248,236']];   // glow, colour core, hot white centre
-  for (const [w, al, c] of layers){
-    for (let i = 0; i < pts.length - 1; i += RUN){
-      const end = Math.min(pts.length - 1, i + RUN), mid = pts[(i + end) >> 1];
-      const f = 1 - (now - mid[2])/life; if (f <= 0) continue;
-      lx.strokeStyle = `rgba(${c},${al*f*f})`; lx.lineWidth = w*wMul*(.35 + .65*f)*LD;
-      lx.beginPath(); lx.moveTo(pts[i][0]*LD, pts[i][1]*LD);
-      for (let k = i + 1; k <= end; k++) lx.lineTo(pts[k][0]*LD, pts[k][1]*LD);
-      lx.stroke();
-    }
-  }
-}
-function stepLight(now, dt){
-  const mob = innerWidth < 860;
-  const cx = mob ? LW*.5 : LW*.7, cy = mob ? LH*.25 : LH*.48, R = Math.min(LW, LH)*(mob ? .2 : .26);
-  const heroOn = scrollY < LH*.9;
-  lc.style.opacity = heroOn ? 1 : .28;
-  // tint easing (rainbow slowly cycles hues on the two heads)
-  const want = tintMode === 'rainbow' ? [hsl((now/4000) % 1, 1, .62), hsl((now/4000 + .5) % 1, 1, .62)] : tintTarget.map(hexRGB);
-  for (let i = 0; i < 2; i++) for (let j = 0; j < 3; j++) tint[i][j] += (want[i][j] - tint[i][j])*.06;
-  // advance: one poi rotation every ~2.4s, change pattern every 9s with a 1.5s blend
-  const a0 = a; a += dt*2.6;
-  if (now - lastPat > 9000){ lastPat = now; patFrom = PATTERNS[patI]; patI = (patI + 1) % PATTERNS.length; patT = 0; }
-  patT = Math.min(1, patT + dt/1.5);
-  const e = patT*patT*(3 - 2*patT);
-  const sub = Math.max(1, Math.ceil((a - a0)/.035));          // ~2° steps between frames
-  heads.forEach(h => {
-    for (let n = 1; n <= sub; n++){
-      const an = a0 + (a - a0)*n/sub, tn = now - dt*1000*(1 - n/sub);
-      const A = headPos(h, an, patFrom, cx, cy, R), B = headPos(h, an, PATTERNS[patI], cx, cy, R);
-      h.pts.push([A[0] + (B[0] - A[0])*e, A[1] + (B[1] - A[1])*e, tn]);
-    }
-    while (h.pts.length && now - h.pts[0][2] > 1600) h.pts.shift();
-  });
-  if (HOVER && now - cur.t < 60){ const last = mouseTrail[mouseTrail.length - 1]; if (!last || Math.hypot(cur.x - last[0], cur.y - last[1]) > 2) mouseTrail.push([cur.x, cur.y, now]); }
-  while (mouseTrail.length && now - mouseTrail[0][2] > 1100) mouseTrail.shift();
-  lx.clearRect(0, 0, lc.width, lc.height);
-  lx.globalCompositeOperation = 'lighter';
-  heads.forEach((h, i) => stroke(h.pts, tint[i], now, 1600, 1));
-  stroke(mouseTrail, tint[0].map((v, j) => (v + tint[1][j])/2), now, 1100, .8);
-  lx.globalCompositeOperation = 'source-over';
-}
-// reduced motion: one still "long exposure" of the pattern, no animation
-function stillLight(){
-  const now = 10000, mob = innerWidth < 860;
-  const cx = mob ? LW*.5 : LW*.7, cy = mob ? LH*.25 : LH*.48, R = Math.min(LW, LH)*(mob ? .2 : .26);
-  heads.forEach(h => { h.pts = []; for (let i = 0; i <= 260; i++) { const p = headPos(h, i/260*Math.PI*2, PATTERNS[0], cx, cy, R); h.pts.push([p[0], p[1], now - 800]); } });
-  lx.clearRect(0, 0, lc.width, lc.height); lx.globalCompositeOperation = 'lighter';
-  heads.forEach((h, i) => stroke(h.pts, tint[i], now, 1600, 1)); lx.globalCompositeOperation = 'source-over';
-}
+const hsl = (h, s, l, a = 1) => `hsla(${(h*360)%360},${s}%,${l}%,${a})`;
+const V4 = []; for (let i = 0; i < 16; i++) V4.push([(i&1)?1:-1, (i&2)?1:-1, (i&4)?1:-1, (i&8)?1:-1]);
+const E4 = []; for (let i = 0; i < 16; i++) for (let b = 0; b < 4; b++){ const j = i ^ (1<<b); if (j > i) E4.push([i, j]); }
 
-/* ---------- one loop for name + light ---------- */
-let lastT = 0, lastDraw = 0;
-function frame(now){
-  requestAnimationFrame(frame);
+const DRAW = {
+  wheel(c, W, H, t){
+    c.fillStyle = '#140a26'; c.fillRect(0, 0, W, H);
+    const cx = W/2, cy = H/2, R = Math.min(W, H)*.4;
+    const glow = c.createRadialGradient(cx, cy, R*.2, cx, cy, R*1.5);
+    glow.addColorStop(0, hsl(t*.05, 90, 60, .35)); glow.addColorStop(1, 'rgba(20,10,38,0)');
+    c.fillStyle = glow; c.fillRect(0, 0, W, H);
+    c.lineWidth = Math.max(2, R*.035); c.lineCap = 'round';
+    for (const [dir, alpha, off] of [[-1, .55, .5], [1, 1, 0]]){       // back ring, then front ring
+      const rot = t*.6*dir;
+      for (let k = 0; k < 12; k++){
+        const a0 = rot + k*Math.PI/6, ox = cx + Math.cos(a0)*R/2, oy = cy + Math.sin(a0)*R/2;
+        c.strokeStyle = hsl(k/12 + off + t*.04, 95, 62, alpha);
+        c.beginPath(); c.arc(ox, oy, R/2, 0, Math.PI*2); c.stroke();
+      }
+    }
+    c.fillStyle = '#140a26'; c.beginPath(); c.arc(cx, cy, R*.16, 0, Math.PI*2); c.fill();
+    c.strokeStyle = 'rgba(255,255,255,.7)'; c.lineWidth = 2; c.stroke();
+  },
+  tess(c, W, H, t){
+    c.fillStyle = '#f5ecd9'; c.fillRect(0, 0, W, H);
+    const cx = W/2, cy = H/2, S = Math.min(W, H)*.16;
+    c.strokeStyle = 'rgba(168,131,47,.28)'; c.lineWidth = 1;
+    for (let k = 0; k < 7; k++){ const a = k*Math.PI/3, r = k ? S*1.1 : 0; c.beginPath(); c.arc(cx + Math.cos(a)*r, cy + Math.sin(a)*r, S*1.1, 0, Math.PI*2); c.stroke(); }
+    c.beginPath(); c.arc(cx, cy, S*2.2, 0, Math.PI*2); c.stroke();
+    const th = t*.55, co = Math.cos(th), si = Math.sin(th), ry = t*.22 + .5, cr = Math.cos(ry), sr = Math.sin(ry);
+    const P = V4.map(([x, y, z, w]) => {
+      const xr = x*co - w*si, wr = x*si + w*co, k = 2.4/(2.4 - wr);
+      let X = xr*k, Y = y*k, Z = z*k;
+      const X2 = X*cr + Z*sr; Z = -X*sr + Z*cr; X = X2;
+      const Y2 = Y*.9 - Z*.42; Z = Y*.42 + Z*.9; Y = Y2;
+      const p = 4/(4 - Z*.4);
+      return [cx + X*p*S, cy + Y*p*S, wr];
+    });
+    E4.map(([a, b]) => [a, b, (P[a][2] + P[b][2])/2]).sort((u, v) => u[2] - v[2]).forEach(([a, b, w]) => {
+      c.strokeStyle = w < 0 ? `rgba(168,131,47,${.55 + .45*-w})` : `rgba(34,28,25,${.4 + .6*w})`;
+      c.lineWidth = w < 0 ? 1.6 : 2.2;
+      c.beginPath(); c.moveTo(P[a][0], P[a][1]); c.lineTo(P[b][0], P[b][1]); c.stroke();
+    });
+    P.forEach(p => { c.beginPath(); c.arc(p[0], p[1], p[2] > 0 ? 3.6 : 2.8, 0, Math.PI*2); c.fillStyle = p[2] > 0 ? '#221c19' : '#fbf3e6'; c.fill(); if (p[2] <= 0){ c.strokeStyle = '#a8832f'; c.lineWidth = 1.4; c.stroke(); } });
+  },
+  sdvx(c, W, H, t){
+    c.fillStyle = '#140c24'; c.fillRect(0, 0, W, H);
+    const vx = W/2, top = H*.08, bot = H*.74, wT = W*.08, wB = W*.36;
+    // tunnel rings
+    c.strokeStyle = 'rgba(255,60,90,.25)'; c.lineWidth = 1.5;
+    for (let i = 0; i < 6; i++){ const r = ((i + t*1.2) % 6)/6; c.beginPath(); c.arc(vx, top, 8 + r*r*W*.7, Math.PI*.05, Math.PI*.95, true); c.stroke(); }
+    const X = (u, k) => vx + (wT + (wB - wT)*k)*(u*2 - 1), Y = k => top + (bot - top)*k;
+    c.fillStyle = '#231a3a'; c.beginPath(); c.moveTo(X(0,0), Y(0)); c.lineTo(X(1,0), Y(0)); c.lineTo(X(1,1), Y(1)); c.lineTo(X(0,1), Y(1)); c.fill();
+    c.lineWidth = 1; c.strokeStyle = 'rgba(255,255,255,.18)';
+    for (let l = 1; l < 4; l++){ c.beginPath(); c.moveTo(X(l/4, 0), Y(0)); c.lineTo(X(l/4, 1), Y(1)); c.stroke(); }
+    c.lineWidth = 3; c.strokeStyle = '#29e4ff'; c.beginPath(); c.moveTo(X(0,0), Y(0)); c.lineTo(X(0,1), Y(1)); c.stroke();
+    c.strokeStyle = '#ff3da6'; c.beginPath(); c.moveTo(X(1,0), Y(0)); c.lineTo(X(1,1), Y(1)); c.stroke();
+    // notes: a fixed looping pattern, one bar per second
+    const pat = [0, 2, 1, 3, 0, 1, 2, 3, 1, 2], beat = .25, hitLane = [];
+    for (let i = 0; i < pat.length; i++){
+      const nt = ((i*beat - t) % (pat.length*beat) + pat.length*beat) % (pat.length*beat);   // time until hit
+      const k = 1 - nt/1.4; if (k < 0 || k > 1) continue;
+      const l = pat[i], x0 = X(l/4 + .02, k), x1 = X((l + 1)/4 - .02, k), y = Y(k);
+      c.fillStyle = '#fff'; c.fillRect(x0, y - 2 - 3*k, x1 - x0, 3 + 4*k);
+      if (k > .93) hitLane[l] = 1;
+    }
+    const fx = (Math.floor(t/2) % 2), fk0 = 1 - ((t % 2))/1.4;
+    if (fk0 > 0){ const k0 = Math.max(0, fk0 - .4), k1 = Math.min(1, fk0); c.fillStyle = 'rgba(255,138,31,.85)';
+      c.beginPath(); c.moveTo(X(fx*.5 + .02, k0), Y(k0)); c.lineTo(X(fx*.5 + .48, k0), Y(k0)); c.lineTo(X(fx*.5 + .48, k1), Y(k1)); c.lineTo(X(fx*.5 + .02, k1), Y(k1)); c.fill(); }
+    c.fillStyle = '#ffd9a0'; c.fillRect(X(0,1), Y(1) - 1.5, X(1,1) - X(0,1), 3);
+    // mini controller
+    const bw = W*.62, bx = vx - bw/2, by = H*.8, bh = H*.16;
+    c.fillStyle = '#0b0714'; c.beginPath(); c.roundRect(bx, by, bw, bh, 8); c.fill();
+    for (let i = 0; i < 4; i++){ const x = bx + bw*.2 + i*bw*.155; c.fillStyle = hitLane[i] ? '#ffffff' : '#9d98ad'; c.beginPath(); c.roundRect(x, by + bh*.18, bw*.12, bh*.36, 3); c.fill(); }
+    for (let i = 0; i < 2; i++){ const x = bx + bw*.3 + i*bw*.28; c.fillStyle = fx === i && fk0 > .3 && fk0 < 1.1 ? '#ffa04a' : '#7a3a14'; c.fillRect(x, by + bh*.66, bw*.14, bh*.18); }
+    for (let i = 0; i < 2; i++){ c.fillStyle = i ? '#ff3da6' : '#29e4ff'; c.beginPath(); c.arc(i ? bx + bw*.93 : bx + bw*.07, by + bh*.35, bh*.17, 0, Math.PI*2); c.fill(); }
+  },
+};
+const previews = $$('.card').map(card => {
+  const cv = card.querySelector('canvas'), ctx = cv.getContext('2d'), kind = card.dataset.preview;
+  const P = {card, cv, ctx, kind, vis:false, speed:1, target:1, phase:Math.random()*5};
+  const size = () => { const r = cv.getBoundingClientRect(), d = Math.min(devicePixelRatio || 1, 2); cv.width = r.width*d; cv.height = r.height*d; ctx.setTransform(d, 0, 0, d, 0, 0); P.W = r.width; P.H = r.height; };
+  P.size = size; size();
+  card.addEventListener('pointerenter', () => P.target = 3);
+  card.addEventListener('pointerleave', () => P.target = 1);
+  card.addEventListener('focus', () => P.target = 3); card.addEventListener('blur', () => P.target = 1);
+  new IntersectionObserver(es => { P.vis = es[0].isIntersecting; }, {threshold:0}).observe(cv);
+  DRAW[kind](ctx, P.W, P.H, P.phase);
+  return P;
+});
+let last = 0;
+function loop(now){
+  requestAnimationFrame(loop);
   if (document.hidden) return;
-  const heroOn = scrollY < innerHeight*.9;
-  if (!heroOn && now - lastDraw < 32) return;          // 30 fps once past the hero
-  const dt = Math.min(.05, (now - (lastT || now))/1000); lastT = now; lastDraw = now;
-  stepLight(now, dt);
-  if (heroOn) stepName(now);
-}
-
-/* ============================================================
-   PROJECT INDEX: floating video preview + curtain transition
-   ============================================================ */
-const peek = $('#peek'), rows = [...document.querySelectorAll('.row')];
-const vids = new Map();
-let px = 0, py = 0, tx = 0, ty = 0, peekOn = false, peekRAF = 0;
-function vid(src){
-  if (!vids.has(src)){
-    const v = document.createElement('video');
-    Object.assign(v, {src, muted:true, loop:true, playsInline:true, preload:'auto'});
-    peek.appendChild(v); vids.set(src, v);
+  const dt = Math.min(.05, (now - (last || now))/1000); last = now;
+  for (const P of previews){
+    if (!P.vis) continue;
+    P.speed += (P.target - P.speed)*.08; P.phase += dt*P.speed;
+    DRAW[P.kind](P.ctx, P.W, P.H, P.phase);
   }
-  return vids.get(src);
 }
-function follow(){
-  px += (tx - px)*.14; py += (ty - py)*.14;
-  peek.style.left = px + 'px'; peek.style.top = py + 'px';
-  peekRAF = (peekOn || Math.abs(tx - px) > .5) ? requestAnimationFrame(follow) : 0;
-}
-if (HOVER && !RM){
-  // preview hangs to the right of the cursor (flips left near the edge) so it never covers the title
-  addEventListener('pointermove', e => { tx = e.clientX + 300 + 48 > innerWidth ? e.clientX - 300 - 32 : e.clientX + 32; ty = e.clientY; }, {passive:true});
-  rows.forEach(row => row.addEventListener('pointerenter', () => {
-    setTint(row.dataset.tint);
-    const v = vid(row.dataset.video);
-    vids.forEach(o => { if (o !== v){ o.classList.remove('on'); o.pause(); } });
-    v.classList.add('on'); v.play().catch(() => {});
-    if (!peekOn){ px = tx; py = ty; }
-    peekOn = true; peek.classList.add('on');
-    if (!peekRAF) follow();
-  }));
-  $('#list').addEventListener('pointerleave', () => {
-    setTint('default');
-    peekOn = false; peek.classList.remove('on');
-    setTimeout(() => { if (!peekOn) vids.forEach(v => v.pause()); }, 300);
-  });
-}
+if (!RM) requestAnimationFrame(loop);
+
+/* ---------- card click: colour circle wipe into the project ---------- */
 const curtain = $('#curtain');
-rows.forEach(row => row.querySelector('a').addEventListener('click', e => {
+$$('.card').forEach(card => card.addEventListener('click', e => {
   if (RM || e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
   e.preventDefault();
-  const href = e.currentTarget.getAttribute('href');
-  curtain.style.background = row.dataset.bg;
-  curtain.classList.add('go');
-  setTimeout(() => { location.href = href; }, 560);
+  curtain.style.background = card.dataset.bg;
+  curtain.style.setProperty('--cx', (e.clientX || innerWidth/2) + 'px'); curtain.style.setProperty('--cy', (e.clientY || innerHeight/2) + 'px');
+  requestAnimationFrame(() => curtain.classList.add('go'));
+  setTimeout(() => { location.href = card.getAttribute('href'); }, 620);
 }));
-addEventListener('pageshow', () => curtain.classList.remove('go'));   // back button
+addEventListener('pageshow', () => curtain.classList.remove('go'));
 
 /* ---------- boot ---------- */
-(async () => {
-  try { await document.fonts.load('300 100px "Roboto Flex"'); await document.fonts.ready; } catch(e){}
-  sizeLight(); nameEl.classList.add('in');
-  setTimeout(measureName, 50); setTimeout(measureName, 1400);
-  if (RM) stillLight(); else requestAnimationFrame(frame);
-})();
-let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { sizeLight(); measureName(); if (RM) stillLight(); }, 150); });
+(async () => { try { await document.fonts.ready; } catch(e){} place(); })();
+let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { place(); previews.forEach(P => { P.size(); DRAW[P.kind](P.ctx, P.W, P.H, P.phase); }); }, 150); });
 })();
 </script>
 </body>
