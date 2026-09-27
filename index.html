@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Edward Lee Kim Koon</title>
+<meta name="description" content="Edward Lee Kim Koon: things I've designed and built.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' shape-rendering='crispEdges'%3E%3Crect width='16' height='16' fill='%2307040f'/%3E%3Cpath d='M3 3h8v2H5v2h5v2H5v2h6v2H3z' fill='%23ff4fa3'/%3E%3Cpath d='M12 3h1v10h-1z' fill='%233cf2ff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07040f; --bg2:#120a24; --ink:#efe6ff; --mute:#9d8fbf; --line:#3a2c5c;
+  --pink:#ff4fa3; --cyan:#3cf2ff; --sun:#ffd23f; --violet:#9b5cff;
+  --paper:#f3eee3; --gold:#a8832f;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg)}
+body{background:var(--bg);color:var(--ink);font-family:"VT323",monospace;font-size:24px;line-height:1.3;overflow-x:hidden;-webkit-font-smoothing:none}
+::selection{background:var(--pink);color:var(--bg)}
+a{color:inherit}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+#bg{position:fixed;inset:0;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges;z-index:0}
+main{position:relative;z-index:1}
+
+/* ---------- top bar ---------- */
+.bar{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:18px 5vw;font-family:"Silkscreen",monospace;font-size:13px;letter-spacing:.08em;color:var(--mute)}
+.bar a{text-decoration:none;color:var(--mute)}
+.bar a:hover{color:var(--sun)}
+.bar nav{display:flex;gap:26px}
+.bar .me{color:var(--ink)}
+.bar .me i{display:inline-block;width:8px;height:8px;margin-right:10px;background:var(--pink);animation:blink 1.2s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* ---------- hero ---------- */
+#hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:0 5vw}
+.hello{font-family:"Silkscreen",monospace;font-size:15px;letter-spacing:.14em;color:var(--sun);margin-bottom:28px;min-height:1.2em}
+.hello .caret{display:inline-block;width:10px;height:15px;margin-left:4px;vertical-align:-2px;background:var(--sun);animation:blink 1s steps(1) infinite}
+#title{display:block;image-rendering:pixelated;image-rendering:crisp-edges;cursor:crosshair;max-width:100%}
+.tag{margin-top:34px;max-width:620px;font-size:30px;color:#d7cdef;opacity:0;transform:translateY(12px);transition:opacity .6s steps(6),transform .6s steps(6)}
+.tag.on{opacity:1;transform:none}
+.tag em{font-style:normal;color:var(--cyan)}
+.cta{display:flex;flex-wrap:wrap;gap:18px;margin-top:34px;opacity:0;transition:opacity .6s steps(6) .2s}
+.cta.on{opacity:1}
+.btn{display:inline-flex;align-items:center;gap:12px;font-family:"Silkscreen",monospace;font-size:14px;letter-spacing:.06em;text-decoration:none;padding:12px 18px;color:var(--bg);background:var(--sun);box-shadow:inset -4px -4px #b8901a;transition:transform .1s steps(1)}
+.btn:hover{background:var(--pink);box-shadow:inset -4px -4px #b02a6e}
+.btn:active{transform:translateY(3px)}
+.btn.ghost{background:var(--bg2);color:var(--ink);box-shadow:0 -3px var(--line),0 3px var(--line),-3px 0 var(--line),3px 0 var(--line),inset 0 -3px #05030b}
+.btn.ghost:hover{color:var(--sun)}
+.btn:focus-visible,.card:focus-visible,.bar a:focus-visible{outline:3px solid var(--cyan);outline-offset:4px}
+.scroll{position:absolute;left:5vw;bottom:5vh;font-family:"Silkscreen",monospace;font-size:12px;letter-spacing:.14em;color:var(--mute)}
+.scroll i{display:inline-block;width:10px;height:10px;margin-left:10px;background:var(--pink);clip-path:polygon(0 0,100% 0,100% 40%,60% 40%,60% 100%,40% 100%,40% 40%,0 40%);animation:bob 1s steps(2) infinite}
+@keyframes bob{50%{transform:translateY(5px)}}
+
+/* ---------- projects ---------- */
+#work{padding:14vh 5vw 10vh}
+.head{display:flex;align-items:baseline;gap:22px;margin-bottom:6vh}
+.head .n{font-family:"Silkscreen",monospace;font-size:14px;color:var(--sun);letter-spacing:.12em}
+.head h2{font-family:"Press Start 2P",monospace;font-weight:400;font-size:clamp(22px,3vw,38px)}
+.head .rule{flex:1;height:4px;background:repeating-linear-gradient(90deg,var(--line) 0 8px,transparent 8px 12px);align-self:center}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:44px}
+.card{position:relative;display:block;text-decoration:none;color:inherit;background:var(--bg2);
+  box-shadow:0 -4px var(--ink),0 4px var(--ink),-4px 0 var(--ink),4px 0 var(--ink),10px 10px 0 4px rgba(0,0,0,.55);
+  transition:transform .18s steps(3),box-shadow .18s steps(3);
+  opacity:0;transform:translateY(40px)}
+.card.in{opacity:1;transform:none;transition:opacity .5s steps(5),transform .5s steps(5)}
+.card.in:hover{transform:translate(-4px,-6px);box-shadow:0 -4px var(--ink),0 4px var(--ink),-4px 0 var(--ink),4px 0 var(--ink),16px 18px 0 4px rgba(0,0,0,.55)}
+.card canvas{display:block;width:100%;aspect-ratio:16/10;image-rendering:pixelated;image-rendering:crisp-edges}
+.card .meta{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;padding:20px 22px 22px;border-top:4px solid var(--ink)}
+.card .idx{font-family:"Silkscreen",monospace;font-size:12px;letter-spacing:.12em;color:var(--mute)}
+.card h3{font-family:"Press Start 2P",monospace;font-weight:400;font-size:clamp(16px,1.7vw,22px);margin-top:10px}
+.card p{margin-top:8px;font-size:22px;color:#cfc4e6}
+.card .go{flex:none;font-family:"Silkscreen",monospace;font-size:13px;letter-spacing:.08em;padding:9px 12px;color:var(--bg);background:var(--ink);transition:background .1s steps(1)}
+.card:hover .go{background:var(--sun)}
+.card.paper .meta{background:var(--paper);color:#1d1b18;border-top-color:var(--ink)}
+.card.paper .idx{color:#8d8575}
+.card.paper p{color:#5d574c}
+.card.paper .go{background:#1d1b18;color:var(--paper)}
+.card.paper:hover .go{background:var(--gold)}
+.soon{margin-top:44px;padding:22px;font-family:"Silkscreen",monospace;font-size:13px;letter-spacing:.1em;color:var(--mute);text-align:center;
+  box-shadow:0 -3px var(--line),0 3px var(--line),-3px 0 var(--line),3px 0 var(--line);background-image:repeating-linear-gradient(45deg,transparent 0 10px,rgba(58,44,92,.25) 10px 20px)}
+
+/* ---------- about ---------- */
+#about{padding:10vh 5vw 16vh}
+.about{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:6vw;align-items:start}
+.about p{font-size:28px;color:#d7cdef;max-width:640px}
+.about p+p{margin-top:18px}
+.about .todo{color:var(--mute);font-size:22px}
+.stats{display:grid;gap:18px}
+.stat{display:flex;justify-content:space-between;align-items:baseline;padding:16px 20px;background:var(--bg2);box-shadow:0 -3px var(--line),0 3px var(--line),-3px 0 var(--line),3px 0 var(--line)}
+.stat span{font-family:"Silkscreen",monospace;font-size:12px;letter-spacing:.1em;color:var(--mute)}
+.stat b{font-family:"Press Start 2P",monospace;font-weight:400;font-size:16px}
+footer{padding:0 5vw 5vh;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-family:"Silkscreen",monospace;font-size:12px;letter-spacing:.08em;color:var(--mute)}
+
+/* ---------- pixel wipe between pages ---------- */
+#wipe{position:fixed;inset:0;z-index:100;pointer-events:none;width:100%;height:100%;image-rendering:pixelated}
+
+@media (max-width:860px){
+  body{font-size:21px}
+  .bar{padding:14px 16px}
+  .bar nav{gap:16px}
+  #hero,#work,#about,footer{padding-left:16px;padding-right:16px}
+  .tag{font-size:24px}
+  .cards{grid-template-columns:1fr;gap:34px}
+  .about{grid-template-columns:1fr}
+  .about p{font-size:23px}
+  .head .rule{display:none}
+}
+@media (max-width:560px){ .bar nav a:not(:last-child){display:none} }
+@media (prefers-reduced-motion:reduce){
+  .bar .me i,.hello .caret,.scroll i{animation:none}
+  .card{transition:none!important}
+}
+</style>
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+
+<header class="bar">
+  <a class="me" href="#hero"><i></i>EDWARD LEE KIM KOON</a>
+  <nav><a href="#work">WORK</a><a href="#about">ABOUT</a><a href="https://www.linkedin.com/in/edward-lee-kim-koon-92340727/" target="_blank" rel="noopener">LINKEDIN ↗</a></nav>
+</header>
+
+<main>
+  <section id="hero">
+    <div class="hello" id="hello" aria-hidden="true"></div>
+    <h1 class="sr">Edward Lee Kim Koon</h1>
+    <canvas id="title" aria-hidden="true"></canvas>
+    <p class="tag" id="tag">I design and build things that <em>spin</em>, <em>glow</em> and occasionally fold through a <em>fourth dimension</em>.</p>
+    <div class="cta" id="cta">
+      <a class="btn" href="#work">SEE THE WORK ↓</a>
+      <a class="btn ghost" href="https://www.linkedin.com/in/edward-lee-kim-koon-92340727/" target="_blank" rel="noopener">LINKEDIN ↗</a>
+    </div>
+    <div class="scroll">SCROLL<i></i></div>
+  </section>
+
+  <section id="work">
+    <div class="head"><span class="n">01</span><h2>PROJECTS</h2><span class="rule"></span></div>
+    <div class="cards">
+      <a class="card" href="hyperwheel/" data-accent="#ff4fa3" data-mini="wheel">
+        <canvas width="160" height="100" aria-hidden="true"></canvas>
+        <div class="meta">
+          <div><div class="idx">PROJECT 01 · 2021</div><h3>HYPERWHEEL</h3><p>A counter-rotating LED festival totem.</p></div>
+          <span class="go">ENTER →</span>
+        </div>
+      </a>
+      <a class="card paper" href="tesseract/" data-accent="#f3eee3" data-mini="tess">
+        <canvas width="160" height="100" aria-hidden="true"></canvas>
+        <div class="meta">
+          <div><div class="idx">PROJECT 02 · 2019</div><h3>TESSERACT</h3><p>A four-dimensional cube, built in light.</p></div>
+          <span class="go">ENTER →</span>
+        </div>
+      </a>
+    </div>
+    <div class="soon">MORE PROJECTS LOADING<span id="dots">...</span></div>
+  </section>
+
+  <section id="about">
+    <div class="head"><span class="n">02</span><h2>ABOUT</h2><span class="rule"></span></div>
+    <div class="about">
+      <div>
+        <p>Hi, I'm Edward. I like projects that sit between mechanical design, electronics and a bit of code, and I like them even more when they light up.</p>
+        <p class="todo">[ Placeholder: a longer bio is on the way. ]</p>
+      </div>
+      <div class="stats">
+        <div class="stat"><span>CAD</span><b>FUSION 360</b></div>
+        <div class="stat"><span>FAB</span><b>3D PRINTING</b></div>
+        <div class="stat"><span>ELECTRONICS</span><b>LEDS + MCUS</b></div>
+        <a class="btn" href="https://www.linkedin.com/in/edward-lee-kim-koon-92340727/" target="_blank" rel="noopener" style="justify-content:center">CONNECT ON LINKEDIN ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <footer><span>© <span id="yr"></span> EDWARD LEE KIM KOON</span><span>BUILT PIXEL BY PIXEL</span></footer>
+</main>
+
+<canvas id="wipe" aria-hidden="true"></canvas>
+
+<script>
+(() => {
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $ = s => document.querySelector(s);
+const clamp = (v,a=0,b=1)=>Math.min(b,Math.max(a,v));
+const mouse = {x:-1e4, y:-1e4};
+addEventListener('pointermove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+addEventListener('pointerleave', () => { mouse.x = mouse.y = -1e4; });
+$('#yr').textContent = new Date().getFullYear();
+
+const BAYER = [0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5].map(v => v/16 - .5);
+const hash = (x,y) => { let h = (x*374761393 + y*668265263) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0) / 4294967295; };
+
+/* ============================================================
+   BACKGROUND: dithered aurora + twinkling stars + cursor glow,
+   rendered at 1/PS resolution, 30 fps, paused when hidden
+   ============================================================ */
+const bg = $('#bg'), bctx = bg.getContext('2d');
+let PS = 5, BW = 0, BH = 0, bimg, bbuf;
+const PAL = [[7,4,15],[16,9,34],[30,15,58],[46,20,84],[34,40,96],[20,70,110]].map(([r,g,b]) => (255<<24)|(b<<16)|(g<<8)|r);
+function sizeBg(){
+  PS = innerWidth > 1600 ? 6 : innerWidth > 900 ? 5 : 4;
+  BW = Math.ceil(innerWidth/PS); BH = Math.ceil(innerHeight/PS);
+  bg.width = BW; bg.height = BH;
+  bimg = bctx.createImageData(BW, BH); bbuf = new Uint32Array(bimg.data.buffer);
+}
+function drawBg(t){
+  const mx = mouse.x/PS, my = mouse.y/PS, sy = scrollY/PS*.25;
+  for (let y = 0; y < BH; y++){
+    const yy = y + sy;
+    for (let x = 0; x < BW; x++){
+      // two slow sine bands make the aurora
+      let v = .5*Math.sin(x*.018 + t*.13 + Math.sin(yy*.011 + t*.07)*2.2) + .5*Math.sin(yy*.024 - t*.09 + x*.006);
+      v = v*.5 + .5;
+      v *= clamp(1.25 - y/BH);                       // fades toward the bottom
+      const dx = x - mx, dy = y - my, d2 = dx*dx + dy*dy;
+      const glow = d2 < 3600 ? (1 - d2/3600) : 0;    // cursor lamp
+      let lvl = v*3.2 + glow*2.4 + BAYER[(y&3)*4 + (x&3)];
+      lvl = lvl < 0 ? 0 : lvl > 5 ? 5 : lvl|0;
+      let c = PAL[lvl];
+      const h = hash(x, (yy|0));
+      if (h > .9975){ const tw = Math.sin(t*2 + h*300); if (tw > .2) c = tw > .8 ? 0xffffe6ef : 0xff9f8fbf; }
+      if (glow > .92 && ((x+y)&1)) c = 0xffa34fff;   // pink core
+      bbuf[y*BW + x] = c;
+    }
+  }
+  bctx.putImageData(bimg, 0, 0);
+}
+
+/* ============================================================
+   NAME: pixel particles fly in, rainbow sweep, scatter from the cursor
+   ============================================================ */
+const tc = $('#title'), tctx = tc.getContext('2d');
+let TP = 6, TW = 0, TH = 0, parts = [], timg, tbuf, born = 0;
+function buildTitle(){
+  const avail = Math.min(innerWidth - (innerWidth < 860 ? 32 : innerWidth*.1), 1100);
+  // two lines on wide screens, three on narrow ones; glyphs stay at a crisp 16px font
+  const lines = avail/(12*16) >= 3 ? ['EDWARD', 'LEE KIM KOON'] : ['EDWARD', 'LEE KIM', 'KOON'];
+  const cols = Math.max(...lines.map(l => l.length)), fs = 16;
+  TP = Math.max(1, Math.min(7, Math.floor(avail/(cols*fs))));
+  const lh = Math.round(fs*1.45);
+  TW = cols*fs + 4; TH = lh*(lines.length - 1) + fs + 4;
+  const oc = document.createElement('canvas'); oc.width = TW; oc.height = TH;
+  const o = oc.getContext('2d');
+  o.font = `${fs}px "Press Start 2P"`; o.textBaseline = 'top'; o.fillStyle = '#fff';
+  lines.forEach((l, i) => o.fillText(l, 0, i*lh));
+  const d = o.getImageData(0, 0, TW, TH).data;
+  const old = parts; parts = [];
+  for (let y = 0; y < TH; y++) for (let x = 0; x < TW; x++){
+    if (d[(y*TW + x)*4 + 3] > 128){
+      const a = Math.random()*Math.PI*2, r = 40 + Math.random()*160;
+      parts.push({hx:x, hy:y, x: old.length ? x : x + Math.cos(a)*r, y: old.length ? y : y + Math.sin(a)*r - 40, vx:0, vy:0, delay: RM ? 0 : (x/TW)*.9 + Math.random()*.5});
+    }
+  }
+  tc.width = TW + 2; tc.height = TH + 2;
+  tc.style.width = (TW + 2)*TP + 'px'; tc.style.height = (TH + 2)*TP + 'px';
+  timg = tctx.createImageData(tc.width, tc.height); tbuf = new Uint32Array(timg.data.buffer);
+}
+const hsl = (h) => { h = ((h%1)+1)%1; const f = n => { const k = (n + h*12) % 12; return Math.round(255*(.64 - .34*Math.max(-1, Math.min(k-3, 9-k, 1)))); }; return (255<<24)|(f(4)<<16)|(f(8)<<8)|f(0); };
+const HUE = Array.from({length:96}, (_,i) => hsl(i/96));
+function drawTitle(t){
+  const r = tc.getBoundingClientRect();
+  const mx = (mouse.x - r.left)/TP, my = (mouse.y - r.top)/TP;
+  const age = t - born, W2 = tc.width;
+  tbuf.fill(0);
+  const shadow = 0xff3d0f2a;
+  for (const p of parts){
+    const k = clamp((age - p.delay)/.9);
+    let hx = p.hx, hy = p.hy;
+    // cursor pushes pixels away; springs pull them home
+    const dx = p.x - mx, dy = p.y - my, d2 = dx*dx + dy*dy;
+    if (d2 < 90 && k >= 1 && !RM){ const f = (90 - d2)/90*1.6; p.vx += dx*f*.08; p.vy += dy*f*.08; }
+    if (k < 1){ const e = 1 - Math.pow(1-k, 3); p.x += (hx - p.x)*e*.25; p.y += (hy - p.y)*e*.25; }
+    else { p.vx += (hx - p.x)*.12; p.vy += (hy - p.y)*.12; p.vx *= .72; p.vy *= .72; p.x += p.vx; p.y += p.vy; }
+    if (k <= 0) continue;
+    const X = Math.round(p.x) + 1, Y = Math.round(p.y) + 1;
+    if (X < 0 || Y < 0 || X >= W2 - 1 || Y >= tc.height - 1) continue;
+    if (!tbuf[(Y+1)*W2 + X + 1]) tbuf[(Y+1)*W2 + X + 1] = shadow;
+    const hue = p.hx/TW*.9 + p.hy/TH*.25 - t*.12;
+    const glint = Math.abs(((p.hx + p.hy*.6 - t*60) % 220 + 220) % 220 - 10) < 2.2;
+    tbuf[Y*W2 + X] = glint ? 0xffffffff : HUE[((Math.floor(hue*96) % 96) + 96) % 96];
+  }
+  tctx.putImageData(timg, 0, 0);
+}
+
+/* ---------- typed greeting ---------- */
+function typeHello(){
+  const el = $('#hello'), msg = '> HELLO, WORLD. I AM';
+  if (RM){ el.innerHTML = msg + '<span class="caret"></span>'; return; }
+  let i = 0; const step = () => { el.innerHTML = msg.slice(0, ++i) + '<span class="caret"></span>'; if (i < msg.length) setTimeout(step, 45 + Math.random()*50); };
+  step();
+}
+
+/* ============================================================
+   PROJECT MINIS: tiny live pixel renders of each project
+   ============================================================ */
+function makeMini(card){
+  const cv = card.querySelector('canvas'), c = cv.getContext('2d');
+  const W = cv.width, H = cv.height, img = c.createImageData(W, H), buf = new Uint32Array(img.data.buffer);
+  const set = (x, y, col) => { x |= 0; y |= 0; if (x >= 0 && y >= 0 && x < W && y < H) buf[y*W + x] = col; };
+  const line = (x0, y0, x1, y1, col) => {           // Bresenham
+    x0 = Math.round(x0); y0 = Math.round(y0); x1 = Math.round(x1); y1 = Math.round(y1);
+    const dx = Math.abs(x1-x0), dy = -Math.abs(y1-y0), sx = x0<x1?1:-1, sy = y0<y1?1:-1; let e = dx + dy;
+    for (let n = 0; n < 400; n++){ set(x0, y0, col); if (x0===x1 && y0===y1) break; const e2 = 2*e; if (e2 >= dy){ e += dy; x0 += sx; } if (e2 <= dx){ e += dx; y0 += sy; } }
+  };
+  const rgb = (r,g,b) => (255<<24)|(b<<16)|(g<<8)|r;
+  let speed = 1, target = 1, phase = Math.random()*10, visible = false, lastT = 0;
+  card.addEventListener('pointerenter', () => target = 3.2);
+  card.addEventListener('pointerleave', () => target = 1);
+  card.addEventListener('focus', () => target = 3.2);
+  card.addEventListener('blur', () => target = 1);
+  new IntersectionObserver(es => { visible = es[0].isIntersecting; }, {threshold:.05}).observe(cv);
+
+  const kind = card.dataset.mini;
+  // tesseract geometry
+  const V = []; for (let i = 0; i < 16; i++) V.push([(i&1)?1:-1, (i&2)?1:-1, (i&4)?1:-1, (i&8)?1:-1]);
+  const E = []; for (let i = 0; i < 16; i++) for (let b = 0; b < 4; b++){ const j = i ^ (1<<b); if (j > i) E.push([i, j]); }
+
+  function wheel(t){
+    const cx = W/2, cy = H/2, R = 42;
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++){
+      const dx = x - cx, dy = y - cy, d = Math.hypot(dx, dy);
+      let col = rgb(9,5,20);
+      if (d < R){
+        const a = Math.atan2(dy, dx)/(Math.PI*2) + .5, rr = d/R;
+        const hue = a + rr*.3 - t*.1;
+        const v = .25 + .75*rr*rr + BAYER[(y&3)*4 + (x&3)]*.35;
+        if (v > .45) col = HUE[((Math.floor(hue*96)%96)+96)%96]; else if (v > .2) col = rgb(40,18,70);
+      } else if (hash(x, y) > .985) col = rgb(90,80,130);
+      buf[y*W + x] = col;
+    }
+    const lattice = (rot, col) => {
+      for (let k = 0; k < 12; k++){
+        const a0 = rot + k*Math.PI/6, ox = cx + Math.cos(a0)*R/2, oy = cy + Math.sin(a0)*R/2;
+        for (let s = 0; s < 80; s++){ const b = s/80*Math.PI*2; set(ox + Math.cos(b)*R/2, oy + Math.sin(b)*R/2, col); }
+      }
+    };
+    lattice(-t*.5, rgb(20,14,34)); lattice(t*.5, rgb(8,6,14));
+    for (let s = 0; s < 280; s++){ const b = s/280*Math.PI*2; set(cx + Math.cos(b)*R, cy + Math.sin(b)*R, rgb(8,6,14)); set(cx + Math.cos(b)*(R+1), cy + Math.sin(b)*(R+1), rgb(60,50,90)); }
+    for (let s = 0; s < 60; s++){ const b = s/60*Math.PI*2; set(cx + Math.cos(b)*8, cy + Math.sin(b)*8, rgb(8,6,14)); }
+  }
+  function tess(t){
+    const paper = rgb(243,238,227), grain = rgb(235,228,213), ink = rgb(29,27,24), gold = rgb(168,131,47), goldL = rgb(214,196,150), grey = rgb(130,122,108);
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) buf[y*W + x] = hash(x, y) > .93 ? grain : paper;
+    const cx = W/2, cy = H/2 + 2;
+    // flower-of-life, dotted
+    for (let k = 0; k < 7; k++){
+      const ox = k ? cx + Math.cos(k*Math.PI/3 + t*.05)*14 : cx, oy = k ? cy + Math.sin(k*Math.PI/3 + t*.05)*14 : cy;
+      for (let s = 0; s < 90; s += 2){ const b = s/90*Math.PI*2; set(ox + Math.cos(b)*14, oy + Math.sin(b)*14, goldL); }
+    }
+    for (let s = 0; s < 240; s += 3){ const b = s/240*Math.PI*2; set(cx + Math.cos(b)*44, cy + Math.sin(b)*44, goldL); }
+    const th = t*.6, c = Math.cos(th), s = Math.sin(th), ry = t*.25, cr = Math.cos(ry), sr = Math.sin(ry);
+    const P = V.map(([x,y,z,w]) => {
+      const xr = x*c - w*s, wr = x*s + w*c, k = 2.4/(2.4 - wr);
+      let X = xr*k, Y = y*k, Z = z*k;
+      const X2 = X*cr + Z*sr, Z2 = -X*sr + Z*cr; X = X2; Z = Z2;
+      const Y2 = Y*.92 - Z*.38; Z = Y*.38 + Z*.92; Y = Y2;
+      const p = 3.6/(3.6 - Z*.35);
+      return [cx + X*p*15, cy + Y*p*15, wr];
+    });
+    const order = E.map(([a,b]) => [a, b, (P[a][2] + P[b][2])/2]).sort((u,v) => u[2] - v[2]);
+    for (const [a, b, w] of order) line(P[a][0], P[a][1], P[b][0], P[b][1], w < -.3 ? gold : w > .3 ? ink : grey);
+    for (const p of P){ const col = p[2] > 0 ? ink : paper; set(p[0], p[1], col); set(p[0]+1, p[1], col); set(p[0], p[1]+1, col); set(p[0]+1, p[1]+1, col); if (p[2] <= 0){ set(p[0]-1, p[1], gold); set(p[0]+2, p[1], gold); set(p[0], p[1]-1, gold); set(p[0], p[1]+2, gold); } }
+  }
+  return function(t){
+    if (!visible && lastT) return;
+    const dt = Math.min(.1, t - (lastT || t)); lastT = t;
+    speed += (target - speed)*.12; phase += dt*speed*(RM ? .3 : 1);
+    kind === 'wheel' ? wheel(phase) : tess(phase);
+    c.putImageData(img, 0, 0);
+  };
+}
+const minis = [...document.querySelectorAll('.card')].map(makeMini);
+
+/* ---------- reveals ---------- */
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return; io.unobserve(e.target);
+  const i = [...document.querySelectorAll('.card')].indexOf(e.target);
+  setTimeout(() => e.target.classList.add('in'), RM ? 0 : i*160);
+}), {threshold:.15});
+document.querySelectorAll('.card').forEach(c => io.observe(c));
+let dotN = 0; setInterval(() => { $('#dots').textContent = '.'.repeat(dotN = (dotN + 1) % 4); }, 450);
+
+/* ============================================================
+   PIXEL WIPE: cards dissolve the screen into their accent colour
+   ============================================================ */
+const wipe = $('#wipe'), wctx = wipe.getContext('2d');
+function go(href, accent, ox, oy){
+  if (RM){ location.href = href; return; }
+  const cell = 24, cols = Math.ceil(innerWidth/cell), rows = Math.ceil(innerHeight/cell);
+  wipe.width = cols; wipe.height = rows;
+  const cx = ox/cell, cy = oy/cell, maxD = Math.hypot(Math.max(cx, cols - cx), Math.max(cy, rows - cy));
+  const order = []; for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) order.push([x, y, Math.hypot(x - cx, y - cy)/maxD + (BAYER[(y&3)*4 + (x&3)] + .5)*.18]);
+  const start = performance.now();
+  wctx.fillStyle = accent;
+  const step = now => {
+    const k = (now - start)/520;
+    for (const [x, y, d] of order) if (d < k*1.2) wctx.fillRect(x, y, 1, 1);
+    if (k < 1.05) requestAnimationFrame(step); else location.href = href;
+  };
+  requestAnimationFrame(step);
+}
+document.querySelectorAll('.card').forEach(card => card.addEventListener('click', e => {
+  if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+  e.preventDefault();
+  go(card.getAttribute('href'), card.dataset.accent, e.clientX || innerWidth/2, e.clientY || innerHeight/2);
+}));
+addEventListener('pageshow', () => { wctx.clearRect(0, 0, wipe.width, wipe.height); });   // back button: clear the wipe
+
+/* ============================================================
+   LOOP (30 fps, paused while the tab is hidden)
+   ============================================================ */
+let last = 0;
+function frame(now){
+  requestAnimationFrame(frame);
+  if (document.hidden || now - last < 32) return;
+  last = now; const t = now/1000;
+  drawBg(t);
+  if (tc.getBoundingClientRect().bottom > 0) drawTitle(t);
+  minis.forEach(m => m(t));
+}
+
+(async () => {
+  try { await document.fonts.load('16px "Press Start 2P"'); } catch(e){}
+  sizeBg(); buildTitle();
+  born = performance.now()/1000;
+  typeHello();
+  setTimeout(() => $('#tag').classList.add('on'), RM ? 0 : 1300);
+  setTimeout(() => $('#cta').classList.add('on'), RM ? 0 : 1600);
+  requestAnimationFrame(frame);
+})();
+let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { sizeBg(); buildTitle(); }, 120); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tesseract</title>
+<meta name="description" content="An LED tesseract: a physical projection of a four-dimensional cube, built from aluminium channel, LED strip and 3D-printed joints. Built in 2019.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none' stroke='%23a8832f' stroke-width='1.6'%3E%3Crect x='3' y='3' width='26' height='26'/%3E%3Crect x='10' y='10' width='12' height='12'/%3E%3Cpath d='M3 3l7 7M29 3l-7 7M3 29l7-7M29 29l-7-7'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f3eee3; --paper2:#ebe4d5; --ink:#1d1b18; --ink2:#5d574c; --ink3:#8d8575;
+  --gold:#a8832f; --gold2:#c8a456; --rule:#cfc4ae;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--paper)}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+body{
+  color:var(--ink);font-family:"EB Garamond",Georgia,serif;font-size:20px;line-height:1.5;overflow-x:hidden;
+  font-variant-numeric:oldstyle-nums;
+  background:var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35  0 0 0 0 .28  0 0 0 0 .18  0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+::selection{background:var(--gold2);color:var(--paper)}
+.sc{font-variant:small-caps;letter-spacing:.09em}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ---------- fixed layers ---------- */
+#halo{position:fixed;left:0;top:0;width:1000px;height:1000px;margin:-500px 0 0 -500px;pointer-events:none;z-index:0;will-change:transform,opacity;transform-origin:50% 50%}
+#halo svg{width:100%;height:100%;overflow:visible}
+#halo .spin{transform-origin:500px 500px;animation:spin 240s linear infinite}
+#halo .spin2{transform-origin:500px 500px;animation:spin 360s linear infinite reverse}
+#halo [pathLength]{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 2.8s cubic-bezier(.6,.1,.2,1) forwards}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes draw{to{stroke-dashoffset:0}}
+#stage{position:fixed;inset:0;z-index:1;pointer-events:none}
+#stage canvas{position:absolute;left:0;top:0}
+#labels{position:fixed;inset:0;z-index:2;pointer-events:none;overflow:hidden}
+.lbl{position:absolute;left:0;top:0;white-space:nowrap;font-family:"Cormorant Garamond",serif;font-style:italic;font-size:19px;line-height:1;color:var(--ink);will-change:transform,opacity}
+.lbl i{display:inline-grid;place-items:center;width:20px;height:20px;margin-right:7px;border:1px solid var(--gold);border-radius:50%;font-style:normal;font-size:13px;color:var(--gold);font-family:"EB Garamond",serif;vertical-align:1px}
+
+/* running head, like a journal page */
+.head{position:fixed;top:0;left:0;right:0;z-index:5;display:flex;align-items:center;gap:18px;padding:16px 5vw 0;font-size:13px;color:var(--ink2);pointer-events:none}
+.head .rule{flex:1;height:1px;background:var(--rule)}
+.head b{font-weight:500;color:var(--ink)}
+.head a{pointer-events:auto;color:var(--ink2);text-decoration:none}
+.head a:hover{color:var(--gold)}
+.head a:focus-visible{outline:1px dashed var(--gold);outline-offset:4px}
+
+/* ---------- layout ---------- */
+main{position:relative;z-index:3}
+section{position:relative}
+#hero{height:100vh}
+#proj{height:300vh}
+#patterns{height:170vh}
+.spacer{height:35vh}
+
+.titleblock{position:absolute;left:6vw;top:15vh;width:min(560px,44vw)}
+.kicker{font-size:15px;color:var(--gold)}
+h1{font-family:"Cormorant Garamond",serif;font-weight:300;font-size:clamp(64px,8.4vw,132px);line-height:.9;margin:14px 0 10px;letter-spacing:-.01em}
+h1 em{font-style:italic;font-weight:400}
+.subtitle{font-family:"Cormorant Garamond",serif;font-style:italic;font-size:26px;color:var(--ink2)}
+.abstract{margin-top:30px;padding-top:18px;border-top:1px solid var(--ink);font-size:19px;line-height:1.55;text-align:justify;hyphens:auto}
+.abstract b{font-weight:500;font-variant:small-caps;letter-spacing:.06em}
+.keywords{margin-top:14px;font-size:15px;color:var(--ink2)}
+.keywords i{color:var(--ink)}
+.fig1{position:absolute;right:5vw;top:13vh;text-align:right;font-size:15px;color:var(--ink2)}
+.fig1 .cap{font-style:italic}
+.fig1 .cap b{font-style:normal;font-variant:small-caps;letter-spacing:.06em;color:var(--ink);font-weight:500}
+.plate{position:absolute;right:5vw;bottom:8vh;width:clamp(170px,15vw,230px)}
+.plate .frame{aspect-ratio:3/4;padding:6px;background:#fbf8f1;box-shadow:0 1px 0 var(--rule),0 18px 30px -18px rgba(50,35,10,.45);border:1px solid var(--rule)}
+.plate figcaption,.pl figcaption{margin-top:8px;font-size:14px;font-variant:small-caps;letter-spacing:.08em;color:var(--ink2);text-align:center}
+.cue{position:absolute;left:50%;bottom:4vh;transform:translateX(-50%);font-size:13px;color:var(--ink3);text-align:center}
+.cue:after{content:"";display:block;width:1px;height:34px;margin:10px auto 0;background:linear-gradient(var(--ink3),transparent);animation:cue 2.4s ease-in-out infinite}
+@keyframes cue{0%,100%{transform:scaleY(.4);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}}
+
+/* matrix */
+.mat{display:inline-flex;align-items:center;gap:10px;margin-top:10px;font-size:15px;color:var(--ink)}
+.mat .lhs{font-style:italic}
+.mat .m{display:grid;grid-template-columns:repeat(4,3.2em);gap:1px 4px;padding:3px 8px;position:relative;font-variant-numeric:tabular-nums lining-nums;text-align:right}
+.mat .m:before,.mat .m:after{content:"";position:absolute;top:0;bottom:0;width:6px;border:1px solid var(--ink)}
+.mat .m:before{left:0;border-right:0}
+.mat .m:after{right:0;border-left:0}
+
+/* theorem-box panel */
+.panel{position:sticky;top:17vh;width:min(460px,calc(100vw - 32px));margin-left:6vw;padding:24px 28px 26px;background:rgba(248,245,237,.95);
+  border:1px solid var(--ink);outline:1px solid var(--ink);outline-offset:3px;box-shadow:0 30px 50px -30px rgba(60,40,10,.35)}
+.panel .sec{font-size:14px;color:var(--gold);font-variant:small-caps;letter-spacing:.14em}
+.panel h2{font-family:"Cormorant Garamond",serif;font-weight:400;font-style:italic;font-size:36px;line-height:1.1;margin:4px 0 14px}
+.panel p{font-size:19px;line-height:1.5}
+.panel p b{font-weight:500;font-variant:small-caps;letter-spacing:.05em}
+.panel p+p{margin-top:10px}
+.tabs{display:flex;gap:4px;margin:0 0 16px;border-bottom:1px solid var(--rule)}
+.tabs button,.modes button{font:inherit;font-size:15px;font-variant:small-caps;letter-spacing:.1em;background:none;border:0;color:var(--ink2);cursor:pointer}
+.tabs button{padding:6px 10px 8px;margin-bottom:-1px;border-bottom:2px solid transparent}
+.tabs button:hover{color:var(--ink)}
+.tabs button[aria-pressed=true]{color:var(--ink);border-bottom-color:var(--gold)}
+.fpane{animation:fpin .5s ease}
+@keyframes fpin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.fpane .pm{margin-top:16px;aspect-ratio:16/10;border:1px solid var(--rule);padding:5px;background:#fbf8f1}
+.fpane .pm img{object-position:50% 22%}
+.ctl{margin-top:20px}
+.ctl label{display:flex;align-items:baseline;justify-content:space-between;font-size:15px;color:var(--ink2);margin-bottom:8px}
+.ctl label i{color:var(--ink)}
+.ctl label b{font-weight:400;font-variant-numeric:tabular-nums lining-nums;color:var(--gold)}
+.modes{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--ink)}
+.modes button{padding:9px 4px;color:var(--ink)}
+.modes button+button{border-left:1px solid var(--ink)}
+.modes button[aria-pressed=true]{background:var(--ink);color:var(--paper)}
+.tabs button:focus-visible,.modes button:focus-visible{outline:1px dashed var(--gold);outline-offset:3px}
+
+/* media fade */
+.pm{position:relative;overflow:hidden}
+.pm>img,.pm>video{display:block;width:100%;height:100%;object-fit:cover;opacity:0;transform:translateY(12px) scale(1.02);transition:opacity .9s ease,transform 1.1s cubic-bezier(.2,.7,.2,1)}
+.pm.in>img,.pm.in>video{opacity:1;transform:none}
+
+/* ---------- plates (gallery) ---------- */
+#plates{position:relative;z-index:3}
+.pl-sticky{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;flex-direction:column;justify-content:center}
+.pl-head{padding:0 6vw;margin-bottom:5vh;display:flex;align-items:baseline;gap:22px}
+.pl-head .sec{font-size:15px;color:var(--gold);font-variant:small-caps;letter-spacing:.14em}
+.pl-head h2{font-family:"Cormorant Garamond",serif;font-weight:300;font-style:italic;font-size:clamp(40px,5vw,72px);line-height:1}
+.track{display:flex;gap:44px;padding:0 6vw;align-items:flex-end;will-change:transform}
+.pl{flex:none;height:min(56vh,540px)}
+.pl .pm{height:100%;padding:7px;background:#fbf8f1;border:1px solid var(--rule);box-shadow:0 24px 40px -26px rgba(50,35,10,.5)}
+
+@media (max-width:860px){
+  body{font-size:18px}
+  .head{padding:12px 16px 0}
+  .head .t{display:none}
+  .titleblock{left:16px;right:16px;width:auto;top:auto;bottom:6vh}
+  h1{font-size:64px}
+  .subtitle{font-size:21px}
+  .abstract{margin-top:16px;padding-top:12px;font-size:16px;text-align:left}
+  .keywords{display:none}
+  .fig1{display:none}
+  .mat{display:none}
+  .plate{top:52px;bottom:auto;left:16px;right:auto;width:84px}
+  .plate figcaption{display:none}
+  .cue{display:none}
+  .panel{position:sticky;top:56vh;margin:0 12px;width:auto;max-height:calc(44vh - 14px);overflow-y:auto;overscroll-behavior:contain;padding:16px 18px;outline-offset:2px}
+  .panel h2{font-size:26px;margin-bottom:10px}
+  .panel p{font-size:17px}
+  .fpane .pm{aspect-ratio:auto;height:130px}
+  #proj .spacer,#patterns .spacer{height:60vh}
+  .pl-sticky{position:relative;height:auto;padding:12vh 0 8vh}
+  .pl-head{padding:0 16px;flex-direction:column;gap:6px}
+  .track{flex-direction:column;align-items:stretch;padding:0 16px;transform:none!important;gap:26px}
+  .pl{height:auto}
+  .pl .pm{height:auto;aspect-ratio:var(--ar)}
+}
+@media (prefers-reduced-motion:reduce){
+  #halo .spin,#halo .spin2,.cue:after{animation:none}
+  #halo [pathLength]{animation:none;stroke-dashoffset:0}
+  .pm>img,.pm>video{transform:none;transition:opacity .3s}
+}
+</style>
+<script type="importmap">
+{"imports":{
+  "three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+  "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+}}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+</head>
+<body>
+
+<div id="halo" aria-hidden="true"></div>
+<div id="stage"></div>
+<div id="labels"></div>
+
+<div class="head sc"><a class="home" href="../">← Home</a><b>The Tesseract</b><span class="rule"></span><span id="headSec">Abstract</span></div>
+
+<main>
+  <section id="hero" data-sec="Abstract">
+    <div class="titleblock">
+      <div class="kicker sc">Personal project · Built in 2019</div>
+      <h1>The <em>Tesseract</em></h1>
+      <p class="subtitle">A four-dimensional cube, built in light.</p>
+      <p class="abstract"><b>Abstract.</b> A hypercube can't exist in three dimensions, but its shadow can. This is a physical build of that shadow: a cube inside a cube, joined corner to corner by eight struts. Every edge is an aluminium channel with an LED strip inside, held together by 3D-printed joints.</p>
+      <p class="keywords"><i>Keywords:</i> Fusion 360, 3D printing, aluminium extrusion, addressable LEDs</p>
+    </div>
+    <div class="fig1">
+      <div class="cap"><b>Fig. 1.</b> Rotation in the <i>xw</i>-plane</div>
+      <div class="mat"><span class="lhs">R<sub>xw</sub>(θ) =</span><span class="m" id="mat1"></span></div>
+    </div>
+    <figure class="plate"><div class="frame pm" data-pm><img src="media/20190511_001201.jpg" alt="The finished tesseract, lit up on its stand" loading="eager"></div><figcaption>Plate I</figcaption></figure>
+    <div class="cue sc">Scroll</div>
+  </section>
+
+  <section id="proj" data-sec="§1 Construction">
+    <div class="spacer"></div>
+    <div class="panel" id="exPanel" data-lenis-prevent>
+      <div class="sec">§1</div>
+      <h2>Construction</h2>
+      <div class="tabs" id="focusTabs">
+        <button data-f="overview" aria-pressed="true">Overview</button>
+        <button data-f="frame" aria-pressed="false">Frame</button>
+        <button data-f="light" aria-pressed="false">Light</button>
+      </div>
+      <div class="fpane" data-f="overview">
+        <p>Project a hypercube into three dimensions with perspective and you get two nested cubes. The far cell shrinks into the inner cube, the near cell grows into the outer one, and eight struts connect them.</p>
+      </div>
+      <div class="fpane" data-f="frame" hidden>
+        <p>Each edge is a length of aluminium channel. The corners are 3D-printed joints: black on the outer cube, white on the inner one.</p>
+        <div class="pm" data-pm><img src="media/20190513_182853.jpg" alt="The unlit frame, showing the aluminium channels and printed joints" loading="lazy"></div>
+      </div>
+      <div class="fpane" data-f="light" hidden>
+        <p>An LED strip runs inside every channel, so the cubes and struts can each be lit their own colour.</p>
+        <div class="pm" data-pm><img src="media/lit_still.jpg" alt="The tesseract lit with different colours on different edges" loading="lazy" style="object-position:50% 50%"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="patterns" data-sec="§2 Patterns">
+    <div class="spacer" style="height:25vh"></div>
+    <div class="panel" data-lenis-prevent>
+      <div class="sec">§2</div>
+      <h2>Patterns</h2>
+      <p>Every edge is individually addressable. Try the patterns it runs.</p>
+      <div class="ctl">
+        <label><span>Pattern</span><b id="modev">Spectrum</b></label>
+        <div class="modes" id="modes">
+          <button data-m="0" aria-pressed="true">Spectrum</button>
+          <button data-m="1" aria-pressed="false">Cells</button>
+          <button data-m="2" aria-pressed="false">Pulse</button>
+          <button data-m="3" aria-pressed="false">Chase</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<section id="plates" data-sec="§3 Plates">
+  <div class="pl-sticky">
+    <div class="pl-head"><span class="sec">§3</span><h2>Plates</h2></div>
+    <div class="track" id="track">
+      <figure class="pl" style="--ar:1920/1080"><div class="pm" data-pm style="aspect-ratio:1920/1080"><video src="media/clip1.mp4" poster="media/clip1.jpg" muted loop playsinline preload="metadata"></video></div><figcaption>II</figcaption></figure>
+      <figure class="pl" style="--ar:3/4"><div class="pm" data-pm style="aspect-ratio:3/4"><img src="media/20190517_161342.jpg" alt="Holding the tesseract up with a friend" loading="lazy"></div><figcaption>III</figcaption></figure>
+      <figure class="pl" style="--ar:1920/1080"><div class="pm" data-pm style="aspect-ratio:1920/1080"><video src="media/clip2.mp4" poster="media/clip2.jpg" muted loop playsinline preload="metadata"></video></div><figcaption>IV</figcaption></figure>
+      <figure class="pl" style="--ar:1920/1080"><div class="pm" data-pm style="aspect-ratio:1920/1080"><video src="media/clip3.mp4" poster="media/clip3.jpg" muted loop playsinline preload="metadata"></video></div><figcaption>V</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<script type="module">
+import * as THREE from 'three';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $ = s => document.querySelector(s);
+const clamp = (v,a=0,b=1)=>Math.min(b,Math.max(a,v));
+const lerp = (a,b,t)=>a+(b-a)*t;
+const ss = t => t*t*(3-2*t);
+const mob = () => innerWidth<860;
+
+/* ============================================================
+   SACRED GEOMETRY HALO — flower of life + Metatron's cube, drawn in once
+   ============================================================ */
+(function buildHalo(){
+  const C=500, r=100, out=[];
+  const circ=(x,y,R,cls,d)=>`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${R}" pathLength="1" style="animation-delay:${d}s" ${cls||''}/>`;
+  const line=(a,b,d)=>`<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" pathLength="1" style="animation-delay:${d}s"/>`;
+  // flower of life: 19 circles on a hex lattice
+  const pts=[[0,0]];
+  for(let k=0;k<6;k++){ const a=k*Math.PI/3; pts.push([Math.cos(a)*r,Math.sin(a)*r]); }
+  for(let k=0;k<6;k++){ const a=k*Math.PI/3; pts.push([Math.cos(a)*2*r,Math.sin(a)*2*r]); const b=a+Math.PI/6; pts.push([Math.cos(b)*r*Math.sqrt(3),Math.sin(b)*r*Math.sqrt(3)]); }
+  let flower=pts.map((p,i)=>circ(C+p[0],C+p[1],r,'',.1+i*.05)).join('');
+  // Metatron's cube: 13 centres, every pair joined
+  const m=[[0,0]]; const mr=2*r/Math.sqrt(3)*.9;
+  for(let k=0;k<6;k++){ const a=Math.PI/6+k*Math.PI/3; m.push([Math.cos(a)*mr,Math.sin(a)*mr]); m.push([Math.cos(a)*mr*2,Math.sin(a)*mr*2]); }
+  let met=''; let d=.6;
+  for(let i=0;i<m.length;i++) for(let j=i+1;j<m.length;j++){ met+=line([C+m[i][0],C+m[i][1]],[C+m[j][0],C+m[j][1]], d); d+=.012; }
+  const rings=[circ(C,C,3*r,'',.2),circ(C,C,3*r+8,'',.3),circ(C,C,3.6*r,'stroke-dasharray="2 6"',.4),circ(C,C,4.3*r,'',.5)].join('');
+  $('#halo').innerHTML=`<svg viewBox="0 0 1000 1000" fill="none">
+    <g class="spin" stroke="#a8832f" stroke-width=".7" opacity=".55">${flower}${rings}</g>
+    <g class="spin2" stroke="#a8832f" stroke-width=".45" opacity=".38">${met}</g></svg>`;
+})();
+
+/* ============================================================
+   RENDERER (same budget rules as Hyperwheel: capped DPR, 60 fps cap,
+   20 fps behind the gallery, software-GPU fallback)
+   ============================================================ */
+const stage=$('#stage');
+const renderer=new THREE.WebGLRenderer({antialias:true, alpha:true, powerPreference:'default'});
+const SOFTWARE_GL=(()=>{ const gl=renderer.getContext(), ext=gl.getExtension('WEBGL_debug_renderer_info');
+  const name=ext?gl.getParameter(ext.UNMASKED_RENDERER_WEBGL):''; return /swiftshader|basic render|llvmpipe|softpipe|software/i.test(name); })();
+const MAX_DPR=SOFTWARE_GL?.6:Math.min(devicePixelRatio||1, mob()?1.25:1.5);
+const BASE_GAP=SOFTWARE_GL?33:16;
+let DPR=MAX_DPR;
+renderer.setPixelRatio(DPR);
+renderer.setClearColor(0x000000,0);
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.0;
+stage.appendChild(renderer.domElement);
+const ink=document.createElement('canvas'); stage.appendChild(ink);
+const ictx=ink.getContext('2d');
+let IDPR=Math.min(devicePixelRatio||1,2);
+
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(30,1,20,12000);
+const pmrem=new THREE.PMREMGenerator(renderer);
+scene.environment=pmrem.fromScene(new RoomEnvironment(),0.04).texture;
+scene.environmentIntensity=.75;
+scene.add(new THREE.HemisphereLight(0xfff8ec,0x8a7a60,1.1));
+const key=new THREE.DirectionalLight(0xfff4e2,2.0); key.position.set(900,1400,1600); scene.add(key);
+const fill=new THREE.DirectionalLight(0xd9e2ff,.7); fill.position.set(-1200,200,-600); scene.add(fill);
+
+/* ============================================================
+   THE HYPERCUBE — 16 vertices, 32 edges, perspective-projected from 4D.
+   D is chosen so inner/outer cube ratio matches the build (~0.42).
+   ============================================================ */
+const D=2.45, OUTER_EDGE=480;                  // mm
+const K=OUTER_EDGE/(2*D/(D-1));                 // scale so the outer cube edge = 480 mm
+const V4=[]; for(let i=0;i<16;i++) V4.push([(i&1)?1:-1,(i&2)?1:-1,(i&4)?1:-1,(i&8)?1:-1]);
+const EDGES=[]; for(let i=0;i<16;i++) for(let b=0;b<4;b++){ const j=i^(1<<b); if(j>i) EDGES.push([i,j]); }
+// stand it on an outer corner: vertex (-1,-1,-1,+1) points straight down
+const ORIENT=new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(-1,-1,-1).normalize(), new THREE.Vector3(0,-1,0));
+ORIENT.premultiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0), .35));
+const BOTTOM=V4.findIndex(v=>v[0]<0&&v[1]<0&&v[2]<0&&v[3]>0);
+// graph distance from the bottom corner (drives the "chase" pattern)
+const DEPTH=new Array(16).fill(99); DEPTH[BOTTOM]=0;
+for(let pass=0;pass<5;pass++) for(const [a,b] of EDGES){ DEPTH[b]=Math.min(DEPTH[b],DEPTH[a]+1); DEPTH[a]=Math.min(DEPTH[a],DEPTH[b]+1); }
+
+const P3=Array.from({length:16},()=>new THREE.Vector3()), W4=new Float32Array(16);
+function project(theta){
+  const c=Math.cos(theta), s=Math.sin(theta);
+  for(let i=0;i<16;i++){
+    const [x,y,z,w]=V4[i];
+    const xr=x*c-w*s, wr=x*s+w*c, k=D/(D-wr)*K;
+    P3[i].set(xr*k,y*k,z*k).applyQuaternion(ORIENT);
+    W4[i]=wr;
+  }
+}
+
+/* ---------- physical model (procedural, from the photos) ---------- */
+const model=new THREE.Group(); scene.add(model);
+const alu=new THREE.MeshStandardMaterial({color:0xcfd2d8, metalness:.9, roughness:.33});
+const blackPla=new THREE.MeshStandardMaterial({color:0x1c1b1f, roughness:.55});
+const whitePla=new THREE.MeshStandardMaterial({color:0xf4f1ea, roughness:.6});
+const blackBox=new THREE.MeshStandardMaterial({color:0x151518, roughness:.45});
+
+// U-channel profile (17 × 14 mm, 1.5 mm wall), opening along local +y, extruded along z
+const u=new THREE.Shape();
+u.moveTo(-8.5,-7); u.lineTo(8.5,-7); u.lineTo(8.5,7); u.lineTo(7,7); u.lineTo(7,-5.5); u.lineTo(-7,-5.5); u.lineTo(-7,7); u.lineTo(-8.5,7); u.closePath();
+const chanGeo=new THREE.ExtrudeGeometry(u,{depth:1,bevelEnabled:false}); chanGeo.translate(0,0,-.5);
+const ledGeo=new THREE.BoxGeometry(13,2.2,1,1,1,24); ledGeo.translate(0,4.6,0);
+{ const pos=ledGeo.attributes.position, a=new Float32Array(pos.count); for(let i=0;i<pos.count;i++) a[i]=pos.getZ(i)+.5; ledGeo.setAttribute('along',new THREE.BufferAttribute(a,1)); }
+
+const LEDU={time:{value:0}, mode:{value:0}, bright:{value:1}};
+function ledMat(){
+  return new THREE.ShaderMaterial({
+    uniforms:{...LEDU, depth:{value:0}, grp:{value:0}, flip:{value:0}},
+    vertexShader:`attribute float along; varying float vA; void main(){ vA=along; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+    fragmentShader:/* glsl */`
+      uniform float time,mode,bright,depth,grp,flip; varying float vA;
+      vec3 hsv(vec3 c){ vec3 p=abs(fract(c.xxx+vec3(1.,2./3.,1./3.))*6.-3.); return c.z*mix(vec3(1.),clamp(p-1.,0.,1.),c.y); }
+      void main(){
+        float a = flip>.5 ? 1.-vA : vA;
+        vec3 c; float v=1.;
+        if(mode<.5){ c=hsv(vec3(fract((depth+a)*.11 - time*.07),.95,1.)); }
+        else if(mode<1.5){ vec3 A=hsv(vec3(fract(.58+time*.02),.92,1.)), B=hsv(vec3(fract(.92+time*.02),.92,1.)); c = grp<.5?A : grp<1.5?B : mix(A,B,a); }
+        else if(mode<2.5){ c=vec3(1.,.8,.52); v=.2+.8*(.5+.5*sin(time*1.8)); }
+        else { float w=fract((depth+a)*.5 - time*.55); v=smoothstep(0.,.06,w)*smoothstep(.4,.06,w)*1.1+.05; c=hsv(vec3(fract(time*.04+depth*.06),.85,1.)); }
+        gl_FragColor=vec4(c*v*bright*1.05,1.);
+        #include <tonemapping_fragment>
+        #include <colorspace_fragment>
+      }`
+  });
+}
+
+const nodes=[], edges=[];
+for(let i=0;i<16;i++){
+  const outer=V4[i][3]>0, s=outer?40:30;
+  const m=new THREE.Mesh(new RoundedBoxGeometry(s,s,s,3,outer?6:5), outer?blackPla:whitePla);
+  m.quaternion.copy(ORIENT); model.add(m); nodes.push({m, r:s*.5});
+}
+for(const [a,b] of EDGES){
+  const g=new THREE.Group(); const ch=new THREE.Mesh(chanGeo,alu); const led=new THREE.Mesh(ledGeo,ledMat());
+  g.add(ch,led); model.add(g);
+  const flip = DEPTH[a]>DEPTH[b] ? 1 : 0;
+  led.material.uniforms.depth.value=Math.min(DEPTH[a],DEPTH[b]); led.material.uniforms.flip.value=flip;
+  edges.push({g, led, a, b, order:Math.min(DEPTH[a],DEPTH[b])+Math.random()*.6});
+}
+// stand: pole, controller box, hex base
+const stand=new THREE.Group(); model.add(stand);
+const pole=new THREE.Mesh(new THREE.CylinderGeometry(12,12,900,24), blackPla); stand.add(pole);
+const ctrl=new THREE.Mesh(new RoundedBoxGeometry(62,96,40,3,5), blackBox); stand.add(ctrl);
+const base=new THREE.Mesh(new THREE.CylinderGeometry(150,165,22,6), blackPla); stand.add(base);
+
+/* ============================================================
+   SCROLL CHOREOGRAPHY
+   ============================================================ */
+const S={cam:{r:2600,th:0,ph:0}, tgt:[0,0,0], shift:0, wire:1, build:0, ex:0, lbl:0, dim:0, user:0, halo:1, heroFade:0};
+const POSES={
+  hero:  {tgt:[0,20,0],    r:2700, th:.0,  ph:.05, shift:.2},
+  heroM: {tgt:[0,-420,0],  r:5200, th:.0,  ph:.05, shift:0},
+  build: {tgt:[0,-330,0],  r:3900, th:-.5, ph:.14, shift:.19},
+  buildM:{tgt:[0,-330,0],  r:5600, th:-.5, ph:.14, shift:0},
+  ex:    {tgt:[0,-360,0],  r:4200, th:-.75,ph:.2,  shift:.19},
+  exM:   {tgt:[0,-420,0],  r:7400, th:-.75,ph:.2,  shift:0},
+  rot:   {tgt:[0,-40,0],   r:2600, th:.25, ph:.1,  shift:.2},
+  rotM:  {tgt:[0,-120,0],  r:5200, th:.25, ph:.1,  shift:0},
+};
+let KEYS=[], FOCUS_RANGE=[0,0];
+const FOCUS={
+  frame:{ pose:()=>{ const p=nodeWorldTop(); model.localToWorld(p); return {tgt:[p.x,p.y-(mob()?-40:30),p.z], r:mob()?1100:560, th:.55, ph:.32, shift:mob()?0:.16}; }, v:{ex:0, lbl:0, halo:.25} },
+  light:{ pose:()=>({tgt:[0,-10,0], r:mob()?1900:1350, th:-.35, ph:.12, shift:mob()?0:.17}), v:{ex:0, lbl:0, halo:.4} },
+};
+let focus='overview', fKind='overview', fAmt=0;
+function buildKeys(){
+  const vh=innerHeight, top=id=>$(id).offsetTop, M=mob();
+  const H=M?POSES.heroM:POSES.hero, B=M?POSES.buildM:POSES.build, X=M?POSES.exM:POSES.ex, R=M?POSES.rotM:POSES.rot;
+  const k=(y,pose,v)=>({y,pose,v});
+  const Z={wire:0,build:1,ex:0,lbl:0,dim:0,user:0,halo:.6,heroFade:1};
+  FOCUS_RANGE=[top('#proj')+vh*.75, top('#patterns')-vh*.25];
+  KEYS=[
+    k(0,                     H, {...Z, wire:1, build:0, halo:1, heroFade:0}),
+    k(top('#proj')-vh*.45,   H, {...Z, wire:1, build:0, halo:1, heroFade:1}),
+    k(top('#proj')+vh*.35,   B, {...Z, wire:.35, build:.7, halo:.7}),
+    k(top('#proj')+vh*.7,    B, {...Z, wire:0, build:1, halo:.6}),
+    k(top('#proj')+vh*1.1,   X, {...Z, ex:1, lbl:1, halo:.5}),
+    k(top('#patterns')-vh*.3,     X, {...Z, ex:1, lbl:1, halo:.5}),
+    k(top('#patterns')+vh*.2,     R, {...Z, user:1, halo:.8}),
+    k(top('#plates')-vh*.4,  R, {...Z, user:1, halo:.8}),
+    k(top('#plates')+vh*.05, R, {...Z, user:1, halo:0, dim:1}),
+  ];
+}
+function sample(y){
+  let i=0; while(i<KEYS.length-2 && y>KEYS[i+1].y) i++;
+  const A=KEYS[i], B=KEYS[i+1], t=ss(clamp((y-A.y)/Math.max(1,B.y-A.y)));
+  for(const key in B.v) S[key]=lerp(A.v[key]??0,B.v[key]??0,t);
+  S.tgt=A.pose.tgt.map((v,j)=>lerp(v,B.pose.tgt[j],t));
+  S.cam.r=lerp(A.pose.r,B.pose.r,t); S.cam.th=lerp(A.pose.th,B.pose.th,t); S.cam.ph=lerp(A.pose.ph,B.pose.ph,t); S.shift=lerp(A.pose.shift,B.pose.shift,t);
+}
+
+/* ============================================================
+   LABELS — textbook-style lettered callouts
+   ============================================================ */
+const LABELS=[
+  {t:'Outer cube',   at:()=>edgeMid(pickEdge((wa,wb,m)=> wa>0&&wb>0 ? m.y : -1e9)), },
+  {t:'Inner cube',   at:()=>edgeMid(pickEdge((wa,wb,m)=> wa<0&&wb<0 ? m.x : -1e9)), },
+  {t:'Struts',       at:()=>edgeMid(pickEdge((wa,wb,m)=> wa*wb<0 ? -m.x+m.y*.2 : -1e9)), },
+  {t:'Outer joints', at:()=>nodePos(pickNode((w,p)=> w>0 ? p.x : -1e9)), },
+  {t:'Inner joints', at:()=>nodePos(pickNode((w,p)=> w<0 ? -p.x : -1e9)), },
+  {t:'Controller',   at:()=>ctrl.getWorldPosition(new THREE.Vector3()), },
+  {t:'Stand',        at:()=>pole.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0,120,0)), },
+];
+const labelsEl=$('#labels');
+const labelEls=LABELS.map((L,i)=>{ const el=document.createElement('div'); el.className='lbl'; el.innerHTML=`<i>${'abcdefgh'[i]}</i>${L.t}`; labelsEl.appendChild(el); return el; });
+let pickedE={}, pickedN={};
+function pickEdge(score){ const key=score.toString(); if(pickedE[key]!=null) return pickedE[key]; let best=-1,bs=-1e18; EDGES.forEach(([a,b],i)=>{ const m=P3[a].clone().add(P3[b]).multiplyScalar(.5); const s=score(W4[a],W4[b],m); if(s>bs){bs=s;best=i;} }); return pickedE[key]=best; }
+function pickNode(score){ const key=score.toString(); if(pickedN[key]!=null) return pickedN[key]; let best=-1,bs=-1e18; for(let i=0;i<16;i++){ const s=score(W4[i],P3[i]); if(s>bs){bs=s;best=i;} } return pickedN[key]=best; }
+function edgeMid(i){ return edges[i].g.getWorldPosition(new THREE.Vector3()); }
+function nodePos(i){ return nodes[i].m.getWorldPosition(new THREE.Vector3()); }
+function nodeWorldTop(){ let best=0; for(let i=0;i<16;i++) if(V4[i][3]>0 && P3[i].y>P3[best].y) best=i; return P3[best].clone(); }
+
+/* ============================================================
+   LOOP
+   ============================================================ */
+let lenis=null, mouse={x:0,y:0}, sm={x:0,y:0}, last=performance.now(), lastDraw=0, slow=0, fast=0;
+let thetaRaw=0, thetaNow=0, matTick=0;
+const tmpSph=new THREE.Spherical(), _v=new THREE.Vector3(), _m=new THREE.Matrix4(), _x=new THREE.Vector3(), _n=new THREE.Vector3(), _z=new THREE.Vector3();
+
+function frame(now){
+  requestAnimationFrame(frame);
+  const minGap=S.dim>.4?66:BASE_GAP;
+  if(now-lastDraw<minGap-1) return;
+  const gap=now-lastDraw; lastDraw=now;
+  if(minGap===BASE_GAP && gap<200){
+    if(gap>BASE_GAP*1.35){ if(++slow>45 && DPR>.75){ DPR=Math.max(.75,DPR-.25); renderer.setPixelRatio(DPR); slow=0; } }
+    else { slow=Math.max(0,slow-1); if(gap<BASE_GAP*1.1 && ++fast>600 && DPR<MAX_DPR){ DPR=Math.min(MAX_DPR,DPR+.25); renderer.setPixelRatio(DPR); fast=0; } }
+  }
+  const dt=Math.min(.05,(now-last)/1000); last=now; const t=now/1000;
+  const y=lenis?lenis.animatedScroll:scrollY;
+  sample(y);
+  const op=String(1-S.dim); renderer.domElement.style.opacity=op; ink.style.opacity=op;
+  if(S.dim>.985){ haloEl.style.opacity='0'; labelEls.forEach(el=>el.style.opacity='0'); updateHead(y); return; }   // hidden: skip all rendering
+
+  // focus close-ups inside §1
+  if(focus!=='overview' && (y<FOCUS_RANGE[0]-2 || y>FOCUS_RANGE[1])) setFocus('overview');
+  if(focus!=='overview') fKind=focus;
+  fAmt+=((focus!=='overview'?1:0)-fAmt)*Math.min(1,dt*2.4);
+  if(fAmt>.001 && FOCUS[fKind]){
+    const F=FOCUS[fKind], P=F.pose(), e=ss(clamp(fAmt));
+    for(const k in F.v) S[k]=lerp(S[k],F.v[k],e);
+    S.tgt=S.tgt.map((v,j)=>lerp(v,P.tgt[j],e)); S.cam.r=lerp(S.cam.r,P.r,e); S.cam.th=lerp(S.cam.th,P.th,e); S.cam.ph=lerp(S.cam.ph,P.ph,e); S.shift=lerp(S.shift,P.shift,e);
+  }
+
+  // 4D angle: free-running in the hero, settles to a quarter-turn as the model is built, user-driven in §2
+  thetaRaw+=dt*(RM?.08:.32)*(1-S.build);
+  // settle back to a whole turn (not a quarter-turn: that swaps the inner and outer cells),
+  // finishing before any joints appear so the white joints are always the inner cube
+  const q=Math.PI*2, resid=thetaRaw-Math.round(thetaRaw/q)*q;
+  const thetaScroll=thetaRaw-resid*ss(clamp(S.build*4));
+  thetaNow=lerp(thetaScroll, Math.round(thetaScroll/(Math.PI*2))*Math.PI*2, S.user);
+  project(thetaNow);
+
+  // camera
+  sm.x+=(mouse.x-sm.x)*.05; sm.y+=(mouse.y-sm.y)*.05;
+  const par=RM?0:.06;
+  tmpSph.set(S.cam.r, Math.PI/2-S.cam.ph-sm.y*par, S.cam.th+sm.x*par);
+  const tg=_v.set(...S.tgt);
+  camera.position.setFromSpherical(tmpSph).add(tg); camera.lookAt(tg);
+  const liftY=mob()?innerHeight*.21*clamp(S.heroFade)*(1-S.dim):0;
+  camera.setViewOffset(innerWidth,innerHeight,-S.shift*innerWidth,liftY,innerWidth,innerHeight);
+  model.rotation.y=RM?0:t*.12*(1-S.user*.7);
+
+  // parts: construction (build), explode (ex)
+  const b=S.build, exf=1+.26*S.ex;
+  for(let i=0;i<16;i++){
+    const n=nodes[i], appear=clamp((b-.25)*3.4-(DEPTH[i]*.12));
+    n.m.position.copy(P3[i]).multiplyScalar(exf);
+    n.m.scale.setScalar(Math.max(.0001,ss(appear)));
+    n.m.visible=appear>0;
+  }
+  const cen=_z.set(0,0,0);
+  for(const e of edges){
+    const A=P3[e.a], B=P3[e.b];
+    _z.subVectors(B,A); const L=_z.length(); _z.divideScalar(L||1);
+    const inset=(nodes[e.a].r+nodes[e.b].r)*.8, len=Math.max(1,L-inset);
+    const grow=clamp((b-.28)*2.6-e.order*.14);
+    const mid=_v.addVectors(A,B).multiplyScalar(.5);
+    _n.copy(mid).sub(_z.clone().multiplyScalar(mid.dot(_z)));
+    if(_n.lengthSq()<1e-4){ _n.set(0,1,0).cross(_z); if(_n.lengthSq()<1e-4) _n.set(1,0,0).cross(_z); }
+    _n.normalize(); _x.crossVectors(_n,_z);
+    _m.makeBasis(_x,_n,_z); e.g.quaternion.setFromRotationMatrix(_m);
+    e.g.position.copy(mid).multiplyScalar(1+.26*S.ex*.7);
+    e.g.scale.set(1,1,Math.max(.001,len*ss(grow)));
+    e.g.visible=grow>0;
+    const wa=W4[e.a], wb=W4[e.b];
+    e.led.material.uniforms.grp.value = (wa>.3&&wb>.3)?0 : (wa<-.3&&wb<-.3)?1 : 2;
+  }
+  const bottomY=P3[BOTTOM].y*exf;
+  const sAppear=ss(clamp((b-.25)*2.5));
+  pole.position.set(0,bottomY-20-450-S.ex*180,0); pole.scale.set(1,Math.max(.001,sAppear),1); pole.visible=sAppear>0;
+  ctrl.position.set(S.ex*150,bottomY-150-S.ex*110,0); ctrl.scale.setScalar(Math.max(.001,sAppear)); ctrl.visible=sAppear>0;
+  base.position.set(0,bottomY-20-900-11-S.ex*240,0); base.scale.setScalar(Math.max(.001,sAppear)); base.visible=sAppear>0;
+
+  LEDU.time.value=t; LEDU.bright.value=lerp(.35,1,clamp(b*1.4));
+
+  renderer.render(scene,camera);
+  drawInk(t);
+  placeHalo();
+  if(S.heroFade<1 && now-matTick>90){ matTick=now; writeMatrix(); }
+  updateHead(y);
+}
+
+/* ---------- ink layer: the mathematical figure + label leaders ---------- */
+const scr=Array.from({length:16},()=>({x:0,y:0}));
+function toScreen(p,o){ _v.copy(p).applyMatrix4(model.matrixWorld).project(camera); o.x=(_v.x*.5+.5)*innerWidth; o.y=(-_v.y*.5+.5)*innerHeight; return _v.z<1; }
+const PANELS={ex:$('#exPanel')};
+function drawInk(t){
+  const w=innerWidth,h=innerHeight;
+  ictx.setTransform(IDPR,0,0,IDPR,0,0);
+  ictx.clearRect(0,0,w,h);
+  const a=S.wire;
+  if(a>.01){
+    for(let i=0;i<16;i++) toScreen(P3[i],scr[i]);
+    const c={x:0,y:0}; toScreen(_n.set(0,0,0),c);
+    let R=0; for(let i=0;i<16;i++) R=Math.max(R,Math.hypot(scr[i].x-c.x,scr[i].y-c.y));
+    // construction circles
+    ictx.lineWidth=.8; ictx.strokeStyle=`rgba(168,131,47,${.55*a})`;
+    ictx.beginPath(); ictx.arc(c.x,c.y,R*1.06,0,Math.PI*2); ictx.stroke();
+    ictx.setLineDash([2,5]); ictx.lineDashOffset=-t*6;
+    ictx.beginPath(); ictx.arc(c.x,c.y,R*1.18,0,Math.PI*2); ictx.stroke();
+    ictx.setLineDash([]);
+    ictx.beginPath(); ictx.arc(c.x,c.y,R*.44,0,Math.PI*2); ictx.stroke();
+    // edges: ink for the near cell, gold for the far one, weight by 4D depth
+    for(const [i,j] of EDGES){
+      const wd=(W4[i]+W4[j])*.5, far=wd<0;
+      ictx.lineWidth=far?1:1.1+.9*clamp((wd+1)/2);
+      ictx.strokeStyle=far?`rgba(168,131,47,${a*(.55+.45*(-wd))})`:`rgba(29,27,24,${a*(.45+.55*clamp(wd))})`;
+      ictx.beginPath(); ictx.moveTo(scr[i].x,scr[i].y); ictx.lineTo(scr[j].x,scr[j].y); ictx.stroke();
+    }
+    for(let i=0;i<16;i++){
+      const r=W4[i]>0?3.2:2.4;
+      ictx.beginPath(); ictx.arc(scr[i].x,scr[i].y,r,0,Math.PI*2);
+      ictx.fillStyle=`rgba(243,238,227,${a})`; ictx.fill();
+      ictx.lineWidth=1; ictx.strokeStyle=W4[i]>0?`rgba(29,27,24,${a})`:`rgba(168,131,47,${a})`; ictx.stroke();
+    }
+  }
+  // lettered callouts
+  const v=clamp(S.lbl*1.6-.6);
+  if(v<=0){ labelEls.forEach(el=>el.style.opacity='0'); return; }
+  const pr=PANELS.ex.getBoundingClientRect(), placed=[];
+  // figure centre + radius on screen: callouts sit on a ring just outside it
+  const fc={x:0,y:0}; toScreen(_n.set(0,0,0),fc);
+  let FR=0; for(let i=0;i<16;i++){ toScreen(P3[i],scr[i]); FR=Math.max(FR,Math.hypot(scr[i].x-fc.x,scr[i].y-fc.y)); }
+  FR*=1+.26*S.ex;
+  ictx.lineWidth=.8; ictx.strokeStyle='rgba(29,27,24,.7)'; ictx.fillStyle='#a8832f';
+  LABELS.forEach((L,i)=>{
+    const el=labelEls[i], lv=clamp(v*(LABELS.length*.3+1)-i*.3);
+    const p=L.at(); _v.copy(p).project(camera);
+    if(lv<=0||_v.z>1){ el.style.opacity='0'; return; }
+    const ax=(_v.x*.5+.5)*w, ay=(-_v.y*.5+.5)*h, lw=el._w||140, lh=24;
+    let ang=Math.atan2(ay-fc.y, ax-fc.x), g=null;
+    // try the natural angle, then fan out around the ring
+    for(const da of [0,.18,-.18,.36,-.36,.54,-.54,.72,-.72]){
+      const a2=ang+da, rr=Math.max(FR*1.1, Math.hypot(ax-fc.x,ay-fc.y)+36);
+      const ex=fc.x+Math.cos(a2)*rr, ey=fc.y+Math.sin(a2)*rr, d=Math.cos(a2)>=0?1:-1;
+      const x0=d>0?ex+30:ex-30-lw, box={x0,x1:x0+lw,y0:ey-lh/2,y1:ey+lh/2,ex,ey,d};
+      const hitP=pr.bottom>0&&pr.top<h&&box.x1>pr.left-10&&box.x0<pr.right+10&&box.y1>pr.top-10&&box.y0<pr.bottom+10;
+      const hitL=placed.some(r=>box.x1>r.x0-6&&box.x0<r.x1+6&&box.y1>r.y0-4&&box.y0<r.y1+4);
+      if(!hitP&&!hitL&&box.x0>8&&box.x1<w-8&&box.y0>54&&box.y1<h-8){ g=box; break; }
+    }
+    if(!g){ el.style.opacity='0'; return; }
+    placed.push(g);
+    ictx.globalAlpha=lv;
+    ictx.beginPath(); ictx.arc(ax,ay,2.6,0,Math.PI*2); ictx.fill();
+    ictx.beginPath(); ictx.moveTo(ax,ay); ictx.lineTo(g.ex,g.ey); ictx.lineTo(g.ex+g.d*24,g.ey); ictx.stroke();
+    ictx.globalAlpha=1;
+    el.style.opacity=String(lv);
+    el.style.transform=`translate(${g.x0}px,${g.ey-11}px)`;
+  });
+}
+
+/* ---------- sacred-geometry halo follows the figure ---------- */
+const haloEl=$('#halo');
+function placeHalo(){
+  const c={x:0,y:0}; toScreen(_n.set(0,0,0),c);
+  const e={x:0,y:0}; toScreen(_x.set(0,K*D/(D-1)*1.73,0),e);
+  const R=Math.hypot(e.x-c.x,e.y-c.y);
+  haloEl.style.transform=`translate(${c.x}px,${c.y}px) scale(${Math.max(.2,R/300)})`;
+  haloEl.style.opacity=String(S.halo*(1-S.dim));
+}
+
+/* ---------- live rotation matrix ---------- */
+const fmt=v=>(Math.abs(v)<.005?0:v).toFixed(2).replace('-','−');
+function writeMatrix(){
+  const c=Math.cos(thetaNow), s=Math.sin(thetaNow);
+  const M=[[c,0,0,-s],[0,1,0,0],[0,0,1,0],[s,0,0,c]];
+  const html=M.flat().map(v=>`<span>${fmt(v)}</span>`).join('');
+  $('#mat1').innerHTML=html;
+}
+
+/* ---------- running head ---------- */
+const secs=[...document.querySelectorAll('[data-sec]')]; let LAY={tops:[]}, lastSec='';
+function measure(){ LAY.tops=secs.map(s=>s.offsetTop); labelEls.forEach(el=>{ el._w=el.offsetWidth; }); }
+function updateHead(y){
+  let cur=secs[0]; secs.forEach((s,i)=>{ if(LAY.tops[i]-innerHeight*.5<=y) cur=s; });
+  if(cur.dataset.sec!==lastSec){ $('#headSec').textContent=cur.dataset.sec; lastSec=cur.dataset.sec; }
+  $('.titleblock').style.opacity=String(1-clamp(S.heroFade*1.4));
+  $('.fig1').style.opacity=String(1-clamp(S.heroFade*1.6));
+}
+
+/* ============================================================
+   UI
+   ============================================================ */
+function setFocus(f){
+  focus=f;
+  document.querySelectorAll('#focusTabs button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.f===f));
+  document.querySelectorAll('#exPanel .fpane').forEach(p=>{ p.hidden=p.dataset.f!==f; });
+}
+$('#focusTabs').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  const y=lenis?lenis.animatedScroll:scrollY;
+  if(b.dataset.f!=='overview' && y<FOCUS_RANGE[0]){ lenis?lenis.scrollTo(FOCUS_RANGE[0]+4,{duration:1.2}):scrollTo(0,FOCUS_RANGE[0]+4); }
+  setFocus(b.dataset.f);
+});
+$('#modes').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  document.querySelectorAll('#modes button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+  LEDU.mode.value=+b.dataset.m; $('#modev').textContent=b.textContent;
+});
+
+// media fades in when it scrolls into view; videos only play while visible
+const pmIO=new IntersectionObserver(es=>es.forEach(e=>{
+  const v=e.target.querySelector('video');
+  if(e.isIntersecting) e.target.classList.add('in');
+  if(v){ e.isIntersecting?v.play().catch(()=>{}):v.pause(); }
+}),{threshold:.2});
+document.querySelectorAll('[data-pm]').forEach(el=>pmIO.observe(el));
+
+// horizontal plates
+const plates=$('#plates'), track=$('#track'), SPEED=1.8;
+function sizePlates(){ if(mob()){ plates.style.height='auto'; return; } plates.style.height=(innerHeight+Math.max(0,track.scrollWidth-innerWidth)/SPEED)+'px'; }
+function updatePlates(y){ if(mob()) return; const ex=track.scrollWidth-innerWidth; track.style.transform=`translate3d(${-clamp((y-plates.offsetTop)*SPEED/Math.max(1,ex))*ex}px,0,0)`; }
+
+addEventListener('pointermove',e=>{ mouse.x=e.clientX/innerWidth*2-1; mouse.y=e.clientY/innerHeight*2-1; });
+
+function resize(){
+  const w=Math.max(8,innerWidth), h=Math.max(8,innerHeight);
+  renderer.setSize(w,h); camera.aspect=w/h; camera.updateProjectionMatrix();
+  IDPR=Math.min(devicePixelRatio||1,2); ink.width=w*IDPR; ink.height=h*IDPR; ink.style.width=w+'px'; ink.style.height=h+'px';
+  buildKeys(); sizePlates(); measure();
+}
+
+(async()=>{
+  try{ await document.fonts.ready; }catch(e){}
+  project(0); resize(); writeMatrix();
+  if(window.Lenis && !RM){
+    lenis=new Lenis({lerp:.09, smoothWheel:true});
+    lenis.on('scroll',({animatedScroll})=>updatePlates(animatedScroll));
+    const raf=t=>{ lenis.raf(t); requestAnimationFrame(raf); }; requestAnimationFrame(raf);
+  }
+  addEventListener('scroll',()=>{ if(!lenis) updatePlates(scrollY); },{passive:true});
+  requestAnimationFrame(frame);
+})();
+addEventListener('resize',resize);
+</script>
+</body>
+</html>

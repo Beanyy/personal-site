@@ -1,0 +1,899 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hyperwheel</title>
+<meta name="description" content="A counter-rotating, LED-lit festival totem. Designed in Fusion 360 and 3D printed. Built in 2021.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' shape-rendering='crispEdges'%3E%3Cpath d='M5 1h6v1h2v2h1v6h-1v2h-2v1H9v3H7v-3H5v-1H3v-2H2V4h1V2h2z' fill='%23ff4fa3'/%3E%3Cpath d='M6 4h4v1h1v4h-1v1H7V9h2V6H7v2H6z' fill='%233cf2ff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07040f; --bg2:#120a24; --ink:#efe6ff; --mute:#9d8fbf; --line:#3a2c5c;
+  --pink:#ff4fa3; --cyan:#3cf2ff; --lime:#9dff5c; --sun:#ffd23f; --violet:#9b5cff;
+  --px:4px;
+  --cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h3v3H0zM3 3h3v3H3zM6 6h3v3H6zM9 9h3v3H9zM0 3h3v15H0zM3 15h3v3H3zM6 12h3v3H6zM9 12h6v3H9z' fill='%2307040f'/%3E%3Cpath d='M3 6h3v9H3zM6 9h3v3H6z' fill='%23efe6ff'/%3E%3C/svg%3E") 0 0, auto;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg);cursor:var(--cursor)}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+body{background:var(--bg);color:var(--ink);font-family:"VT323",monospace;font-size:24px;line-height:1.25;overflow-x:hidden;-webkit-font-smoothing:none}
+a,button,input{cursor:inherit}
+::selection{background:var(--pink);color:var(--bg)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ---------- stage (fixed 3D canvas) ---------- */
+#stage{position:fixed;inset:0;overflow:hidden;z-index:0;pointer-events:none}
+#stage canvas{position:absolute;left:0;top:0}
+#stage canvas+canvas{image-rendering:pixelated;image-rendering:crisp-edges}
+#labels{position:fixed;inset:0;z-index:2;pointer-events:none;overflow:hidden}
+.lbl{position:absolute;left:0;top:0;white-space:nowrap;font-family:"Silkscreen",monospace;font-size:14px;line-height:1.1;color:var(--ink);will-change:transform,clip-path}
+.lbl b{display:block;font-weight:700;font-size:15px;letter-spacing:.04em}
+.lbl i{font-style:normal;color:var(--mute);font-size:12px}
+.lbl .n{color:var(--sun)}
+
+/* ---------- HUD ---------- */
+.hud{position:fixed;z-index:5;background:rgba(7,4,15,.72);padding:3px 8px;font-family:"Silkscreen",monospace;font-size:13px;letter-spacing:.06em;color:var(--mute);pointer-events:none;mix-blend-mode:normal}
+.hud.tl{left:20px;top:18px}.hud.tr{right:20px;top:18px;text-align:right}
+.hud.bl{left:20px;bottom:16px}.hud.br{right:20px;bottom:16px;text-align:right}
+.hud .hi{color:var(--ink)}
+.hud a{pointer-events:auto;text-decoration:none}
+.hud a:hover{color:var(--sun)}
+.hud a:focus-visible{outline:3px solid var(--cyan);outline-offset:4px}
+.bar{display:inline-flex;gap:3px;vertical-align:middle;margin-left:8px}
+.bar i{width:6px;height:10px;background:var(--line)}
+.bar i.on{background:var(--pink)}
+.blink{animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* ---------- loader ---------- */
+#boot{position:fixed;inset:0;z-index:50;background:var(--bg);display:grid;place-items:center;transition:opacity .5s steps(5)}
+#boot.done{opacity:0;pointer-events:none}
+#boot pre{font-family:"VT323",monospace;font-size:22px;color:var(--mute);min-width:min(520px,86vw);white-space:pre-wrap}
+#boot .pbar{margin-top:14px;height:16px;border:0;box-shadow:0 -3px var(--ink),0 3px var(--ink),-3px 0 var(--ink),3px 0 var(--ink);position:relative;min-width:min(520px,86vw)}
+#boot .pbar i{position:absolute;left:3px;top:3px;bottom:3px;width:0;background:repeating-linear-gradient(90deg,var(--pink) 0 10px,transparent 10px 13px)}
+
+/* ---------- story layout ---------- */
+main{position:relative;z-index:3}
+section{position:relative}
+#hero{height:100vh}
+#explode{height:260vh}
+#play{height:150vh}
+
+.hero-copy{position:absolute;left:6vw;bottom:12vh;max-width:560px}
+.eyebrow{font-family:"Silkscreen",monospace;font-size:14px;letter-spacing:.14em;color:var(--sun);text-transform:uppercase}
+.hero-copy p{margin-top:14px;font-size:28px;color:var(--ink)}
+.specline{display:flex;gap:36px;margin-top:20px;font-family:"Silkscreen",monospace;font-size:12px;letter-spacing:.08em;color:var(--mute)}
+.specline b{display:block;margin-bottom:6px;font-family:"Press Start 2P",monospace;font-weight:400;font-size:18px;letter-spacing:0;color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+.chip{font-family:"Silkscreen",monospace;font-size:13px;padding:4px 10px;color:var(--ink);background:var(--bg2);box-shadow:0 -3px var(--line),0 3px var(--line),-3px 0 var(--line),3px 0 var(--line)}
+.irl{position:absolute;right:5vw;bottom:9vh;width:clamp(170px,17vw,260px);z-index:1}
+.irl .pm{aspect-ratio:720/708;box-shadow:0 -4px var(--ink),0 4px var(--ink),-4px 0 var(--ink),4px 0 var(--ink),10px 10px 0 4px rgba(0,0,0,.55)}
+.irl .tag{position:absolute;top:-16px;left:14px;z-index:2;font-family:"Silkscreen",monospace;font-size:13px;padding:2px 8px;background:var(--pink);color:var(--bg);letter-spacing:.08em}
+.cue{position:absolute;left:50%;bottom:4vh;transform:translateX(-50%);font-family:"Silkscreen",monospace;font-size:13px;color:var(--mute);text-align:center;letter-spacing:.12em}
+.cue span{display:block;margin:8px auto 0;width:12px;height:12px;background:var(--pink);clip-path:polygon(0 0,100% 0,100% 33%,66% 33%,66% 66%,33% 66%,33% 33%,0 33%);animation:bob 1s steps(2) infinite}
+@keyframes bob{50%{transform:translateY(6px)}}
+
+/* pixel dialog panel */
+.panel{position:sticky;top:18vh;width:min(440px,calc(100vw - 32px));margin-left:6vw;padding:22px 24px 24px;background:rgba(12,7,26,.92);
+  box-shadow:0 -4px var(--ink),0 4px var(--ink),-4px 0 var(--ink),4px 0 var(--ink),
+             inset 0 4px var(--bg2),inset 0 -4px #05030b, 8px 8px 0 4px rgba(0,0,0,.5)}
+.panel.right{margin-left:auto;margin-right:6vw}
+.panel .tag{position:absolute;top:-16px;left:18px;font-family:"Silkscreen",monospace;font-size:13px;padding:2px 8px;background:var(--pink);color:var(--bg);letter-spacing:.08em}
+.panel h2{font-family:"Press Start 2P",monospace;font-size:20px;line-height:1.45;margin:6px 0 14px;color:var(--ink)}
+.panel p{color:#d7cdef}
+.panel p+p{margin-top:10px}
+.panel em{font-style:normal;color:var(--cyan)}
+.panel .more{display:inline-block;margin-top:14px;font-family:"Silkscreen",monospace;font-size:12px;color:var(--mute)}
+.spacer{height:70vh}
+
+/* type-on */
+[data-type] .c{opacity:0}
+[data-type] .c.on{opacity:1}
+
+/* controls */
+.ctl{margin-top:18px}
+.ctl label{display:flex;justify-content:space-between;font-family:"Silkscreen",monospace;font-size:13px;color:var(--mute);margin-bottom:10px}
+.ctl label b{color:var(--sun);font-weight:400}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:20px;background:transparent}
+input[type=range]::-webkit-slider-runnable-track{height:8px;background:repeating-linear-gradient(90deg,var(--line) 0 6px,transparent 6px 9px)}
+input[type=range]::-moz-range-track{height:8px;background:repeating-linear-gradient(90deg,var(--line) 0 6px,transparent 6px 9px)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:24px;margin-top:-8px;background:var(--pink);border:0;box-shadow:inset -4px -4px #b02a6e,inset 4px 4px #ff9ccc}
+input[type=range]::-moz-range-thumb{width:16px;height:24px;background:var(--pink);border:0;border-radius:0}
+input[type=range]:focus-visible{outline:3px solid var(--cyan);outline-offset:4px}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modes button{font-family:"Silkscreen",monospace;font-size:13px;padding:10px 8px;color:var(--ink);background:var(--bg2);border:0;
+  box-shadow:0 -3px var(--line),0 3px var(--line),-3px 0 var(--line),3px 0 var(--line),inset 0 -3px #05030b;transition:transform .1s steps(1)}
+.modes button:hover{color:var(--sun)}
+.modes button:active{transform:translateY(3px)}
+.modes button[aria-pressed=true]{background:var(--pink);color:var(--bg);box-shadow:0 -3px var(--ink),0 3px var(--ink),-3px 0 var(--ink),3px 0 var(--ink),inset 0 -3px #b02a6e}
+.modes button:focus-visible{outline:3px solid var(--cyan);outline-offset:4px}
+
+/* polaroid pixel photos */
+.snaps{display:flex;gap:22px;margin-top:20px}
+.snap{flex:1;min-width:0}
+.snap .frame{position:relative;aspect-ratio:4/3;background:#000;box-shadow:0 -3px var(--ink),0 3px var(--ink),-3px 0 var(--ink),3px 0 var(--ink)}
+.snap figcaption{margin-top:8px;font-family:"Silkscreen",monospace;font-size:11px;color:var(--mute)}
+
+/* depixelating media */
+.pm{position:relative;overflow:hidden;background:#000}
+.pm>img,.pm>video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.pm>img,.pm>video{opacity:0;transform:translateY(14px) scale(1.02);transition:opacity .8s ease,transform 1s cubic-bezier(.2,.7,.2,1)}
+.pm.in>img,.pm.in>video{opacity:1;transform:none}
+
+/* build log */
+.tabs{grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 18px}
+.tabs button{padding:9px 4px;font-size:12px}
+.fpane{animation:fpin .45s ease}
+.fpane .shot{margin-top:16px}
+.fpane .shots{margin-top:16px}
+@keyframes fpin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.shots{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:4px}
+.shot.big{grid-column:1/-1}
+.shot .frame{position:relative;aspect-ratio:4/3;background:#000;box-shadow:0 -3px var(--ink),0 3px var(--ink),-3px 0 var(--ink),3px 0 var(--ink)}
+.shot.big .frame{aspect-ratio:16/10}
+.shot figcaption{margin-top:8px;font-family:"Silkscreen",monospace;font-size:11px;color:var(--mute)}
+
+/* ---------- gallery ---------- */
+#wild{position:relative;z-index:3}
+.wild-sticky{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;flex-direction:column;justify-content:center}
+.wild-head{padding:0 6vw;margin-bottom:4vh;display:flex;align-items:flex-end;justify-content:space-between;gap:20px}
+.wild-head h2{font-family:"Press Start 2P",monospace;font-size:clamp(22px,3.4vw,46px);line-height:1.2}
+.wild-head h2 span{color:var(--pink)}
+.wild-head p{max-width:360px;color:var(--mute);font-size:22px}
+.track{display:flex;gap:40px;padding:0 6vw;will-change:transform;align-items:flex-end}
+.card{flex:none;height:min(58vh,560px)}
+.card .pm{height:100%;box-shadow:0 -4px var(--ink),0 4px var(--ink),-4px 0 var(--ink),4px 0 var(--ink)}
+.card figcaption{display:flex;justify-content:space-between;gap:16px;margin-top:14px;font-family:"Silkscreen",monospace;font-size:12px;color:var(--mute);letter-spacing:.06em}
+.card figcaption b{color:var(--ink);font-weight:400}
+
+/* ---------- stats / footer ---------- */
+
+@media (max-width:860px){
+  .irl{top:30vh;bottom:auto;right:16px;width:110px}
+  body{font-size:22px}
+  .hero-copy{left:16px;right:16px;bottom:14vh}
+  .hero-copy p{font-size:24px}
+  .panel,.panel.right,.panel.wide{position:sticky;top:56vh;margin:0 12px;width:auto;max-height:calc(44vh - 14px);overflow-y:auto;overscroll-behavior:contain;padding:18px 18px 18px}
+  .panel h2{font-size:14px;margin:4px 0 12px}
+  .panel .tag{position:sticky;top:-18px;display:inline-block;margin:-4px 0 6px}
+  .tabs{margin-bottom:12px}
+  .fpane .shots,.fpane .shot{margin-top:12px}
+  .fpane .frame{aspect-ratio:auto!important;height:120px}
+  #explode .spacer,#play .spacer{height:60vh!important}
+  .hud.bl,.hud.br,.hud .crumb{display:none}
+  .snaps{gap:14px}
+  .wild-sticky{position:relative;height:auto;padding:14vh 0 0}
+  .wild-head{flex-direction:column;align-items:flex-start;padding:0 16px}
+  .track{flex-direction:column;align-items:stretch;padding:0 16px;transform:none!important}
+  .card{height:auto}
+  .card .pm{height:auto;aspect-ratio:var(--ar)}
+}
+@media (prefers-reduced-motion:reduce){
+  .blink,.cue span{animation:none}
+  .pm>img,.pm>video{transform:none;transition:opacity .3s}
+}
+</style>
+
+<script type="importmap">
+{"imports":{
+  "three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+  "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+}}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+</head>
+<body>
+
+<div id="boot" aria-hidden="true">
+  <div>
+    <pre id="bootlog">&gt; HYPERWHEEL.F3D
+&gt; mounting parts...</pre>
+    <div class="pbar"><i id="pfill"></i></div>
+  </div>
+</div>
+
+<div id="stage"></div>
+<div id="labels"></div>
+
+<div class="hud tl"><a class="hi home" href="../">← HOME</a><span class="crumb"> / HYPERWHEEL</span></div>
+<div class="hud tr"><span id="hudSec" class="hi">00 BOOT</span><span class="bar" id="hudBar"></span></div>
+
+<main>
+  <section id="hero" data-sec="01 HYPERWHEEL">
+    <h1 class="sr">Hyperwheel</h1>
+    <div class="hero-copy" id="heroCopy">
+      <div class="eyebrow">Personal project · Built in 2021</div>
+      <p>A counter-rotating LED festival totem. Designed in Fusion 360, 3D printed and wired by me.</p>
+      <div class="specline"><span><b>603 mm</b>WHEEL DIAMETER</span><span><b>2 lb</b>TOTAL WEIGHT</span></div>
+      <div class="chips"><span class="chip">FUSION 360</span><span class="chip">3D PRINTING</span><span class="chip">STM32</span><span class="chip">BLE</span><span class="chip">ADDRESSABLE LEDS</span></div>
+    </div>
+    <figure class="irl" id="irl"><span class="tag">IRL</span><div class="pm" data-pm><video src="media/home.mp4" poster="media/home.jpg" muted loop playsinline autoplay preload="auto" aria-label="The real wheel spinning and changing colour"></video></div></figure>
+    <div class="cue" id="cue">SCROLL TO DISASSEMBLE<span></span></div>
+  </section>
+
+  <section id="explode" data-sec="02 TEARDOWN">
+    <div class="spacer" style="height:35vh"></div>
+    <div class="panel" id="exPanel" data-lenis-prevent>
+      <span class="tag">STAGE 01</span>
+      <h2>Exploded view</h2>
+      <div class="modes tabs" id="focusTabs">
+        <button data-f="overview" aria-pressed="true">OVERVIEW</button>
+        <button data-f="drive" aria-pressed="false">DRIVETRAIN</button>
+        <button data-f="elec" aria-pressed="false">ELECTRONICS</button>
+      </div>
+      <div class="fpane" data-f="overview">
+        <p data-type>The Fusion 360 model: two lattice wheels, a coaxial shaft, three bevel gears, a motor, a bearing housing and an electronics bay. Every part was 3D printed.</p>
+      </div>
+      <div class="fpane" data-f="drive" hidden>
+        <p>The motor drives one bevel gear meshed between two facing gears, so they spin in opposite directions. Coaxial shafts carry each one to its own wheel.</p>
+        <figure class="shot"><div class="frame pm" data-pm style="aspect-ratio:16/10"><img src="media/20210817_020037.jpg" alt="The printed bevel gear drivetrain on the bench" loading="lazy"></div></figure>
+      </div>
+      <div class="fpane" data-f="elec" hidden>
+        <p>A custom carrier board for an STM32 Blue Pill, with a BLE module, motor driver, buck converter and two LED channels.</p>
+        <div class="shots">
+          <figure class="shot"><div class="frame pm" data-pm><img src="media/20210811_203941.jpg" alt="Custom black carrier PCB with an STM32 Blue Pill" loading="lazy"></div></figure>
+          <figure class="shot"><div class="frame pm" data-pm><img src="media/20210817_020110.jpg" alt="Wired electronics bay with motor driver and buck converter" loading="lazy"></div></figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="play" data-sec="03 CONTROLS">
+    <div class="spacer" style="height:25vh"></div>
+    <div class="panel" data-lenis-prevent>
+      <span class="tag" style="background:var(--violet)">STAGE 02</span>
+      <h2>Take the controls</h2>
+      <p data-type>On the real wheel, speed and lighting are set over Bluetooth.</p>
+      <div class="ctl">
+        <label for="rpm">MOTOR THROTTLE <b id="rpmv">35%</b></label>
+        <input id="rpm" type="range" min="0" max="100" value="35">
+      </div>
+      <div class="ctl">
+        <label>LED PATTERN <b id="modev">RAINBOW</b></label>
+        <div class="modes" id="modes">
+          <button data-m="0" aria-pressed="true">RAINBOW</button>
+          <button data-m="1" aria-pressed="false">CYCLE</button>
+          <button data-m="2" aria-pressed="false">BREATHE</button>
+          <button data-m="3" aria-pressed="false">CHASE</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<section id="wild" data-sec="04 IN THE WILD">
+  <div class="wild-sticky">
+    <div class="wild-head">
+      <h2>IN THE <span>WILD</span></h2>
+    </div>
+    <div class="track" id="track">
+      <figure class="card" style="--ar:540/960"><div class="pm" data-pm style="aspect-ratio:540/960"><video src="media/edc.mp4" poster="media/edc.jpg" muted loop playsinline preload="metadata"></video></div></figure>
+      <figure class="card" style="--ar:600/270"><div class="pm" data-pm style="aspect-ratio:600/270"><img src="media/20211023_001015.jpg" alt="Holding the lit totem at a festival" loading="lazy"></div></figure>
+      <figure class="card" style="--ar:540/960"><div class="pm" data-pm style="aspect-ratio:540/960"><video src="media/stage.mp4" poster="media/stage.jpg" muted loop playsinline preload="metadata"></video></div></figure>
+      <figure class="card" style="--ar:540/960"><div class="pm" data-pm style="aspect-ratio:540/960"><video src="media/spin.mp4" poster="media/spin.jpg" muted loop playsinline preload="metadata"></video></div></figure>
+      <figure class="card" style="--ar:600/400"><div class="pm" data-pm style="aspect-ratio:600/400"><img src="media/DSC00606.jpg" alt="The totem glowing against a wall at home" loading="lazy"></div></figure>
+      <figure class="card" style="--ar:540/960"><div class="pm" data-pm style="aspect-ratio:540/960"><video src="media/colors.mp4" poster="media/colors.jpg" muted loop playsinline preload="metadata"></video></div></figure>
+      <figure class="card" style="--ar:320/568"><div class="pm" data-pm style="aspect-ratio:320/568"><video src="media/day.mp4" poster="media/day.jpg" muted loop playsinline preload="metadata"></video></div></figure>
+    </div>
+  </div>
+</section>
+
+
+<script type="module">
+import * as THREE from 'three';
+import { STLLoader } from 'three/addons/loaders/STLLoader.js';
+import { toCreasedNormals } from 'three/addons/utils/BufferGeometryUtils.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $ = s => document.querySelector(s);
+const clamp = (v,a=0,b=1)=>Math.min(b,Math.max(a,v));
+const lerp = (a,b,t)=>a+(b-a)*t;
+const ss = t => t*t*(3-2*t);
+
+/* ============================================================
+   PARTS: name → material, spin group, explode vector (Fusion mm,
+   +x = down, +z = toward viewer), explode category
+   ============================================================ */
+const PARTS = {
+  WheelFront_CenterCircle:{m:'hub',    g:'front', ex:[0,0,640], c:'w'},
+  WheelFront_Ring:        {m:'lattice',g:'front', ex:[0,0,540], c:'w'},
+  WheelFront_Wing:        {m:'wing',   g:'front', ex:[0,0,450], c:'w'},
+  WheelBack_CenterCircle: {m:'hub',    g:'back',  ex:[0,0,350], c:'w'},
+  WheelBack_Ring:         {m:'lattice',g:'back',  ex:[0,0,265], c:'w'},
+  WheelBack_Wing:         {m:'wing',   g:'back',  ex:[0,0,190], c:'w'},
+  CenterShaft:            {m:'white',  g:'front', ex:[0,0,115], c:'d'},
+  FrontGear:              {m:'white',  g:'back',  ex:[0,0,55],  c:'d'},
+  RearGear:               {m:'white',  g:'front', ex:[0,0,-95], c:'d'},
+  DriveGear:              {m:'gearHi', g:'drive', ex:[75,0,-20],c:'d'},
+  Motor:                  {m:'metal',  g:null,    ex:[180,0,-20],c:'d'},
+  Housing:                {m:'white',  g:null,    ex:[-10,0,-230],c:'s'},
+  PoleAttachPoint:        {m:'grey',   g:null,    ex:[210,-40,-300],c:'s'},
+  Box:                    {m:'white',  g:null,    ex:[300,0,-70], c:'s'},
+  Electronics_MainBoard:  {m:'pcb',    g:null,    ex:[430,20,-70], c:'e'},
+  Electronics_BLE:        {m:'blue',   g:null,    ex:[400,-95,-60],c:'e'},
+  Electronics_MotorDriver:{m:'red',    g:null,    ex:[400,95,-60], c:'e'},
+  Electronics_PSU:        {m:'blue2',  g:null,    ex:[390,175,-20], c:'e'},
+};
+
+/* Labels: part, anchor offset from part bbox center (Fusion mm), text, set */
+const LABELS = [
+  {p:'WheelFront_CenterCircle', o:[0,0,0],       t:'HUB',             s:'', set:'ex'},
+  {p:'WheelFront_Ring',         o:[-205,205,0],  t:'FRONT LATTICE',   s:'',   set:'ex'},
+  {p:'Diffuser',                o:[-285,0,0],    t:'LED DIFFUSER',    s:'',    set:'ex'},
+  {p:'WheelBack_Ring',          o:[-270,-60,0],  t:'REAR LATTICE',    s:'',set:'ex'},
+  {p:'CenterShaft',             o:[0,0,40],      t:'COAXIAL SHAFT',   s:'',  set:'ex'},
+  {p:'DriveGear',               o:[0,0,0],       t:'BEVEL GEARS',  s:'',       set:'ex'},
+  {p:'Motor',                   o:[0,0,0],       t:'MOTOR',           s:'',                  set:'ex'},
+  {p:'Housing',                 o:[0,0,-60],     t:'BEARING HOUSING', s:'',                  set:'ex'},
+  {p:'Box',                     o:[0,0,0],       t:'ELECTRONICS BAY', s:'',                  set:'ex'},
+
+  {p:'DriveGear',   o:[0,0,0],  t:'DRIVE GEAR',      s:'', set:'mech'},
+  {p:'FrontGear',   o:[-24,0,0],t:'FRONT GEAR',     s:'',                   set:'mech'},
+  {p:'RearGear',    o:[-24,0,0],t:'REAR GEAR',     s:'',                   set:'mech'},
+  {p:'Motor',       o:[0,0,30], t:'MOTOR',           s:'',                   set:'mech'},
+
+  {p:'Electronics_MainBoard',  o:[0,0,0], t:'CARRIER PCB',   s:'', set:'brain'},
+  {p:'Electronics_BLE',        o:[0,0,0], t:'BLE MODULE',    s:'',  set:'brain'},
+  {p:'Electronics_MotorDriver',o:[0,0,0], t:'MOTOR DRIVER',  s:'',  set:'brain'},
+  {p:'Electronics_PSU',        o:[0,0,0], t:'BUCK CONVERTER',s:'',  set:'brain'},
+
+];
+
+/* ============================================================
+   RENDERER — the model renders at full fidelity (MSAA, PBR, bloom);
+   the pixel art lives in the backdrop and the 2D overlays
+   ============================================================ */
+const stage = $('#stage');
+// Render budget: pixel ratio capped (and lowered automatically if frames run slow), 60 fps cap,
+// throttled to 20 fps while the canvas sits dimmed behind the gallery, paused when the tab is hidden.
+const renderer = new THREE.WebGLRenderer({antialias:true, powerPreference:'default'});
+// No GPU (WebGL running on a software rasterizer)? Then every frame costs CPU: go low-res and 30 fps.
+const SOFTWARE_GL = (()=>{ const gl=renderer.getContext(), ext=gl.getExtension('WEBGL_debug_renderer_info');
+  const name = ext ? gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) : '';
+  return /swiftshader|basic render|llvmpipe|softpipe|software/i.test(name); })();
+const MAX_DPR = SOFTWARE_GL ? .6 : Math.min(window.devicePixelRatio||1, innerWidth<860 ? 1.25 : 1.5);
+const BASE_GAP = SOFTWARE_GL ? 33 : 16;
+let DPR = MAX_DPR;
+renderer.setPixelRatio(DPR);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = .95;
+stage.appendChild(renderer.domElement);
+const fx = document.createElement('canvas'); stage.appendChild(fx);
+const fxc = fx.getContext('2d');
+
+let PS=3, W=0, H=0;   // PS = size of one "art pixel" in CSS px; W×H = the pixel-art grid
+function pixelSize(){ const w=innerWidth; return w>1700?4:w>900?3:2; }
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(30, 1, 20, 6000);
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+scene.environmentIntensity = .42;
+
+
+/* ---------- pixel-art backdrop: stars + dithered LED halo, snapped to the PS grid ---------- */
+const bgMat = new THREE.ShaderMaterial({
+  depthTest:false, depthWrite:false,
+  uniforms:{ ps:{value:3}, time:{value:0}, halo:{value:new THREE.Color()}, haloC:{value:new THREE.Vector2()}, haloR:{value:100},
+             haloK:{value:1}, levels:{value:6}, starShift:{value:new THREE.Vector2()} },
+  vertexShader:`void main(){ gl_Position=vec4(position.xy,.999,1.); }`,
+  fragmentShader:/* glsl */`
+    uniform float ps,time,haloR,haloK,levels; uniform vec3 halo; uniform vec2 haloC,starShift;
+    float b2(vec2 a){ a=floor(a); return fract(dot(a,vec2(.5,a.y*.75))); }
+    float bayer(vec2 a){ return b2(.5*a)*.25+b2(a); }
+    float h21(vec2 p){ p=fract(p*vec2(123.34,456.21)); p+=dot(p,p+45.32); return fract(p.x*p.y); }
+    void main(){
+      vec2 cell=floor(gl_FragCoord.xy/ps);
+      vec2 fc=(cell+.5)*ps;
+      float vy=gl_FragCoord.y/(ps*300.);
+      vec3 c=mix(vec3(.02,.01,.045),vec3(.06,.03,.12),clamp(vy,0.,1.));
+      float r=length(fc-haloC)/haloR;
+      c+=halo*haloK*pow(clamp(1.-r/2.,0.,1.),2.2)*.75;
+      float h=h21(floor(cell+starShift));
+      if(h>.9968){ float tw=.5+.5*sin(time*(1.5+h*3.)+h*90.); c+=vec3(.8,.75,1.)*tw*.9; }
+      float b=bayer(cell)-.5;
+      c=floor(c*levels+b+.5)/levels;
+      gl_FragColor=vec4(c,1.);
+    }`
+});
+const bgQuad = new THREE.Mesh(new THREE.PlaneGeometry(2,2), bgMat);
+bgQuad.frustumCulled=false; bgQuad.renderOrder=-1000; scene.add(bgQuad);
+
+/* ---------- materials ---------- */
+const petalUniforms = {time:{value:0}, mode:{value:0}, uHue:{value:.9}, bright:{value:1}};
+const petal = (hueOff)=> new THREE.ShaderMaterial({
+  side:THREE.DoubleSide,
+  uniforms:{...petalUniforms, hueOff:{value:hueOff}},
+  vertexShader:`varying vec3 vP; void main(){ vP=position; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+  fragmentShader:/* glsl */`
+    uniform float time,mode,uHue,bright,hueOff; varying vec3 vP;
+    vec3 hsv(vec3 c){ vec3 p=abs(fract(c.xxx+vec3(1.,2./3.,1./3.))*6.-3.); return c.z*mix(vec3(1.),clamp(p-1.,0.,1.),c.y); }
+    void main(){
+      float a=atan(vP.y,vP.x)/6.2831853+.5, r=length(vP.xy)/300.;
+      float h, v=1.;
+      if(mode<.5){ h=a+r*.35-time*.12+hueOff; }
+      else if(mode<1.5){ h=time*.07+hueOff*.15; }
+      else if(mode<2.5){ h=uHue+hueOff*.08; v=.25+.75*(.5+.5*sin(time*2.2)); }
+      else { float s=floor(fract(a+time*.18)*12.); h=s/12.+hueOff; v=mod(s,2.)<.5?1.:.12; }
+      vec3 c=hsv(vec3(fract(h),.88,1.));
+      c*=v*bright*(.22+1.45*smoothstep(.4,1.,r));
+      gl_FragColor=vec4(c,1.);
+      #include <tonemapping_fragment>
+      #include <colorspace_fragment>
+    }`
+});
+const std = (c,r=.5,m=0)=> new THREE.MeshStandardMaterial({color:c, roughness:r, metalness:m});
+const pla = new THREE.MeshStandardMaterial({color:'#f3eff6', roughness:.58});
+const MATS = {
+  lattice: std('#16131d',.42), wing: std('#1b1824',.45), hub: std('#131019',.36), white: pla, gearHi: pla,
+  metal: std('#c3c6d0',.3,1), grey: std('#77737f',.5,.2), pcb: std('#26262e',.22), blue: std('#1f4fd1',.38),
+  blue2: std('#2a64c8',.34), red: std('#c7302b',.4), petalF: petal(0), petalB: petal(.5)
+};
+
+const LAT_DARK=new THREE.Color('#16131d'), LAT_LIT=new THREE.Color('#5d5577'), WING_DARK=new THREE.Color('#1b1824'), WING_LIT=new THREE.Color('#6a5a80');
+/* ---------- lights ---------- */
+scene.add(new THREE.HemisphereLight(0xc9bcff, 0x160a26, .45));
+const key = new THREE.DirectionalLight(0xfff6ee, 1.5); key.position.set(600,900,1200); scene.add(key);
+const rim = new THREE.DirectionalLight(0xff4fa3, 2.2); rim.position.set(-900,300,-800); scene.add(rim);
+const fill = new THREE.DirectionalLight(0x3cf2ff, 1.0); fill.position.set(400,-800,200); scene.add(fill);
+const ledLight = new THREE.PointLight(0xffffff, 2.5, 0, 0); scene.add(ledLight);
+
+/* ---------- model ---------- */
+const model = new THREE.Group(); model.rotation.z = -Math.PI/2; scene.add(model);
+const parts = {};   // name → {pivot, mesh, center, cfg}
+let triCount = 0;
+
+async function loadAll(onProgress){
+  const loader = new STLLoader();
+  const names = Object.keys(PARTS); let done = 0;
+  await Promise.all(names.map(async n=>{
+    const g0 = await loader.loadAsync(`models/${n}.stl`);
+    g0.deleteAttribute('normal');
+    const g = toCreasedNormals(g0, Math.PI/5.5);
+    g.computeBoundingBox();
+    const center = g.boundingBox.getCenter(new THREE.Vector3());
+    const cfg = PARTS[n];
+    const pivot = new THREE.Group();
+    const mesh = new THREE.Mesh(g, MATS[cfg.m]);
+    // spin about the part's own axis: wheels/shaft/crown gears about Z through origin; drive gear about X through its center
+    // (the geometry itself is re-centred: a mesh rotates about its own origin before its position is applied)
+    if(cfg.g==='drive'){ g.translate(0,-center.y,-center.z); pivot.position.set(0,center.y,center.z); }
+    pivot.add(mesh); model.add(pivot);
+    parts[n] = {pivot, mesh, center, cfg, base:pivot.position.clone()};
+    triCount += g.attributes.position.count/3;
+    onProgress(++done/names.length, n);
+  }));
+  // Translucent LED diffuser behind both lattices (the real totem's glowing panel; not a CAD body)
+  const dg = new THREE.CircleGeometry(296, 128); dg.translate(0,0,-19); dg.computeBoundingBox();
+  const dpivot = new THREE.Group(), dmesh = new THREE.Mesh(dg, MATS.petalF);
+  dpivot.add(dmesh); model.add(dpivot);
+  parts.Diffuser = {pivot:dpivot, mesh:dmesh, center:new THREE.Vector3(0,0,-19), cfg:{g:'back', ex:[0,0,120], c:'w'}, base:new THREE.Vector3()};
+}
+
+/* ============================================================
+   SCROLL CHOREOGRAPHY — keyframes at section-relative positions
+   ============================================================ */
+const S = { cam:{r:1650,th:0,ph:0}, tgt:[0,0,0], w:0,d:0,s:0,e:0, lbEx:0, lbMech:0, lbBrain:0, burst:0, dim:0, spinBoost:0, halo:1, heroFade:0, shift:0, led:1 };
+const POSES = {
+  hero:   {tgt:[0,-10,0],    r:1650, th:0,     ph:.02, shift:.2},
+  heroM:  {tgt:[0,-330,0],   r:2350, th:0,     ph:.02, shift:0},
+  explode:{tgt:[0,-90,170],  r:2250, th:-1.22, ph:.2, shift:.19},
+  explodeM:{tgt:[0,-90,170], r:3300, th:-1.22, ph:.2, shift:0},
+  mech:   {tgt:[0,-40,-38],  r:540,  th:1.95,  ph:.14, shift:.17},
+  mechM:  {tgt:[0,-45,-38],  r:1000,  th:1.95,  ph:.14, shift:0},
+  brain:  {tgt:[40,-480,-70],r:560,  th:.5,    ph:-.36, shift:.17},
+  brainM: {tgt:[30,-500,-70],r:1000, th:.55,   ph:-.42, shift:0},
+  final:  {tgt:[0,-10,0],    r:1700, th:-.28,  ph:.06, shift:.2},
+  finalM: {tgt:[0,-60,0],    r:2100, th:-.2,   ph:.05, shift:0},
+  play:   {tgt:[0,-10,0],    r:1550, th:.32,   ph:.1,  shift:.2},
+  playM:  {tgt:[0,-60,0],    r:2700, th:.32,   ph:.1,  shift:0},
+};
+let KEYS = [], FOCUS_RANGE = [0,0];
+/* Focus views inside the exploded section: blend the scroll state toward a close-up */
+const FOCUS = {
+  drive:{ pose:()=> innerWidth<860?POSES.mechM:POSES.mech,  v:{w:1, d:0, s:2.6, e:2.6, led:.3, spinBoost:1, lbEx:0, lbMech:1, lbBrain:0} },
+  elec: { pose:()=> innerWidth<860?POSES.brainM:POSES.brain, v:{w:1, d:1, s:2.6, e:1,  led:.6, spinBoost:0, lbEx:0, lbMech:0, lbBrain:1} },
+};
+let focus='overview', fKind='overview', fAmt=0;
+function buildKeys(){
+  const vh = innerHeight, top = id => $(id).offsetTop, mob = innerWidth<860;
+  const H = mob?POSES.heroM:POSES.hero, F = mob?POSES.finalM:POSES.final;
+  const PL = mob?POSES.playM:POSES.play;
+  const EX = mob?POSES.explodeM:POSES.explode, ME = mob?POSES.mechM:POSES.mech;
+  const k = (y, pose, v) => ({y, pose, v});
+  const Z = {w:0,d:0,s:0,e:0,lbEx:0,lbMech:0,lbBrain:0,dim:0,spinBoost:0,led:1};
+  FOCUS_RANGE = [top('#explode')+vh*.75, top('#play')-vh*.25];
+  KEYS = [
+    k(0,                         H,            {...Z, burst:0, heroFade:0}),
+    k(top('#explode')-vh*.45,    H,            {...Z, burst:.55, heroFade:1}),
+    k(top('#explode')+vh*.1,     EX,{...Z, w:.3, d:.15, burst:1, heroFade:1}),
+    k(top('#explode')+vh*.7,     EX,{...Z, led:.55, w:1,d:1,s:1,e:1, lbEx:.3, burst:1, heroFade:1}),
+    k(top('#explode')+vh*1.0,    EX,{...Z, led:.55, w:1,d:1,s:1,e:1, lbEx:1, burst:1, heroFade:1}),
+    k(top('#play')-vh*.3,        EX,{...Z, led:.55, w:1,d:1,s:1,e:1, lbEx:1, burst:1, heroFade:1}),
+    k(top('#play')+vh*.2,        PL,  {...Z, burst:1, heroFade:1, spinBoost:1}),
+    k(top('#wild')-vh*.4,        PL,  {...Z, burst:1, heroFade:1, spinBoost:1}),
+    k(top('#wild')+vh*.1,        PL,  {...Z, burst:1, heroFade:1, spinBoost:1, dim:.72}),
+  ];
+}
+function angWrap(a){ return a; }
+function sample(y){
+  let i=0; while(i<KEYS.length-2 && y>KEYS[i+1].y) i++;
+  const A=KEYS[i], B=KEYS[i+1];
+  const t = ss(clamp((y-A.y)/Math.max(1,B.y-A.y)));
+  for(const key in B.v) S[key] = lerp(A.v[key]??0, B.v[key]??0, t);
+  S.tgt = A.pose.tgt.map((v,j)=>lerp(v,B.pose.tgt[j],t));
+  S.shift = lerp(A.pose.shift,B.pose.shift,t);
+  S.cam.r = lerp(A.pose.r,B.pose.r,t); S.cam.th=lerp(A.pose.th,B.pose.th,t); S.cam.ph=lerp(A.pose.ph,B.pose.ph,t);
+  // mouse parallax, fades as we zoom in
+}
+
+/* ============================================================
+   TITLE — pixel particles that burst as the model explodes
+   ============================================================ */
+let titlePx = [];  // {hx,hy,vx,vy,seed}
+function buildTitle(){
+  titlePx = [];
+  const mob = innerWidth<860;
+  const lines = ['HYPER','WHEEL'];
+  let fs = Math.floor((W*(mob?.86:.42))/5/8)*8; fs = Math.max(8, Math.min(fs, 72));
+  const oc = document.createElement('canvas'); oc.width=W; oc.height=H;
+  const c = oc.getContext('2d');
+  c.font = `${fs}px "Press Start 2P"`; c.textBaseline='top'; c.fillStyle='#fff';
+  const x0 = mob ? Math.round((W-5*fs)/2) : Math.round(W*.06);
+  const y0 = mob ? Math.round(H*.12) : Math.round(H*.2);
+  c.fillText(lines[0], x0, y0);
+  c.fillText(lines[1], x0, y0+Math.round(fs*1.35));
+  const d = c.getImageData(0,0,W,H).data;
+  for(let y=0;y<H;y++) for(let x=0;x<W;x++){
+    if(d[(y*W+x)*4+3]>140){
+      const a=Math.random()*Math.PI*2, sp=40+Math.random()*260;
+      titlePx.push({hx:x,hy:y,vx:Math.cos(a)*sp+(x-W*.3)*.5,vy:Math.sin(a)*sp-60,s:Math.random()});
+    }
+  }
+  titleBox = {x0, y0, fs};
+}
+let titleBox = {x0:0,y0:0,fs:8};
+
+/* ============================================================
+   LABELS
+   ============================================================ */
+const labelsEl = $('#labels');
+const labelEls = LABELS.map((L,i)=>{
+  const el = document.createElement('div'); el.className='lbl';
+  const num = String(i+1).padStart(2,'0');
+  el.innerHTML = `<b><span class="n">${num}</span> ${L.t}</b>${L.s?`<i>${L.s}</i>`:''}`;
+  labelsEl.appendChild(el); return el;
+});
+const _v = new THREE.Vector3();
+function projectPart(name, off){
+  const P = parts[name]; if(!P) return null;
+  _v.set(P.center.x+off[0], P.center.y+off[1], P.center.z+off[2]);
+  // account for pivot (drive gear stores center-relative mesh)
+  _v.sub(P.base).add(P.pivot.position);
+  model.localToWorld(_v); _v.project(camera);
+  if(_v.z>1) return null;
+  return [(_v.x*.5+.5)*W, (-_v.y*.5+.5)*H];
+}
+
+/* ============================================================
+   LED COLOR (mirrors the petal shader, for halo + point light)
+   ============================================================ */
+const ledCol = new THREE.Color();
+function hsv(h,s,v,out){ out.setHSL(h, s, v*.5); return out; }
+function ledColor(t){
+  const m = petalUniforms.mode.value;
+  if(m===0) return ledCol.setHSL(((t*.05)%1+1)%1, .85, .6);
+  if(m===1) return ledCol.setHSL(((t*.07)%1+1)%1, .85, .6);
+  if(m===2){ const v=.25+.75*(.5+.5*Math.sin(t*2.2)); return ledCol.setHSL(petalUniforms.uHue.value,.85,.6*v); }
+  return ledCol.setHSL(((t*.18)%1), .85, .55);
+}
+
+/* ============================================================
+   LOOP
+   ============================================================ */
+let lenis=null, scrollY=0, mouse={x:0,y:0}, sm={x:0,y:0};
+let spin=0, drive=0, throttle=.35, last=performance.now(), fpsAcc=0, fpsN=0, fpsT=0;
+const tmpSph = new THREE.Spherical();
+
+let lastDraw=0, slowFrames=0, fastFrames=0;
+function frame(now){
+  requestAnimationFrame(frame);
+  const minGap = S.dim>.4 ? 50 : BASE_GAP;         // 20 fps behind the gallery, else ≤60 fps (30 without a GPU)
+  if(now-lastDraw < minGap-1) return;
+  const gap = now-lastDraw; lastDraw = now;
+  // adaptive resolution: if we can't hold ~50 fps, drop the pixel ratio; recover slowly when there's headroom
+  if(minGap===BASE_GAP && gap<200){
+    if(gap>BASE_GAP*1.35){ if(++slowFrames>45 && DPR>.75){ DPR=Math.max(.75,DPR-.25); renderer.setPixelRatio(DPR); bgMat.uniforms.ps.value=PS*DPR; slowFrames=0; } }
+    else { slowFrames=Math.max(0,slowFrames-1); if(gap<BASE_GAP*1.1 && ++fastFrames>600 && DPR<MAX_DPR){ DPR=Math.min(MAX_DPR,DPR+.25); renderer.setPixelRatio(DPR); bgMat.uniforms.ps.value=PS*DPR; fastFrames=0; } }
+  }
+  const dt = Math.min(.05,(now-last)/1000); last=now;
+  const t = now/1000;
+  const y = lenis ? lenis.animatedScroll : window.scrollY;
+  sample(y);
+  // focus close-ups (only while the model is fully exploded)
+  if(focus!=='overview' && (y<FOCUS_RANGE[0]-2 || y>FOCUS_RANGE[1])) setFocus('overview');
+  if(focus!=='overview') fKind=focus;
+  fAmt += ((focus!=='overview'?1:0)-fAmt)*Math.min(1,dt*2.4);
+  if(fAmt>.001 && FOCUS[fKind]){
+    const F=FOCUS[fKind], P=F.pose(), e=ss(clamp(fAmt));
+    for(const k in F.v) S[k]=lerp(S[k]??0, F.v[k], e);
+    S.tgt=S.tgt.map((v,j)=>lerp(v,P.tgt[j],e));
+    S.cam.r=lerp(S.cam.r,P.r,e); S.cam.th=lerp(S.cam.th,P.th,e); S.cam.ph=lerp(S.cam.ph,P.ph,e); S.shift=lerp(S.shift,P.shift,e);
+  }
+
+  // --- spin
+  const base = RM ? .1 : .28;
+  const speed = lerp(base, .08+throttle*3.2, S.spinBoost);
+  spin += dt*speed;
+
+  // --- parts
+  for(const n in parts){
+    const P = parts[n], c=P.cfg;
+    const f = c.c==='w'?S.w : c.c==='d'?S.d : c.c==='s'?S.s : S.e;
+    P.pivot.position.set(P.base.x + c.ex[0]*f, P.base.y + c.ex[1]*f, P.base.z + c.ex[2]*f);
+    P.pivot.visible = !(c.c==='s' && f>2);   // shell parts pushed far out for a close-up: just hide them
+    if(c.g==='front') P.mesh.rotation.z = spin;
+    else if(c.g==='back') P.mesh.rotation.z = -spin;
+    else if(c.g==='drive') P.mesh.rotation.x = spin;
+  }
+
+  // --- camera (spherical orbit around target + mouse parallax)
+  sm.x += (mouse.x-sm.x)*.05; sm.y += (mouse.y-sm.y)*.05;
+  const par = RM?0:.08;
+  tmpSph.set(S.cam.r, Math.PI/2 - S.cam.ph - sm.y*par, S.cam.th + sm.x*par);
+  const tg = new THREE.Vector3(...S.tgt);
+  camera.position.setFromSpherical(tmpSph).add(tg);
+  camera.lookAt(tg);
+  const liftY = innerWidth<860 ? innerHeight*.21*clamp(S.heroFade)*(1-S.dim) : 0;
+  camera.setViewOffset(innerWidth, innerHeight, -S.shift*innerWidth, liftY, innerWidth, innerHeight);
+  // hero: gentle idle sway
+  model.rotation.y = (1-S.w)*Math.sin(t*.35)*.12*(RM?0:1);
+
+  // --- LED
+  petalUniforms.time.value = t;
+  petalUniforms.bright.value = S.led;
+  MATS.lattice.color.lerpColors(LAT_DARK, LAT_LIT, clamp(S.w*1.2)); MATS.wing.color.lerpColors(WING_DARK, WING_LIT, clamp(S.w*1.2));
+  MATS.hub.color.lerpColors(LAT_DARK, LAT_LIT, clamp(S.w*1.2));
+  ledColor(t);
+  ledLight.color.copy(ledCol);
+  ledLight.position.set(0,0,-60);
+
+  // --- halo position = projected wheel centre (drawing-buffer px for the backdrop shader)
+  const hc = new THREE.Vector3(0,0,0); model.localToWorld(hc); hc.project(camera);
+  const edge = new THREE.Vector3(0,300,0); model.localToWorld(edge); edge.project(camera);
+  const bw = innerWidth*DPR, bh = innerHeight*DPR;
+  bgMat.uniforms.haloC.value.set((hc.x*.5+.5)*bw, (hc.y*.5+.5)*bh);
+  bgMat.uniforms.haloR.value = Math.max(40, Math.hypot((edge.x-hc.x)*.5*bw,(edge.y-hc.y)*.5*bh));
+  bgMat.uniforms.halo.value.copy(ledCol);
+  bgMat.uniforms.haloK.value = lerp(1, .45, clamp(S.w));
+  bgMat.uniforms.time.value = t;
+  bgMat.uniforms.starShift.value.set(S.cam.th*W*.35 + sm.x*6, S.cam.ph*H*.5 - sm.y*6);
+  renderer.domElement.style.opacity = String(1-S.dim);
+
+  renderer.render(scene, camera);
+
+  drawFx(t);
+  updateHud(y, dt);
+}
+
+/* --- 2D overlay: title particles + label leaders --- */
+let fxImg=null, fxBuf=null;
+const PANEL_FOR = {ex:$('#exPanel'), mech:$('#exPanel'), brain:$('#exPanel')};
+const hueRGB = (h)=>{ const c=new THREE.Color().setHSL(((h%1)+1)%1,.9,.62); return [c.r*255|0,c.g*255|0,c.b*255|0]; };
+const LUT = Array.from({length:64},(_,i)=>hueRGB(i/64));
+let fxDirty=true;
+function drawFx(t){
+  const b = S.burst;
+  const anyLabels = S.lbEx>0 || S.lbMech>0 || S.lbBrain>0;
+  if(b>=.999 && !anyLabels){
+    if(fxDirty){ fxc.clearRect(0,0,W,H); labelEls.forEach(el=>el.style.visibility='hidden'); fxDirty=false; }
+    return;
+  }
+  fxDirty=true;
+  fxBuf.fill(0);
+  if(b<.999){
+    const e = b*b*(1.6-.6*b);
+    const drift = e*1.0;
+    const alpha = b<.6?1:1-(b-.6)/.4;
+    const w=W,h=H, buf=fxBuf;
+    const sweep = t*.18;
+    for(let i=0;i<titlePx.length;i++){
+      const p=titlePx[i];
+      // particles leave in a stagger based on their seed
+      const k = clamp((e*1.6 - p.s*.6));
+      const x = Math.round(p.hx + p.vx*k*k*1.2 + Math.sin(t*3+p.s*20)*k*3);
+      const y = Math.round(p.hy + p.vy*k*k*1.2 + 90*k*k*k);
+      if(x<0||y<0||x>=w||y>=h) continue;
+      if(k>0 && Math.random()>alpha) continue;
+      const hue = (p.hx/w*1.4 + p.hy/h*.4 - sweep);
+      const rgb = LUT[((Math.floor(hue*64)%64)+64)%64];
+      // top row of each glyph pixel-cluster is brighter: cheap bevel
+      buf[y*w+x] = (255<<24)|(rgb[2]<<16)|(rgb[1]<<8)|rgb[0];
+      // drop shadow
+      if(k===0 && y+1<h && x+1<w && !buf[(y+1)*w+x+1]) buf[(y+1)*w+x+1] = (255<<24)|(0x2a<<16)|(0x0b<<8)|0x14;
+    }
+  }
+  fxc.putImageData(fxImg,0,0);
+
+  // label leaders
+  const sets = {ex:S.lbEx, mech:S.lbMech, brain:S.lbBrain};
+  const counts = {ex:0,mech:0,brain:0}, totals={};
+  LABELS.forEach(L=>totals[L.set]=(totals[L.set]||0)+1);
+  fxc.imageSmoothingEnabled=false;
+  const PRs = {};
+  for(const k in PANEL_FOR){ const r=PANEL_FOR[k].getBoundingClientRect(); PRs[k]={vis:r.bottom>0&&r.top<innerHeight, l:r.left/PS-4, r:r.right/PS+4, t:r.top/PS-4, b:r.bottom/PS+4}; }
+  const placed = [];
+  LABELS.forEach((L,i)=>{
+    const el = labelEls[i];
+    const v = clamp(sets[L.set]*1.6-.6);
+    const idx = counts[L.set]++;
+    const local = clamp(v*(totals[L.set]*.35+1) - idx*.35);
+    if(local<=0.001){ el.style.visibility='hidden'; return; }
+    const p = projectPart(L.p, L.o);
+    if(!p){ el.style.visibility='hidden'; return; }
+    const ax=Math.round(p[0]), ay=Math.round(p[1]);
+    let dir = ax > W*(.5+S.shift) ? 1 : -1;
+    const up = (idx%2? -1:1);
+    const len1 = 10 + (idx%3)*5, len2 = Math.round(26*PS/3);
+    const lw = Math.ceil(el._w/PS)+4, lh = Math.ceil(el._h/PS);
+    const PR = PRs[L.set];
+    const place = (d,ny=0) => { const l1=len1+Math.abs(ny), ex=ax+d*l1, ey=ay-up*len1+ny, fx2=ex+d*len2, x0=d>0?fx2+3:fx2-3-lw; return {ex,ey,fx2,x0,x1:x0+lw,y0:ey-3,y1:ey-3+lh,l1,ny}; };
+    const hitPanel = g => PR.vis && g.x1>PR.l && g.x0<PR.r && g.y1>PR.t && g.y0<PR.b;
+    const bad = g => g.x0<2 || g.x1>W-2 || hitPanel(g);
+    const hitLbl = g => placed.some(r=>g.x1>r.x0 && g.x0<r.x1 && g.y1>r.y0 && g.y0<r.y1);
+    let g = null;
+    outer: for(const nud of [0,1,-1,2,-2,3,-3]) for(const d of [dir,-dir]){
+      const c = place(d, nud*(lh+2));
+      if(!bad(c) && !hitLbl(c)){ g=c; dir=d; break outer; }
+    }
+    if(!g){ el.style.visibility='hidden'; return; }
+    placed.push(g);
+    const {ex, ey, fx2} = g;
+    const q1 = clamp(local*3), q2 = clamp(local*3-1), q3 = clamp(local*1.5-.5);
+    fxc.fillStyle = '#ffd23f';
+    fxc.fillRect(ax-1,ay-1,3,3);
+    fxc.fillStyle = '#efe6ff';
+    // leader: diagonal from anchor, then vertical jog if nudged, then horizontal
+    const n1 = Math.round(len1*q1);
+    for(let s=0;s<=n1;s++) fxc.fillRect(ax+dir*s, ay-up*s, 1, 1);
+    if(q1>=1 && g.ny){ const y0=ay-up*len1, y1=ey; fxc.fillRect(ax+dir*len1, Math.min(y0,y1), 1, Math.abs(y1-y0)+1); fxc.fillRect(dir>0?ax+dir*len1:ex, ey, Math.abs(ex-(ax+dir*len1))+1, 1); }
+    const n2 = Math.round(len2*q2);
+    if(q1>=1) fxc.fillRect(dir>0?ex:ex-n2, ey, n2, 1);
+    el.style.visibility = q2>0?'visible':'hidden';
+    const lx = (dir>0 ? fx2+3 : fx2-3) * PS;
+    const ly = ey * PS - 9;
+    el.style.transform = `translate(${dir>0?lx:lx - el._w}px, ${ly}px)`;
+    el.style.clipPath = dir>0 ? `inset(0 ${100-q3*100}% 0 0)` : `inset(0 0 0 ${100-q3*100}%)`;
+  });
+}
+
+/* --- HUD --- */
+const hudBar = $('#hudBar'); for(let i=0;i<12;i++) hudBar.appendChild(document.createElement('i'));
+const secs = [...document.querySelectorAll('[data-sec]')];
+let lastSec='', lastOn=-1;
+const LAYOUT={max:1,tops:[]};
+function measure(){
+  LAYOUT.max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
+  LAYOUT.tops = secs.map(s=>s.offsetTop);
+  labelEls.forEach(el=>{ el.style.visibility='hidden'; el.style.clipPath='none'; el._w=el.offsetWidth; el._h=el.offsetHeight; });
+}
+function updateHud(y, dt){
+  const p = clamp(y/LAYOUT.max); const on = Math.round(p*12);
+  if(on!==lastOn){ [...hudBar.children].forEach((c,i)=>c.classList.toggle('on', i<on)); lastOn=on; }
+  let cur = secs[0];
+  secs.forEach((s,i)=>{ if(LAYOUT.tops[i] - innerHeight*.5 <= y) cur = s; });
+  const name = cur.dataset.sec; if(name!==lastSec){ $('#hudSec').textContent=name; lastSec=name; }
+  $('#heroCopy').style.opacity = String(1-clamp(S.heroFade*1.4));
+  $('#cue').style.opacity = String(1-clamp(y/(innerHeight*.25)));
+}
+
+/* ============================================================
+   RESIZE
+   ============================================================ */
+function resize(){
+  PS = pixelSize();
+  W = Math.max(8, Math.ceil(innerWidth/PS)); H = Math.max(8, Math.ceil(innerHeight/PS));
+  const w = Math.max(8, innerWidth), h = Math.max(8, innerHeight);
+  renderer.setSize(w,h);
+  fx.width=W; fx.height=H; fx.style.width=W*PS+'px'; fx.style.height=H*PS+'px';
+  fxImg = fxc.createImageData(W,H); fxBuf = new Uint32Array(fxImg.data.buffer);
+  camera.aspect = w/h; camera.updateProjectionMatrix();
+  bgMat.uniforms.ps.value = PS*DPR;
+  buildTitle(); buildKeys(); fxDirty=true;
+}
+
+/* ============================================================
+   UI: type-on text, throttle, LED modes, depixelating media
+   ============================================================ */
+document.querySelectorAll('[data-type]').forEach(p=>{
+  const txt = p.innerHTML;
+  // wrap characters of text nodes only (keeps <em>)
+  const walk = n => { [...n.childNodes].forEach(c=>{ if(c.nodeType===3){ const f=document.createDocumentFragment(); for(const ch of c.textContent){ const s=document.createElement('span'); s.className='c'; s.textContent=ch; f.appendChild(s);} c.replaceWith(f);} else walk(c); }); };
+  walk(p);
+});
+const typeIO = new IntersectionObserver(es=>es.forEach(e=>{
+  if(!e.isIntersecting) return; typeIO.unobserve(e.target);
+  const cs=[...e.target.querySelectorAll('.c')];
+  if(RM){ cs.forEach(c=>c.classList.add('on')); return; }
+  let i=0; const step=()=>{ for(let k=0;k<4&&i<cs.length;k++) cs[i++].classList.add('on'); if(i<cs.length) requestAnimationFrame(step); }; step();
+}),{threshold:.3});
+document.querySelectorAll('[data-type]').forEach(p=>typeIO.observe(p));
+
+function setFocus(f){
+  focus=f;
+  document.querySelectorAll('#focusTabs button').forEach(b=>b.setAttribute('aria-pressed', b.dataset.f===f));
+  document.querySelectorAll('#exPanel .fpane').forEach(pn=>{ pn.hidden = pn.dataset.f!==f; });
+}
+$('#focusTabs').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  const y = lenis ? lenis.animatedScroll : window.scrollY;
+  // not fully exploded yet? glide there first
+  if(b.dataset.f!=='overview' && y<FOCUS_RANGE[0]){ lenis ? lenis.scrollTo(FOCUS_RANGE[0]+4,{duration:1.2}) : window.scrollTo(0,FOCUS_RANGE[0]+4); }
+  setFocus(b.dataset.f);
+});
+const rpm=$('#rpm');
+rpm.addEventListener('input',()=>{ throttle=rpm.value/100; $('#rpmv').textContent=rpm.value+'%'; });
+$('#modes').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  document.querySelectorAll('#modes button').forEach(x=>x.setAttribute('aria-pressed', x===b));
+  petalUniforms.mode.value = +b.dataset.m;
+  petalUniforms.uHue.value = Math.random();
+  $('#modev').textContent = b.textContent;
+});
+
+// Media fades in when it scrolls into view; videos only play while visible
+const pmIO=new IntersectionObserver(es=>es.forEach(e=>{
+  const v=e.target.querySelector('video');
+  if(e.isIntersecting) e.target.classList.add('in');
+  if(v){ e.isIntersecting ? v.play().catch(()=>{}) : v.pause(); }
+}),{threshold:.2});
+document.querySelectorAll('[data-pm]').forEach(el=>pmIO.observe(el));
+
+/* --- horizontal gallery --- */
+const wild=$('#wild'), track=$('#track');
+const WILD_SPEED = 1.8;
+function sizeWild(){
+  if(innerWidth<860){ wild.style.height='auto'; return; }
+  const extra = track.scrollWidth - innerWidth;
+  wild.style.height = (innerHeight + Math.max(0,extra)/WILD_SPEED) + 'px';
+}
+function updateWild(y){
+  if(innerWidth<860) return;
+  const top=wild.offsetTop, extra=track.scrollWidth-innerWidth;
+  const p=clamp((y-top)*WILD_SPEED/Math.max(1,extra));
+  track.style.transform=`translate3d(${-p*extra}px,0,0)`;
+}
+
+
+addEventListener('pointermove',e=>{ mouse.x=e.clientX/innerWidth*2-1; mouse.y=e.clientY/innerHeight*2-1; });
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+(async()=>{
+  const log=$('#bootlog'), fill=$('#pfill');
+  try{ await document.fonts.load('32px "Press Start 2P"'); }catch(e){}
+  resize(); sizeWild();
+  await loadAll((p,n)=>{ fill.style.width=`calc(${p*100}% - 6px)`; log.textContent = `> HYPERWHEEL.F3D\n> mounting parts...\n> ${n.replace('_',' / ')}`; });
+  try{ await document.fonts.ready; }catch(e){}
+  measure();
+  log.textContent += `\n> ${Math.round(triCount).toLocaleString()} triangles ready\n> press start`;
+  if(window.Lenis && !RM){
+    lenis = new Lenis({lerp:.085, smoothWheel:true});
+    lenis.on('scroll',({animatedScroll})=>updateWild(animatedScroll));
+    const raf=(t)=>{ lenis.raf(t); requestAnimationFrame(raf); }; requestAnimationFrame(raf);
+  }
+  addEventListener('scroll',()=>{ if(!lenis) updateWild(scrollY); },{passive:true});
+  setTimeout(()=>$('#boot').classList.add('done'), 350);
+  requestAnimationFrame(frame);
+})();
+addEventListener('resize',()=>{ resize(); sizeWild(); measure(); });
+</script>
+</body>
+</html>
