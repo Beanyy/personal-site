@@ -8,7 +8,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230b0b0d'/%3E%3Crect x='5' y='5' width='6' height='6' fill='%23ff4fa3'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#0b0b0d; --bg2:#121215; --ink:#ededf0; --ink2:#b4b4bd; --mute:#76767f; --line:#232327;
@@ -38,7 +38,14 @@ a{color:inherit}
 /* ---------- hero ---------- */
 #hero{min-height:100svh;display:flex;align-items:center;padding:110px 0 80px}
 .eyebrow{color:var(--mute);display:flex;align-items:center;gap:12px}
-#led{display:block;margin:30px 0 34px;max-width:100%}
+#light{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+main,footer{position:relative;z-index:1}
+.name{margin:26px 0 30px;font-family:"Roboto Flex",Inter,sans-serif;font-weight:300;font-size:clamp(56px,10.6vw,168px);line-height:.9;letter-spacing:-.035em;
+  font-variation-settings:"wght" 300,"wdth" 100,"opsz" 144;user-select:none}
+.name .line{display:block;white-space:nowrap}
+.name .w{display:inline-block;white-space:nowrap}
+.name .c{display:inline-block;opacity:0;transform:translateY(.25em);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1);transition-delay:var(--d,0s)}
+.name.in .c{opacity:1;transform:none}
 .lede{font-size:clamp(20px,2.1vw,26px);line-height:1.4;letter-spacing:-.015em;color:var(--ink2);max-width:640px}
 .lede b{color:var(--ink);font-weight:500}
 .cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:40px}
@@ -149,6 +156,9 @@ footer .fl{display:flex;gap:24px;flex-wrap:wrap}
   .bar nav{gap:18px}
   .bar nav a.hide-m{display:none}
   #hero{padding-top:96px}
+  .name .line{white-space:normal}
+  .name{font-size:clamp(46px,15.5vw,120px);margin:22px 0 26px}
+  #hero{align-items:flex-end;padding-bottom:9vh}
   .row a{grid-template-columns:30px minmax(0,1fr) 84px;grid-template-areas:"n t th" "n p th" "n y th";gap:4px 14px;padding:24px 0}
   .row .n{grid-area:n;align-self:start;padding-top:8px}
   .row h3{grid-area:t}
@@ -178,12 +188,12 @@ footer .fl{display:flex;gap:24px;flex-wrap:wrap}
   </div>
 </header>
 
+<canvas id="light" aria-hidden="true"></canvas>
 <main>
   <section id="hero">
     <div class="wrap">
       <div class="eyebrow mono" data-rv><span class="sq"></span>Works in software · Builds in hardware<span class="loc"> · Toronto → Orange County</span></div>
-      <h1 class="sr">Edward Lee Kim Koon</h1>
-      <canvas id="led" aria-hidden="true"></canvas>
+      <h1 class="name" id="name" aria-label="Edward Lee Kim Koon"><span class="line">Edward</span><span class="line">Lee Kim Koon</span></h1>
       <p class="lede" data-rv style="--d:.9s">I build things you can hold. Usually things that <b>spin</b>, <b>glow</b>, or both.</p>
       <div class="cta" data-rv style="--d:1.05s">
         <a class="btn primary" href="#work">See the work <span class="arr">↓</span></a>
@@ -197,7 +207,7 @@ footer .fl{display:flex;gap:24px;flex-wrap:wrap}
     <div class="wrap">
       <div class="shead" data-rv><h2>Selected projects</h2><span class="mono">(03)</span></div>
       <ul class="list" id="list">
-        <li class="row" data-rv data-video="hyperwheel/media/home.mp4" data-bg="#07040f">
+        <li class="row" data-rv data-video="hyperwheel/media/home.mp4" data-tint="rainbow" data-bg="#07040f">
           <a href="hyperwheel/">
             <span class="n mono">01</span>
             <h3><span class="sq"></span>Hyperwheel</h3>
@@ -207,7 +217,7 @@ footer .fl{display:flex;gap:24px;flex-wrap:wrap}
             <span class="thumb"><img src="hyperwheel/media/home.jpg" alt="" loading="lazy"></span>
           </a>
         </li>
-        <li class="row" data-rv style="--d:.08s" data-video="tesseract/media/clip2.mp4" data-bg="#f3eee3">
+        <li class="row" data-rv style="--d:.08s" data-video="tesseract/media/clip2.mp4" data-tint="#e8b95a,#fff1d6" data-bg="#f3eee3">
           <a href="tesseract/">
             <span class="n mono">02</span>
             <h3><span class="sq"></span>Tesseract</h3>
@@ -217,7 +227,7 @@ footer .fl{display:flex;gap:24px;flex-wrap:wrap}
             <span class="thumb"><img src="tesseract/media/clip2.jpg" alt="" loading="lazy"></span>
           </a>
         </li>
-        <li class="row" data-rv style="--d:.16s" data-video="sdvx/media/hands.mp4" data-bg="#05030a">
+        <li class="row" data-rv style="--d:.16s" data-video="sdvx/media/hands.mp4" data-tint="#2f8bff,#ff8a1f" data-bg="#05030a">
           <a href="sdvx/">
             <span class="n mono">03</span>
             <h3><span class="sq"></span>SDVX Controller</h3>
@@ -284,102 +294,138 @@ const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting
 document.querySelectorAll('[data-rv]').forEach(el => io.observe(el));
 
 /* ============================================================
-   LED DOT-MATRIX NAME
-   5x7 glyphs on a panel of unlit dots. Dots flicker on left to
-   right, a slow shimmer passes every few seconds, and unlit dots
-   glow faintly near the cursor. The loop sleeps when idle.
+   KINETIC NAME: letters swell in weight and width near the cursor.
+   With no cursor (touch, or idle) a slow wave rolls through instead.
    ============================================================ */
-const G = {
-  A:['01110','10001','10001','11111','10001','10001','10001'],
-  D:['11110','10001','10001','10001','10001','10001','11110'],
-  E:['11111','10000','10000','11110','10000','10000','11111'],
-  I:['01110','00100','00100','00100','00100','00100','01110'],
-  K:['10001','10010','10100','11000','10100','10010','10001'],
-  L:['10000','10000','10000','10000','10000','10000','11111'],
-  M:['10001','11011','10101','10101','10001','10001','10001'],
-  N:['10001','11001','10101','10011','10001','10001','10001'],
-  O:['01110','10001','10001','10001','10001','10001','01110'],
-  R:['11110','10001','10001','11110','10100','10010','10001'],
-  W:['10001','10001','10001','10101','10101','10101','01010'],
-  ' ':['00000','00000','00000','00000','00000','00000','00000'],
-};
-const cv = $('#led'), ctx = cv.getContext('2d');
-let COLS = 0, ROWS = 0, P = 12, DPR = 1, lit, boot, level, t0 = 0;
-let spriteLit, spriteOff, mouse = {x:-1e4, y:-1e4}, running = false, lastMove = 0, shimmerAt = -99;
-
-function sprites(){
-  const s = Math.ceil(P*DPR*2), c = s/2;
-  spriteLit = document.createElement('canvas'); spriteLit.width = spriteLit.height = s;
-  const g = spriteLit.getContext('2d');
-  const gr = g.createRadialGradient(c, c, 0, c, c, c);
-  gr.addColorStop(0, 'rgba(255,241,214,1)'); gr.addColorStop(.19, 'rgba(255,241,214,1)');
-  gr.addColorStop(.23, 'rgba(255,214,160,.36)'); gr.addColorStop(.55, 'rgba(255,190,130,.07)'); gr.addColorStop(1, 'rgba(255,190,130,0)');
-  g.fillStyle = gr; g.fillRect(0, 0, s, s);
-  spriteOff = document.createElement('canvas'); spriteOff.width = spriteOff.height = s;
-  const o = spriteOff.getContext('2d');
-  o.fillStyle = '#26262b'; o.beginPath(); o.arc(c, c, P*DPR*.36, 0, Math.PI*2); o.fill();
-}
-function layout(){
-  const avail = Math.min(innerWidth < 860 ? innerWidth - 40 : innerWidth*.9, 1200);
-  const lines = avail < 640 ? ['EDWARD','LEE KIM','KOON'] : ['EDWARD','LEE KIM KOON'];
-  const pad = 1, gapRows = 2;
-  COLS = Math.max(...lines.map(l => l.length))*6 - 1 + pad*2;
-  ROWS = lines.length*7 + (lines.length - 1)*gapRows + pad*2;
-  P = Math.max(4, Math.min(15, Math.floor(avail/COLS)));
-  DPR = Math.min(devicePixelRatio || 1, 2);
-  cv.width = COLS*P*DPR; cv.height = ROWS*P*DPR;
-  cv.style.width = COLS*P + 'px'; cv.style.height = ROWS*P + 'px';
-  lit = new Uint8Array(COLS*ROWS); boot = new Float32Array(COLS*ROWS); level = new Float32Array(COLS*ROWS);
-  lines.forEach((line, li) => {
-    const y0 = pad + li*(7 + gapRows);
-    [...line].forEach((ch, ci) => {
-      const g = G[ch] || G[' '], x0 = pad + ci*6;
-      for (let r = 0; r < 7; r++) for (let c = 0; c < 5; c++) if (g[r][c] === '1') lit[(y0 + r)*COLS + x0 + c] = 1;
-    });
+const nameEl = $('#name');
+nameEl.querySelectorAll('.line').forEach(line => {
+  const words = line.textContent.split(' ');
+  line.textContent = '';
+  words.forEach((w, wi) => {
+    const ws = document.createElement('span'); ws.className = 'w';
+    [...w].forEach(ch => { const c = document.createElement('span'); c.className = 'c'; c.textContent = ch; ws.appendChild(c); });
+    line.appendChild(ws);
+    if (wi < words.length - 1) line.appendChild(document.createTextNode(' '));
   });
-  for (let i = 0; i < COLS*ROWS; i++) boot[i] = RM ? 0 : .25 + ((i % COLS)/COLS)*.9 + Math.random()*.18;
-  sprites();
+});
+const letters = [...nameEl.querySelectorAll('.c')].map((el, i) => { el.style.setProperty('--d', (.15 + i*.035) + 's'); return {el, x:0, y:0, w:300, wd:100}; });
+let cur = {x:-1e4, y:-1e4, t:-1e4}, nameVisible = true, fsz = 100;
+function measureName(){
+  fsz = parseFloat(getComputedStyle(nameEl).fontSize);
+  letters.forEach(L => { const r = L.el.getBoundingClientRect(); L.x = r.left + r.width/2; L.y = r.top + scrollY + r.height/2; });
 }
-function draw(now){
-  const t = (now - t0)/1000, S = P*DPR;
-  const r = cv.getBoundingClientRect();
-  const mx = (mouse.x - r.left)/P, my = (mouse.y - r.top)/P;
-  const shim = (t - shimmerAt)/1.6, shimX = -8 + shim*(COLS + 16), shimOn = shim >= 0 && shim <= 1;
-  let busy = shimOn || now - lastMove < 700;
-  ctx.clearRect(0, 0, cv.width, cv.height);
-  for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++){
-    const i = y*COLS + x;
-    let want;
-    if (lit[i]){
-      const b = t - boot[i];
-      want = b < 0 ? 0 : b < .14 ? (Math.random() < .5 ? 1 : .15) : 1;   // flicker on
-      if (b < .14) busy = true;
-      if (shimOn){ const d = x - shimX; want *= .7 + .3*Math.exp(-d*d/30); }
-    } else {
-      const dx = x + .5 - mx, dy = y + .5 - my, d2 = dx*dx + dy*dy;
-      want = d2 < 60 ? Math.exp(-d2/14)*.32 : 0;
-    }
-    level[i] += (want - level[i])*(lit[i] ? .5 : .18);
-    if (Math.abs(want - level[i]) > .01) busy = true;
-    const cx = (x + .5)*S - S, cy = (y + .5)*S - S;
-    ctx.globalAlpha = 1; ctx.drawImage(spriteOff, cx, cy);
-    if (level[i] > .02){ ctx.globalAlpha = level[i]; ctx.drawImage(spriteLit, cx, cy); }
+function stepName(now){
+  const idle = !HOVER || now - cur.t > 2500, t = now/1000;
+  const sig = fsz*1.25;
+  for (let i = 0; i < letters.length; i++){
+    const L = letters[i];
+    let k;
+    if (idle) k = RM ? 0 : Math.pow(Math.max(0, Math.sin(t*.9 - L.x/(fsz*2.2))), 6)*.75;
+    else { const dx = L.x - cur.x, dy = L.y - scrollY - cur.y; k = Math.exp(-(dx*dx + dy*dy)/(2*sig*sig)); }
+    const w = 300 + 620*k, wd = 100 + 22*k;
+    L.w += (w - L.w)*.16; L.wd += (wd - L.wd)*.16;
+    L.el.style.fontVariationSettings = `"wght" ${L.w.toFixed(0)},"wdth" ${L.wd.toFixed(1)},"opsz" 144`;
   }
-  ctx.globalAlpha = 1;
-  return busy;
 }
-function loop(now){
-  if (document.hidden){ running = false; return; }
-  if (draw(now)) requestAnimationFrame(loop); else running = false;
+addEventListener('pointermove', e => { cur.x = e.clientX; cur.y = e.clientY; cur.t = performance.now(); }, {passive:true});
+
+/* ============================================================
+   LIGHT PAINTING: two poi heads trace flower patterns (hand circle +
+   head circle at a different speed), leaving long-exposure trails;
+   the cursor paints its own fading trail. Hovering a project tints
+   the light. Full speed while the hero is on screen, 30 fps below it,
+   paused when the tab is hidden.
+   ============================================================ */
+const lc = $('#light'), lx = lc.getContext('2d');
+let LW = 0, LH = 0, LD = 1;
+function sizeLight(){ LD = Math.min(devicePixelRatio || 1, 1.5); LW = innerWidth; LH = innerHeight; lc.width = LW*LD; lc.height = LH*LD; }
+const hexRGB = h => [1,3,5].map(i => parseInt(h.slice(i, i+2), 16));
+const DEFAULT = ['#ff4fa3', '#3cf2ff'];
+let tintTarget = DEFAULT, tintMode = 'pair';
+const tint = [hexRGB(DEFAULT[0]), hexRGB(DEFAULT[1])];
+function setTint(spec){
+  if (!spec || spec === 'default'){ tintMode = 'pair'; tintTarget = DEFAULT; return; }
+  if (spec === 'rainbow'){ tintMode = 'rainbow'; return; }
+  tintMode = 'pair'; tintTarget = spec.split(',');
 }
-function wake(){ if (!running){ running = true; requestAnimationFrame(loop); } }
-addEventListener('pointermove', e => {
-  mouse.x = e.clientX; mouse.y = e.clientY;
-  const r = cv.getBoundingClientRect();
-  if (e.clientY > r.top - 60 && e.clientY < r.bottom + 60){ lastMove = performance.now(); wake(); }
-}, {passive:true});
-if (!RM) setInterval(() => { if (!document.hidden && cv.getBoundingClientRect().bottom > 0){ shimmerAt = (performance.now() - t0)/1000; wake(); } }, 7000);
-document.addEventListener('visibilitychange', () => { if (!document.hidden) wake(); });
+const hsl = (h, s, l) => { const a = s*Math.min(l, 1 - l), f = n => { const k = (n + h*12) % 12; return 255*(l - a*Math.max(-1, Math.min(k - 3, 9 - k, 1))); }; return [f(0), f(8), f(4)]; };
+// patterns: [hand radius, head radius, head/hand speed ratio]; negative ratio = antispin flower
+const PATTERNS = [[.42, .58, -3], [.30, .70, 3], [.55, .45, -1], [.18, .82, -5]];
+const heads = [0, 1].map(i => ({pts:[], side:i ? 1 : -1}));
+const mouseTrail = [];
+let a = 0, patI = 0, patFrom = PATTERNS[0], patT = 1, lastPat = 0;
+function headPos(h, ang, pat, cx, cy, R){
+  const [r1, r2, k] = pat, s = h.side;
+  // the two hands turn in mirror image, like a two-poi weave
+  const hx = cx + s*R*r1*Math.cos(ang), hy = cy + R*r1*Math.sin(ang);
+  return [hx + s*R*r2*Math.cos(k*ang + (s > 0 ? 0 : Math.PI)), hy + R*r2*Math.sin(k*ang + (s > 0 ? 0 : Math.PI))];
+}
+function stroke(pts, rgb, now, life, wMul){
+  if (pts.length < 2) return;
+  lx.lineCap = 'butt'; lx.lineJoin = 'round';
+  const RUN = 6, col = `${rgb[0]|0},${rgb[1]|0},${rgb[2]|0}`;
+  const layers = [[9, .2, col], [3.4, .7, col], [1.5, .85, '255,248,236']];   // glow, colour core, hot white centre
+  for (const [w, al, c] of layers){
+    for (let i = 0; i < pts.length - 1; i += RUN){
+      const end = Math.min(pts.length - 1, i + RUN), mid = pts[(i + end) >> 1];
+      const f = 1 - (now - mid[2])/life; if (f <= 0) continue;
+      lx.strokeStyle = `rgba(${c},${al*f*f})`; lx.lineWidth = w*wMul*(.35 + .65*f)*LD;
+      lx.beginPath(); lx.moveTo(pts[i][0]*LD, pts[i][1]*LD);
+      for (let k = i + 1; k <= end; k++) lx.lineTo(pts[k][0]*LD, pts[k][1]*LD);
+      lx.stroke();
+    }
+  }
+}
+function stepLight(now, dt){
+  const mob = innerWidth < 860;
+  const cx = mob ? LW*.5 : LW*.7, cy = mob ? LH*.25 : LH*.48, R = Math.min(LW, LH)*(mob ? .2 : .26);
+  const heroOn = scrollY < LH*.9;
+  lc.style.opacity = heroOn ? 1 : .28;
+  // tint easing (rainbow slowly cycles hues on the two heads)
+  const want = tintMode === 'rainbow' ? [hsl((now/4000) % 1, 1, .62), hsl((now/4000 + .5) % 1, 1, .62)] : tintTarget.map(hexRGB);
+  for (let i = 0; i < 2; i++) for (let j = 0; j < 3; j++) tint[i][j] += (want[i][j] - tint[i][j])*.06;
+  // advance: one poi rotation every ~2.4s, change pattern every 9s with a 1.5s blend
+  const a0 = a; a += dt*2.6;
+  if (now - lastPat > 9000){ lastPat = now; patFrom = PATTERNS[patI]; patI = (patI + 1) % PATTERNS.length; patT = 0; }
+  patT = Math.min(1, patT + dt/1.5);
+  const e = patT*patT*(3 - 2*patT);
+  const sub = Math.max(1, Math.ceil((a - a0)/.035));          // ~2° steps between frames
+  heads.forEach(h => {
+    for (let n = 1; n <= sub; n++){
+      const an = a0 + (a - a0)*n/sub, tn = now - dt*1000*(1 - n/sub);
+      const A = headPos(h, an, patFrom, cx, cy, R), B = headPos(h, an, PATTERNS[patI], cx, cy, R);
+      h.pts.push([A[0] + (B[0] - A[0])*e, A[1] + (B[1] - A[1])*e, tn]);
+    }
+    while (h.pts.length && now - h.pts[0][2] > 1600) h.pts.shift();
+  });
+  if (HOVER && now - cur.t < 60){ const last = mouseTrail[mouseTrail.length - 1]; if (!last || Math.hypot(cur.x - last[0], cur.y - last[1]) > 2) mouseTrail.push([cur.x, cur.y, now]); }
+  while (mouseTrail.length && now - mouseTrail[0][2] > 1100) mouseTrail.shift();
+  lx.clearRect(0, 0, lc.width, lc.height);
+  lx.globalCompositeOperation = 'lighter';
+  heads.forEach((h, i) => stroke(h.pts, tint[i], now, 1600, 1));
+  stroke(mouseTrail, tint[0].map((v, j) => (v + tint[1][j])/2), now, 1100, .8);
+  lx.globalCompositeOperation = 'source-over';
+}
+// reduced motion: one still "long exposure" of the pattern, no animation
+function stillLight(){
+  const now = 10000, mob = innerWidth < 860;
+  const cx = mob ? LW*.5 : LW*.7, cy = mob ? LH*.25 : LH*.48, R = Math.min(LW, LH)*(mob ? .2 : .26);
+  heads.forEach(h => { h.pts = []; for (let i = 0; i <= 260; i++) { const p = headPos(h, i/260*Math.PI*2, PATTERNS[0], cx, cy, R); h.pts.push([p[0], p[1], now - 800]); } });
+  lx.clearRect(0, 0, lc.width, lc.height); lx.globalCompositeOperation = 'lighter';
+  heads.forEach((h, i) => stroke(h.pts, tint[i], now, 1600, 1)); lx.globalCompositeOperation = 'source-over';
+}
+
+/* ---------- one loop for name + light ---------- */
+let lastT = 0, lastDraw = 0;
+function frame(now){
+  requestAnimationFrame(frame);
+  if (document.hidden) return;
+  const heroOn = scrollY < innerHeight*.9;
+  if (!heroOn && now - lastDraw < 32) return;          // 30 fps once past the hero
+  const dt = Math.min(.05, (now - (lastT || now))/1000); lastT = now; lastDraw = now;
+  stepLight(now, dt);
+  if (heroOn) stepName(now);
+}
 
 /* ============================================================
    PROJECT INDEX: floating video preview + curtain transition
@@ -404,6 +450,7 @@ if (HOVER && !RM){
   // preview hangs to the right of the cursor (flips left near the edge) so it never covers the title
   addEventListener('pointermove', e => { tx = e.clientX + 300 + 48 > innerWidth ? e.clientX - 300 - 32 : e.clientX + 32; ty = e.clientY; }, {passive:true});
   rows.forEach(row => row.addEventListener('pointerenter', () => {
+    setTint(row.dataset.tint);
     const v = vid(row.dataset.video);
     vids.forEach(o => { if (o !== v){ o.classList.remove('on'); o.pause(); } });
     v.classList.add('on'); v.play().catch(() => {});
@@ -412,6 +459,7 @@ if (HOVER && !RM){
     if (!peekRAF) follow();
   }));
   $('#list').addEventListener('pointerleave', () => {
+    setTint('default');
     peekOn = false; peek.classList.remove('on');
     setTimeout(() => { if (!peekOn) vids.forEach(v => v.pause()); }, 300);
   });
@@ -429,10 +477,12 @@ addEventListener('pageshow', () => curtain.classList.remove('go'));   // back bu
 
 /* ---------- boot ---------- */
 (async () => {
-  try { await document.fonts.ready; } catch(e){}
-  layout(); t0 = performance.now(); wake();
+  try { await document.fonts.load('300 100px "Roboto Flex"'); await document.fonts.ready; } catch(e){}
+  sizeLight(); nameEl.classList.add('in');
+  setTimeout(measureName, 50); setTimeout(measureName, 1400);
+  if (RM) stillLight(); else requestAnimationFrame(frame);
 })();
-let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { layout(); t0 = performance.now() - 5000; wake(); }, 150); });
+let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { sizeLight(); measureName(); if (RM) stillLight(); }, 150); });
 })();
 </script>
 </body>
