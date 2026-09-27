@@ -264,13 +264,6 @@ footer{padding:0 0 50px}
         <svg width="84" height="110" viewBox="0 0 84 110"><path d="M50 4 L10 62 H40 L30 106 L76 40 H44 Z" fill="#ffc93c" stroke="#fff" stroke-width="8" stroke-linejoin="round"/></svg>
       </span></div>
 
-      <div class="sticker m-hide" data-x="84" data-y="74" data-z="1" style="--r:-6deg" aria-hidden="true"><span class="in pop" style="--d:1.1s">
-        <svg width="150" height="120" viewBox="0 0 150 120"><rect x="4" y="4" width="142" height="112" rx="26" fill="#a98bff" stroke="#fff" stroke-width="8"/>
-          <path d="M40 30 C 20 50, 30 90, 70 84 C 110 78, 120 40, 96 30" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 10" opacity=".85"/>
-          <path d="M60 22 L40 30 M100 22 L96 30" stroke="#221c19" stroke-width="3" stroke-linecap="round"/>
-          <circle cx="40" cy="30" r="11" fill="#ff5fa2" stroke="#fff" stroke-width="3"/><circle cx="96" cy="30" r="11" fill="#4fb3ff" stroke="#fff" stroke-width="3"/>
-          <text x="75" y="106" text-anchor="middle" font-family="Bricolage Grotesque" font-weight="800" font-size="15" fill="#fff">POI DANCER</text></svg>
-      </span></div>
       <div class="sticker m-hide" data-x="36" data-y="-12" data-z="1.5" style="--r:-10deg" aria-hidden="true"><span class="in pop" style="--d:1.2s">
         <svg width="124" height="124" viewBox="0 0 124 124"><circle cx="62" cy="62" r="56" fill="#2b2a6b" stroke="#fff" stroke-width="8"/>
           <circle cx="30" cy="34" r="2" fill="#fff"/><circle cx="92" cy="28" r="1.6" fill="#fff"/><circle cx="96" cy="92" r="2.2" fill="#fff"/><circle cx="28" cy="88" r="1.4" fill="#fff"/><circle cx="78" cy="18" r="1.2" fill="#fff"/>
@@ -344,10 +337,6 @@ footer{padding:0 0 50px}
           <div class="fact" data-rv style="--d:.1s;--r:-1.5deg;--c:#dff7ee">
             <span class="ic"><svg viewBox="0 0 30 30"><path d="M4 15 H26 C 25 22, 20 26, 15 26 C 10 26, 5 22, 4 15Z" fill="#34cfa0"/><path d="M18 4 L24 13 M21 3 L26 11" stroke="#221c19" stroke-width="2" stroke-linecap="round"/><path d="M7 17 C 10 19, 13 15, 16 18 S 21 16, 23 17" fill="none" stroke="#ffc93c" stroke-width="2" stroke-linecap="round"/></svg></span>
             <span><b>Home cook</b><span>Mostly Asian food, mostly for the family.</span></span>
-          </div>
-          <div class="fact" data-rv style="--d:.15s;--r:1deg;--c:#ece6ff">
-            <span class="ic"><svg viewBox="0 0 30 30"><path d="M8 10 C 3 16, 6 26, 15 25 C 24 24, 27 14, 22 10" fill="none" stroke="#a98bff" stroke-width="2" stroke-dasharray="1 3.5" stroke-linecap="round"/><circle cx="8" cy="10" r="4" fill="#ff5fa2"/><circle cx="22" cy="10" r="4" fill="#4fb3ff"/></svg></span>
-            <span><b>Poi dancer</b><span>Its own page is coming soon.</span></span>
           </div>
           <div class="fact" data-rv style="--d:.18s;--r:-.6deg;--c:#e3e4ff">
             <span class="ic"><svg viewBox="0 0 30 30"><circle cx="15" cy="15" r="7" fill="#ff8a3d"/><ellipse cx="15" cy="15.5" rx="12.5" ry="3.6" fill="none" stroke="#2b2a6b" stroke-width="2" transform="rotate(-18 15 15.5)"/><circle cx="5" cy="6" r="1.2" fill="#2b2a6b"/><circle cx="25" cy="24" r="1.2" fill="#2b2a6b"/></svg></span>
@@ -431,7 +420,7 @@ $$('[data-rv]').forEach(el => io.observe(el));
 const desk = $('#desk'), stickers = $$('.sticker');
 const mob = () => innerWidth < 680;
 // on phones the stickers tuck along the top and right so they don't cover the name
-const MOB = [[0,8],[25,52],[0,-1],[43,12],[0,0],[0,0],[0,0],[64,0]];   // one entry per sticker, in page order (hidden ones get [0,0])   // [x %, y px]; the pass (index 2) sits under the buttons
+const MOB = [[0,8],[25,52],[0,-1],[43,12],[0,0],[0,0],[64,0]];   // one entry per sticker, in page order (hidden ones get [0,0])   // [x %, y px]; the pass (index 2) sits under the buttons
 function place(){
   const w = desk.offsetWidth, h = desk.offsetHeight;
   stickers.forEach((s, i) => {
