@@ -60,15 +60,16 @@ main{position:relative;z-index:1}
 .head .n{font-family:"Silkscreen",monospace;font-size:14px;color:var(--sun);letter-spacing:.12em}
 .head h2{font-family:"Press Start 2P",monospace;font-weight:400;font-size:clamp(22px,3vw,38px)}
 .head .rule{flex:1;height:4px;background:repeating-linear-gradient(90deg,var(--line) 0 8px,transparent 8px 12px);align-self:center}
-.cards{display:grid;grid-template-columns:1fr 1fr;gap:44px}
-.card{position:relative;display:block;text-decoration:none;color:inherit;background:var(--bg2);
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:36px}
+@media (max-width:1180px) and (min-width:861px){ .cards{grid-template-columns:1fr 1fr} }
+.card{position:relative;display:flex;flex-direction:column;text-decoration:none;color:inherit;background:var(--bg2);
   box-shadow:0 -4px var(--ink),0 4px var(--ink),-4px 0 var(--ink),4px 0 var(--ink),10px 10px 0 4px rgba(0,0,0,.55);
   transition:transform .18s steps(3),box-shadow .18s steps(3);
   opacity:0;transform:translateY(40px)}
 .card.in{opacity:1;transform:none;transition:opacity .5s steps(5),transform .5s steps(5)}
 .card.in:hover{transform:translate(-4px,-6px);box-shadow:0 -4px var(--ink),0 4px var(--ink),-4px 0 var(--ink),4px 0 var(--ink),16px 18px 0 4px rgba(0,0,0,.55)}
 .card canvas{display:block;width:100%;aspect-ratio:16/10;image-rendering:pixelated;image-rendering:crisp-edges}
-.card .meta{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;padding:20px 22px 22px;border-top:4px solid var(--ink)}
+.card .meta{flex:1;display:flex;justify-content:space-between;align-items:flex-end;gap:16px;padding:20px 22px 22px;border-top:4px solid var(--ink)}
 .card .idx{font-family:"Silkscreen",monospace;font-size:12px;letter-spacing:.12em;color:var(--mute)}
 .card h3{font-family:"Press Start 2P",monospace;font-weight:400;font-size:clamp(16px,1.7vw,22px);margin-top:10px}
 .card p{margin-top:8px;font-size:22px;color:#cfc4e6}
@@ -150,6 +151,13 @@ footer{padding:0 5vw 5vh;display:flex;justify-content:space-between;gap:20px;fle
         <canvas width="160" height="100" aria-hidden="true"></canvas>
         <div class="meta">
           <div><div class="idx">PROJECT 02 · 2019</div><h3>TESSERACT</h3><p>A four-dimensional cube, built in light.</p></div>
+          <span class="go">ENTER →</span>
+        </div>
+      </a>
+      <a class="card" href="sdvx/" data-accent="#29e4ff" data-mini="sdvx">
+        <canvas width="160" height="100" aria-hidden="true"></canvas>
+        <div class="meta">
+          <div><div class="idx">PROJECT 03 · 2017</div><h3>SDVX CONTROLLER</h3><p>A home-built Sound Voltex arcade controller.</p></div>
           <span class="go">ENTER →</span>
         </div>
       </a>
@@ -362,11 +370,36 @@ function makeMini(card){
     for (const [a, b, w] of order) line(P[a][0], P[a][1], P[b][0], P[b][1], w < -.3 ? gold : w > .3 ? ink : grey);
     for (const p of P){ const col = p[2] > 0 ? ink : paper; set(p[0], p[1], col); set(p[0]+1, p[1], col); set(p[0], p[1]+1, col); set(p[0]+1, p[1]+1, col); if (p[2] <= 0){ set(p[0]-1, p[1], gold); set(p[0]+2, p[1], gold); set(p[0], p[1]-1, gold); set(p[0], p[1]+2, gold); } }
   }
+  function sdvx(t){
+    const bgc=rgb(12,4,10), red=rgb(90,14,28);
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++){
+      const dx=x-W/2, dy=y-18, r=Math.hypot(dx,dy*1.4), ring=((r*.35 - t*3)%6+6)%6;
+      buf[y*W+x] = ring<.7 && y<70 ? red : bgc;
+    }
+    // highway
+    const top=10, bot=66, hwT=10, hwB=46;
+    for (let y=top;y<=bot;y++){ const k=(y-top)/(bot-top), hw=hwT+(hwB-hwT)*k, cx=W/2;
+      for (let x=Math.round(cx-hw); x<=Math.round(cx+hw); x++) set(x,y,rgb(24,20,40));
+      set(cx-hw-1,y,rgb(41,228,255)); set(cx+hw+1,y,rgb(255,61,166));
+      for (let l=1;l<4;l++) if(y%2) set(Math.round(cx-hw+hw*2*l/4),y,rgb(60,56,86)); }
+    // falling chips
+    for (let i=0;i<7;i++){ const ph=((t*.5+i*.37)%1), y=top+ph*(bot-top), k=ph, hw=hwT+(hwB-hwT)*k, lane=(i*3+Math.floor(t*.5+i*.37))%4;
+      const x0=W/2-hw+hw*2*lane/4+1, x1=W/2-hw+hw*2*(lane+1)/4-1; for(let x=Math.round(x0);x<=Math.round(x1);x++){ set(x,y,0xffffffff); set(x,y+1,0xffffffff); } }
+    // judge line
+    for (let x=W/2-50;x<=W/2+50;x++) set(x,bot,rgb(255,210,140));
+    // controller
+    const cy=72; for (let y=cy;y<cy+22;y++) for (let x=22;x<W-22;x++) set(x,y, y<cy+14?rgb(14,12,22):rgb(150,105,60));
+    const lit=Math.floor(t*4)%4;
+    for (let i=0;i<4;i++){ const x0=50+i*16; for(let y=cy+3;y<cy+9;y++) for(let x=x0;x<x0+12;x++) set(x,y, i===lit?0xffffffff:rgb(170,168,185)); }
+    for (let i=0;i<2;i++){ const x0=58+i*32; for(let y=cy+10;y<cy+13;y++) for(let x=x0;x<x0+12;x++) set(x,y,rgb(255,138,31)); }
+    for (let i=0;i<2;i++){ const kx=i?W-34:34; for(let y=cy+3;y<cy+10;y++) for(let x=kx-3;x<kx+4;x++) set(x,y,rgb(205,208,216)); }
+    set(W/2,cy+2,rgb(58,160,255)); set(W/2+1,cy+2,rgb(58,160,255));
+  }
   return function(t){
     if (!visible && lastT) return;
     const dt = Math.min(.1, t - (lastT || t)); lastT = t;
     speed += (target - speed)*.12; phase += dt*speed*(RM ? .3 : 1);
-    kind === 'wheel' ? wheel(phase) : tess(phase);
+    kind === 'wheel' ? wheel(phase) : kind === 'sdvx' ? sdvx(phase) : tess(phase);
     c.putImageData(img, 0, 0);
   };
 }
