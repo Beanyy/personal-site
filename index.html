@@ -107,6 +107,19 @@ section{position:relative}
 .facts a{text-decoration:none;border-bottom:1px solid var(--line);transition:border-color .2s}
 .facts a:hover{border-color:var(--ink)}
 .facts .later{color:var(--mute)}
+.work{margin-top:48px}
+.wlabel{color:var(--mute);padding-bottom:14px;border-bottom:1px solid var(--line)}
+.jobs{list-style:none}
+.jobs li{display:grid;grid-template-columns:130px minmax(0,1fr) auto;gap:20px;align-items:baseline;padding:16px 0;border-bottom:1px solid var(--line)}
+.jobs b{font-weight:500;font-size:18px;letter-spacing:-.01em}
+.jobs .focus{color:var(--ink2);font-size:15px;line-height:1.45}
+.jobs .yrs{color:var(--mute);white-space:nowrap}
+.facts{margin-top:40px}
+@media (max-width:860px){
+  .jobs li{grid-template-columns:1fr auto;grid-template-areas:"c y" "f f";gap:4px 12px}
+  .jobs b{grid-area:c} .jobs .yrs{grid-area:y} .jobs .focus{grid-area:f}
+}
+@media (max-width:560px){ .eyebrow .loc{display:none} }
 
 /* ---------- footer ---------- */
 footer{border-top:1px solid var(--line);padding:30px 0 40px;color:var(--mute)}
@@ -155,7 +168,7 @@ footer a:hover{color:var(--ink)}
 <main>
   <section id="hero">
     <div class="wrap">
-      <div class="eyebrow mono" data-rv><span class="sq"></span>Works in software · Builds in hardware</div>
+      <div class="eyebrow mono" data-rv><span class="sq"></span>Works in software · Builds in hardware<span class="loc"> · Toronto → Orange County</span></div>
       <h1 class="sr">Edward Lee Kim Koon</h1>
       <canvas id="led" aria-hidden="true"></canvas>
       <p class="lede" data-rv style="--d:.9s">I build things you can hold. Usually things that <b>spin</b>, <b>glow</b>, or both.</p>
@@ -211,9 +224,18 @@ footer a:hover{color:var(--ink)}
       <div class="about">
         <p class="big" data-rv>Software by day. Things that <em>light up</em> by night.</p>
         <div class="body">
-          <p data-rv style="--d:.08s">I work in software. After hours I trade the keyboard for a soldering iron, a 3D printer and whatever else the next build needs.</p>
+          <p data-rv style="--d:.08s">By day I write software that sits right next to the hardware: drivers, GPUs, and now AR glasses. After hours I trade the keyboard for a soldering iron, a 3D printer and whatever else the next build needs.</p>
           <p data-rv style="--d:.14s">Every project is an excuse to learn something new, from CAD to circuit boards to firmware. The best part is finishing it and sharing it with people.</p>
-          <ul class="facts" data-rv style="--d:.2s">
+          <div class="work" data-rv style="--d:.2s">
+            <div class="wlabel mono">Work</div>
+            <ol class="jobs">
+              <li><b>Snap</b><span class="focus">Multimedia team lead for Specs, Snap's AR glasses</span><span class="yrs mono">2019 – Now</span></li>
+              <li><b>AMD</b><span class="focus">GPU drivers and the ROCm stack for machine learning</span><span class="yrs mono">2018 – 2019</span></li>
+              <li><b>Qualcomm</b><span class="focus">Embedded drivers for Snapdragon: graphics, hypervisor, NPU</span><span class="yrs mono">2012 – 2018</span></li>
+            </ol>
+          </div>
+          <ul class="facts" data-rv style="--d:.26s">
+            <li><span class="mono">Home</span><span>From Toronto, now in Orange County.</span></li>
             <li><span class="mono">Off the bench</span><span>Husband, dad, and home cook of a lot of Asian food.</span></li>
             <li><span class="mono">Also</span><span>Poi dancer. <span class="later">Page coming soon.</span></span></li>
             <li><span class="mono">Elsewhere</span><span><a href="https://www.linkedin.com/in/edward-lee-kim-koon-92340727/" target="_blank" rel="noopener">LinkedIn ↗</a></span></li>
