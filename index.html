@@ -4,465 +4,398 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Edward Lee Kim Koon</title>
-<meta name="description" content="Edward Lee Kim Koon: things I've designed and built.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' shape-rendering='crispEdges'%3E%3Crect width='16' height='16' fill='%2307040f'/%3E%3Cpath d='M3 3h8v2H5v2h5v2H5v2h6v2H3z' fill='%23ff4fa3'/%3E%3Cpath d='M12 3h1v10h-1z' fill='%233cf2ff'/%3E%3C/svg%3E">
+<meta name="description" content="Edward Lee Kim Koon works in software and builds things you can hold: LED totems, a four-dimensional cube in light, arcade controllers.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230b0b0d'/%3E%3Crect x='5' y='5' width='6' height='6' fill='%23ff4fa3'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#07040f; --bg2:#120a24; --ink:#efe6ff; --mute:#9d8fbf; --line:#3a2c5c;
-  --pink:#ff4fa3; --cyan:#3cf2ff; --sun:#ffd23f; --violet:#9b5cff;
-  --paper:#f3eee3; --gold:#a8832f;
+  --bg:#0b0b0d; --bg2:#121215; --ink:#ededf0; --ink2:#b4b4bd; --mute:#76767f; --line:#232327;
+  --led:#fff1d6; --accent:#ff4fa3;
+  --wrap:min(1200px, 100vw - 10vw);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{background:var(--bg)}
-body{background:var(--bg);color:var(--ink);font-family:"VT323",monospace;font-size:24px;line-height:1.3;overflow-x:hidden;-webkit-font-smoothing:none}
-::selection{background:var(--pink);color:var(--bg)}
+html{background:var(--bg);scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:var(--accent);color:#fff}
 a{color:inherit}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.sq{display:inline-block;width:7px;height:7px;background:var(--accent);vertical-align:1px;flex:none}
+.wrap{width:var(--wrap);margin:0 auto}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-
-#bg{position:fixed;inset:0;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges;z-index:0}
-main{position:relative;z-index:1}
+:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:2px}
 
 /* ---------- top bar ---------- */
-.bar{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:18px 5vw;font-family:"Silkscreen",monospace;font-size:13px;letter-spacing:.08em;color:var(--mute)}
-.bar a{text-decoration:none;color:var(--mute)}
-.bar a:hover{color:var(--sun)}
-.bar nav{display:flex;gap:26px}
-.bar .me{color:var(--ink)}
-.bar .me i{display:inline-block;width:8px;height:8px;margin-right:10px;background:var(--pink);animation:blink 1.2s steps(1) infinite}
-@keyframes blink{50%{opacity:0}}
+.bar{position:fixed;top:0;left:0;right:0;z-index:20;transition:background .3s,border-color .3s;border-bottom:1px solid transparent}
+.bar.scrolled{background:rgba(11,11,13,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom-color:var(--line)}
+.bar .wrap{display:flex;justify-content:space-between;align-items:center;height:64px}
+.bar .me{display:flex;align-items:center;gap:12px;text-decoration:none;font-weight:600;font-size:15px;letter-spacing:-.01em}
+.bar nav{display:flex;gap:28px;font-size:15px}
+.bar nav a{text-decoration:none;color:var(--ink2);transition:color .2s}
+.bar nav a:hover{color:var(--ink)}
 
 /* ---------- hero ---------- */
-#hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:0 5vw}
-.hello{font-family:"Silkscreen",monospace;font-size:15px;letter-spacing:.14em;color:var(--sun);margin-bottom:28px;min-height:1.2em}
-.hello .caret{display:inline-block;width:10px;height:15px;margin-left:4px;vertical-align:-2px;background:var(--sun);animation:blink 1s steps(1) infinite}
-#title{display:block;image-rendering:pixelated;image-rendering:crisp-edges;cursor:crosshair;max-width:100%}
-.tag{margin-top:34px;max-width:620px;font-size:30px;color:#d7cdef;opacity:0;transform:translateY(12px);transition:opacity .6s steps(6),transform .6s steps(6)}
-.tag.on{opacity:1;transform:none}
-.tag em{font-style:normal;color:var(--cyan)}
-.cta{display:flex;flex-wrap:wrap;gap:18px;margin-top:34px;opacity:0;transition:opacity .6s steps(6) .2s}
-.cta.on{opacity:1}
-.btn{display:inline-flex;align-items:center;gap:12px;font-family:"Silkscreen",monospace;font-size:14px;letter-spacing:.06em;text-decoration:none;padding:12px 18px;color:var(--bg);background:var(--sun);box-shadow:inset -4px -4px #b8901a;transition:transform .1s steps(1)}
-.btn:hover{background:var(--pink);box-shadow:inset -4px -4px #b02a6e}
-.btn:active{transform:translateY(3px)}
-.btn.ghost{background:var(--bg2);color:var(--ink);box-shadow:0 -3px var(--line),0 3px var(--line),-3px 0 var(--line),3px 0 var(--line),inset 0 -3px #05030b}
-.btn.ghost:hover{color:var(--sun)}
-.btn:focus-visible,.card:focus-visible,.bar a:focus-visible{outline:3px solid var(--cyan);outline-offset:4px}
-.scroll{position:absolute;left:5vw;bottom:5vh;font-family:"Silkscreen",monospace;font-size:12px;letter-spacing:.14em;color:var(--mute)}
-.scroll i{display:inline-block;width:10px;height:10px;margin-left:10px;background:var(--pink);clip-path:polygon(0 0,100% 0,100% 40%,60% 40%,60% 100%,40% 100%,40% 40%,0 40%);animation:bob 1s steps(2) infinite}
-@keyframes bob{50%{transform:translateY(5px)}}
+#hero{min-height:100svh;display:flex;align-items:center;padding:110px 0 80px}
+.eyebrow{color:var(--mute);display:flex;align-items:center;gap:12px}
+#led{display:block;margin:30px 0 34px;max-width:100%}
+.lede{font-size:clamp(20px,2.1vw,26px);line-height:1.4;letter-spacing:-.015em;color:var(--ink2);max-width:640px}
+.lede b{color:var(--ink);font-weight:500}
+.cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:40px}
+.btn{display:inline-flex;align-items:center;gap:10px;height:46px;padding:0 20px;border-radius:999px;font-size:15px;font-weight:500;text-decoration:none;transition:background .2s,color .2s,border-color .2s,transform .2s}
+.btn.primary{background:var(--ink);color:var(--bg)}
+.btn.primary:hover{background:#fff;transform:translateY(-1px)}
+.btn.ghost{border:1px solid var(--line);color:var(--ink)}
+.btn.ghost:hover{border-color:var(--ink2)}
+.btn .arr{display:inline-block;transition:transform .25s}
+.btn.primary:hover .arr{transform:translateY(2px)}
+.btn.ghost:hover .arr{transform:translate(2px,-2px)}
 
-/* ---------- projects ---------- */
-#work{padding:14vh 5vw 10vh}
-.head{display:flex;align-items:baseline;gap:22px;margin-bottom:6vh}
-.head .n{font-family:"Silkscreen",monospace;font-size:14px;color:var(--sun);letter-spacing:.12em}
-.head h2{font-family:"Press Start 2P",monospace;font-weight:400;font-size:clamp(22px,3vw,38px)}
-.head .rule{flex:1;height:4px;background:repeating-linear-gradient(90deg,var(--line) 0 8px,transparent 8px 12px);align-self:center}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:36px}
-@media (max-width:1180px) and (min-width:861px){ .cards{grid-template-columns:1fr 1fr} }
-.card{position:relative;display:flex;flex-direction:column;text-decoration:none;color:inherit;background:var(--bg2);
-  box-shadow:0 -4px var(--ink),0 4px var(--ink),-4px 0 var(--ink),4px 0 var(--ink),10px 10px 0 4px rgba(0,0,0,.55);
-  transition:transform .18s steps(3),box-shadow .18s steps(3);
-  opacity:0;transform:translateY(40px)}
-.card.in{opacity:1;transform:none;transition:opacity .5s steps(5),transform .5s steps(5)}
-.card.in:hover{transform:translate(-4px,-6px);box-shadow:0 -4px var(--ink),0 4px var(--ink),-4px 0 var(--ink),4px 0 var(--ink),16px 18px 0 4px rgba(0,0,0,.55)}
-.card canvas{display:block;width:100%;aspect-ratio:16/10;image-rendering:pixelated;image-rendering:crisp-edges}
-.card .meta{flex:1;display:flex;justify-content:space-between;align-items:flex-end;gap:16px;padding:20px 22px 22px;border-top:4px solid var(--ink)}
-.card .idx{font-family:"Silkscreen",monospace;font-size:12px;letter-spacing:.12em;color:var(--mute)}
-.card h3{font-family:"Press Start 2P",monospace;font-weight:400;font-size:clamp(16px,1.7vw,22px);margin-top:10px}
-.card p{margin-top:8px;font-size:22px;color:#cfc4e6}
-.card .go{flex:none;font-family:"Silkscreen",monospace;font-size:13px;letter-spacing:.08em;padding:9px 12px;color:var(--bg);background:var(--ink);transition:background .1s steps(1)}
-.card:hover .go{background:var(--sun)}
-.card.paper .meta{background:var(--paper);color:#1d1b18;border-top-color:var(--ink)}
-.card.paper .idx{color:#8d8575}
-.card.paper p{color:#5d574c}
-.card.paper .go{background:#1d1b18;color:var(--paper)}
-.card.paper:hover .go{background:var(--gold)}
-.soon{margin-top:44px;padding:22px;font-family:"Silkscreen",monospace;font-size:13px;letter-spacing:.1em;color:var(--mute);text-align:center;
-  box-shadow:0 -3px var(--line),0 3px var(--line),-3px 0 var(--line),3px 0 var(--line);background-image:repeating-linear-gradient(45deg,transparent 0 10px,rgba(58,44,92,.25) 10px 20px)}
+/* reveal */
+[data-rv]{opacity:0;transform:translateY(22px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1);transition-delay:var(--d,0s)}
+[data-rv].in{opacity:1;transform:none}
+
+/* ---------- section heads ---------- */
+section{position:relative}
+.shead{display:flex;align-items:baseline;justify-content:space-between;gap:20px;padding-bottom:22px;border-bottom:1px solid var(--line)}
+.shead h2{font-size:15px;font-weight:500}
+.shead .mono{color:var(--mute)}
+
+/* ---------- project index ---------- */
+#work{padding:120px 0 140px}
+.list{list-style:none}
+.row{position:relative;border-bottom:1px solid var(--line)}
+.row a{display:grid;grid-template-columns:70px minmax(0,1.1fr) minmax(0,1fr) 80px 40px;align-items:center;gap:24px;padding:34px 0;text-decoration:none;transition:opacity .35s}
+.row .n{color:var(--mute)}
+.row h3{font-size:clamp(26px,3.6vw,48px);font-weight:500;letter-spacing:-.035em;line-height:1.05;display:flex;align-items:center}
+.row h3 .sq{width:0;height:12px;margin-right:0;transition:width .35s cubic-bezier(.2,.7,.2,1),margin .35s cubic-bezier(.2,.7,.2,1)}
+.row p{color:var(--ink2);font-size:16px;line-height:1.45}
+.row .yr{color:var(--mute);text-align:right}
+.row .go{justify-self:end;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;transition:background .3s,border-color .3s,transform .45s cubic-bezier(.2,.7,.2,1)}
+.row .go svg{width:14px;height:14px;stroke:var(--ink);transition:stroke .3s}
+.row .thumb{display:none}
+.row:after{content:"";position:absolute;left:0;right:100%;bottom:-1px;height:1px;background:var(--ink);transition:right .6s cubic-bezier(.2,.7,.2,1)}
+@media (hover:hover){
+  .list:hover .row a{opacity:.35}
+  .list .row:hover a{opacity:1}
+  .row:hover h3 .sq{width:12px;margin-right:18px}
+  .row:hover .go{background:var(--ink);border-color:var(--ink);transform:rotate(-45deg)}
+  .row:hover .go svg{stroke:var(--bg)}
+  .row:hover:after{right:0}
+}
+.soon{margin-top:26px;color:var(--mute);display:flex;align-items:center;gap:10px}
+.soon .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.25}}
+
+/* floating preview */
+#peek{position:fixed;left:0;top:0;z-index:15;width:340px;aspect-ratio:16/10;border-radius:10px;overflow:hidden;pointer-events:none;opacity:0;
+  transform:translate(-50%,-50%) scale(.85);transition:opacity .3s ease,transform .3s cubic-bezier(.2,.7,.2,1);box-shadow:0 30px 60px -20px rgba(0,0,0,.8);background:#000}
+#peek.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#peek video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .25s}
+#peek video.on{opacity:1}
 
 /* ---------- about ---------- */
-#about{padding:10vh 5vw 16vh}
-.about{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:6vw;align-items:start}
-.about p{font-size:28px;color:#d7cdef;max-width:640px}
-.about p+p{margin-top:18px}
-.about .todo{color:var(--mute);font-size:22px}
-.stats{display:grid;gap:18px}
-.stat{display:flex;justify-content:space-between;align-items:baseline;padding:16px 20px;background:var(--bg2);box-shadow:0 -3px var(--line),0 3px var(--line),-3px 0 var(--line),3px 0 var(--line)}
-.stat span{font-family:"Silkscreen",monospace;font-size:12px;letter-spacing:.1em;color:var(--mute)}
-.stat b{font-family:"Press Start 2P",monospace;font-weight:400;font-size:16px}
-footer{padding:0 5vw 5vh;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-family:"Silkscreen",monospace;font-size:12px;letter-spacing:.08em;color:var(--mute)}
+#about{padding:40px 0 150px}
+.about{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:6vw;padding-top:56px}
+.about .big{font-size:clamp(28px,3.4vw,44px);font-weight:500;letter-spacing:-.03em;line-height:1.15}
+.about .big em{font-style:normal;color:var(--led);text-shadow:0 0 18px rgba(255,214,160,.35)}
+.about .body p{font-size:19px;line-height:1.6;color:var(--ink2);max-width:600px}
+.about .body p+p{margin-top:18px}
+.facts{list-style:none;margin-top:44px;border-top:1px solid var(--line)}
+.facts li{display:grid;grid-template-columns:130px 1fr;gap:20px;padding:16px 0;border-bottom:1px solid var(--line);font-size:16px}
+.facts .mono{color:var(--mute);padding-top:3px}
+.facts a{text-decoration:none;border-bottom:1px solid var(--line);transition:border-color .2s}
+.facts a:hover{border-color:var(--ink)}
+.facts .later{color:var(--mute)}
 
-/* ---------- pixel wipe between pages ---------- */
-#wipe{position:fixed;inset:0;z-index:100;pointer-events:none;width:100%;height:100%;image-rendering:pixelated}
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);padding:30px 0 40px;color:var(--mute)}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+footer a{text-decoration:none;color:var(--ink2)}
+footer a:hover{color:var(--ink)}
+
+/* page transition */
+#curtain{position:fixed;inset:0;z-index:100;pointer-events:none;clip-path:inset(100% 0 0 0);background:#000}
+#curtain.go{transition:clip-path .55s cubic-bezier(.7,0,.3,1);clip-path:inset(0 0 0 0)}
 
 @media (max-width:860px){
-  body{font-size:21px}
-  .bar{padding:14px 16px}
-  .bar nav{gap:16px}
-  #hero,#work,#about,footer{padding-left:16px;padding-right:16px}
-  .tag{font-size:24px}
-  .cards{grid-template-columns:1fr;gap:34px}
-  .about{grid-template-columns:1fr}
-  .about p{font-size:23px}
-  .head .rule{display:none}
+  :root{--wrap:calc(100vw - 40px)}
+  .bar nav{gap:18px}
+  .bar nav a.hide-m{display:none}
+  #hero{padding-top:96px}
+  .row a{grid-template-columns:30px minmax(0,1fr) 84px;grid-template-areas:"n t th" "n p th" "n y th";gap:4px 14px;padding:24px 0}
+  .row .n{grid-area:n;align-self:start;padding-top:8px}
+  .row h3{grid-area:t}
+  .row p{grid-area:p;font-size:15px}
+  .row .yr{grid-area:y;text-align:left}
+  .row .go{display:none}
+  .row .thumb{grid-area:th;display:block;width:84px;aspect-ratio:1;border-radius:8px;overflow:hidden;background:#000}
+  .row .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .about{grid-template-columns:1fr;gap:28px;padding-top:36px}
+  .about .body p{font-size:17px}
+  .facts li{grid-template-columns:104px 1fr}
+  #work{padding:80px 0 100px}
 }
-@media (max-width:560px){ .bar nav a:not(:last-child){display:none} }
 @media (prefers-reduced-motion:reduce){
-  .bar .me i,.hello .caret,.scroll i{animation:none}
-  .card{transition:none!important}
+  html{scroll-behavior:auto}
+  [data-rv]{opacity:1;transform:none;transition:none}
+  .soon .dot{animation:none}
 }
 </style>
 </head>
 <body>
-<canvas id="bg" aria-hidden="true"></canvas>
 
-<header class="bar">
-  <a class="me" href="#hero"><i></i>EDWARD LEE KIM KOON</a>
-  <nav><a href="#work">WORK</a><a href="#about">ABOUT</a><a href="https://www.linkedin.com/in/edward-lee-kim-koon-92340727/" target="_blank" rel="noopener">LINKEDIN ↗</a></nav>
+<header class="bar" id="bar">
+  <div class="wrap">
+    <a class="me" href="#hero"><span class="sq"></span>Edward Lee Kim Koon</a>
+    <nav><a href="#work">Work</a><a href="#about">About</a><a class="hide-m" href="https://www.linkedin.com/in/edward-lee-kim-koon-92340727/" target="_blank" rel="noopener">LinkedIn ↗</a></nav>
+  </div>
 </header>
 
 <main>
   <section id="hero">
-    <div class="hello" id="hello" aria-hidden="true"></div>
-    <h1 class="sr">Edward Lee Kim Koon</h1>
-    <canvas id="title" aria-hidden="true"></canvas>
-    <p class="tag" id="tag">I design and build things that <em>spin</em>, <em>glow</em> and occasionally fold through a <em>fourth dimension</em>.</p>
-    <div class="cta" id="cta">
-      <a class="btn" href="#work">SEE THE WORK ↓</a>
-      <a class="btn ghost" href="https://www.linkedin.com/in/edward-lee-kim-koon-92340727/" target="_blank" rel="noopener">LINKEDIN ↗</a>
+    <div class="wrap">
+      <div class="eyebrow mono" data-rv><span class="sq"></span>Works in software · Builds in hardware</div>
+      <h1 class="sr">Edward Lee Kim Koon</h1>
+      <canvas id="led" aria-hidden="true"></canvas>
+      <p class="lede" data-rv style="--d:.9s">I build things you can hold. Usually things that <b>spin</b>, <b>glow</b>, or both.</p>
+      <div class="cta" data-rv style="--d:1.05s">
+        <a class="btn primary" href="#work">See the work <span class="arr">↓</span></a>
+        <a class="btn ghost" href="https://www.linkedin.com/in/edward-lee-kim-koon-92340727/" target="_blank" rel="noopener">LinkedIn <span class="arr">↗</span></a>
+      </div>
     </div>
-    <div class="scroll">SCROLL<i></i></div>
   </section>
 
   <section id="work">
-    <div class="head"><span class="n">01</span><h2>PROJECTS</h2><span class="rule"></span></div>
-    <div class="cards">
-      <a class="card" href="hyperwheel/" data-accent="#ff4fa3" data-mini="wheel">
-        <canvas width="160" height="100" aria-hidden="true"></canvas>
-        <div class="meta">
-          <div><div class="idx">PROJECT 01 · 2021</div><h3>HYPERWHEEL</h3><p>A counter-rotating LED festival totem.</p></div>
-          <span class="go">ENTER →</span>
-        </div>
-      </a>
-      <a class="card paper" href="tesseract/" data-accent="#f3eee3" data-mini="tess">
-        <canvas width="160" height="100" aria-hidden="true"></canvas>
-        <div class="meta">
-          <div><div class="idx">PROJECT 02 · 2019</div><h3>TESSERACT</h3><p>A four-dimensional cube, built in light.</p></div>
-          <span class="go">ENTER →</span>
-        </div>
-      </a>
-      <a class="card" href="sdvx/" data-accent="#29e4ff" data-mini="sdvx">
-        <canvas width="160" height="100" aria-hidden="true"></canvas>
-        <div class="meta">
-          <div><div class="idx">PROJECT 03 · 2017</div><h3>SDVX CONTROLLER</h3><p>A home-built Sound Voltex arcade controller.</p></div>
-          <span class="go">ENTER →</span>
-        </div>
-      </a>
+    <div class="wrap">
+      <div class="shead" data-rv><h2>Selected projects</h2><span class="mono">(03)</span></div>
+      <ul class="list" id="list">
+        <li class="row" data-rv data-video="hyperwheel/media/home.mp4" data-bg="#07040f">
+          <a href="hyperwheel/">
+            <span class="n mono">01</span>
+            <h3><span class="sq"></span>Hyperwheel</h3>
+            <p>A counter-rotating LED festival totem, designed in Fusion 360 and 3D printed.</p>
+            <span class="yr mono">2021</span>
+            <span class="go"><svg viewBox="0 0 14 14" fill="none" stroke-width="1.5"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span>
+            <span class="thumb"><img src="hyperwheel/media/home.jpg" alt="" loading="lazy"></span>
+          </a>
+        </li>
+        <li class="row" data-rv style="--d:.08s" data-video="tesseract/media/clip2.mp4" data-bg="#f3eee3">
+          <a href="tesseract/">
+            <span class="n mono">02</span>
+            <h3><span class="sq"></span>Tesseract</h3>
+            <p>A four-dimensional cube, built in aluminium and light.</p>
+            <span class="yr mono">2019</span>
+            <span class="go"><svg viewBox="0 0 14 14" fill="none" stroke-width="1.5"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span>
+            <span class="thumb"><img src="tesseract/media/clip2.jpg" alt="" loading="lazy"></span>
+          </a>
+        </li>
+        <li class="row" data-rv style="--d:.16s" data-video="sdvx/media/hands.mp4" data-bg="#05030a">
+          <a href="sdvx/">
+            <span class="n mono">03</span>
+            <h3><span class="sq"></span>SDVX Controller</h3>
+            <p>A home-built arcade controller for the rhythm game Sound Voltex.</p>
+            <span class="yr mono">2017</span>
+            <span class="go"><svg viewBox="0 0 14 14" fill="none" stroke-width="1.5"><path d="M2 7h10M8 3l4 4-4 4"/></svg></span>
+            <span class="thumb"><img src="sdvx/media/hands.jpg" alt="" loading="lazy"></span>
+          </a>
+        </li>
+      </ul>
+      <div class="soon mono" data-rv><span class="dot"></span>More on the workbench</div>
     </div>
-    <div class="soon">MORE PROJECTS LOADING<span id="dots">...</span></div>
   </section>
 
   <section id="about">
-    <div class="head"><span class="n">02</span><h2>ABOUT</h2><span class="rule"></span></div>
-    <div class="about">
-      <div>
-        <p>Hi, I'm Edward. I like projects that sit between mechanical design, electronics and a bit of code, and I like them even more when they light up.</p>
-        <p class="todo">[ Placeholder: a longer bio is on the way. ]</p>
-      </div>
-      <div class="stats">
-        <div class="stat"><span>CAD</span><b>FUSION 360</b></div>
-        <div class="stat"><span>FAB</span><b>3D PRINTING</b></div>
-        <div class="stat"><span>ELECTRONICS</span><b>LEDS + MCUS</b></div>
-        <a class="btn" href="https://www.linkedin.com/in/edward-lee-kim-koon-92340727/" target="_blank" rel="noopener" style="justify-content:center">CONNECT ON LINKEDIN ↗</a>
+    <div class="wrap">
+      <div class="shead" data-rv><h2>About</h2><span class="mono">(Me)</span></div>
+      <div class="about">
+        <p class="big" data-rv>Software by day. Things that <em>light up</em> by night.</p>
+        <div class="body">
+          <p data-rv style="--d:.08s">I work in software. After hours I trade the keyboard for a soldering iron, a 3D printer and whatever else the next build needs.</p>
+          <p data-rv style="--d:.14s">Every project is an excuse to learn something new, from CAD to circuit boards to firmware. The best part is finishing it and sharing it with people.</p>
+          <ul class="facts" data-rv style="--d:.2s">
+            <li><span class="mono">Off the bench</span><span>Husband, dad, and home cook of a lot of Asian food.</span></li>
+            <li><span class="mono">Also</span><span>Poi dancer. <span class="later">Page coming soon.</span></span></li>
+            <li><span class="mono">Elsewhere</span><span><a href="https://www.linkedin.com/in/edward-lee-kim-koon-92340727/" target="_blank" rel="noopener">LinkedIn ↗</a></span></li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
-
-  <footer><span>© <span id="yr"></span> EDWARD LEE KIM KOON</span><span>BUILT PIXEL BY PIXEL</span></footer>
 </main>
 
-<canvas id="wipe" aria-hidden="true"></canvas>
+<footer>
+  <div class="wrap mono"><span>© <span id="yr"></span> Edward Lee Kim Koon</span><a href="#hero">Back to top ↑</a></div>
+</footer>
+
+<div id="peek" aria-hidden="true"></div>
+<div id="curtain" aria-hidden="true"></div>
 
 <script>
 (() => {
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const HOVER = matchMedia('(hover: hover)').matches;
 const $ = s => document.querySelector(s);
-const clamp = (v,a=0,b=1)=>Math.min(b,Math.max(a,v));
-const mouse = {x:-1e4, y:-1e4};
-addEventListener('pointermove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
-addEventListener('pointerleave', () => { mouse.x = mouse.y = -1e4; });
 $('#yr').textContent = new Date().getFullYear();
 
-const BAYER = [0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5].map(v => v/16 - .5);
-const hash = (x,y) => { let h = (x*374761393 + y*668265263) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0) / 4294967295; };
-
-/* ============================================================
-   BACKGROUND: dithered aurora + twinkling stars + cursor glow,
-   rendered at 1/PS resolution, 30 fps, paused when hidden
-   ============================================================ */
-const bg = $('#bg'), bctx = bg.getContext('2d');
-let PS = 5, BW = 0, BH = 0, bimg, bbuf;
-const PAL = [[7,4,15],[16,9,34],[30,15,58],[46,20,84],[34,40,96],[20,70,110]].map(([r,g,b]) => (255<<24)|(b<<16)|(g<<8)|r);
-function sizeBg(){
-  PS = innerWidth > 1600 ? 6 : innerWidth > 900 ? 5 : 4;
-  BW = Math.ceil(innerWidth/PS); BH = Math.ceil(innerHeight/PS);
-  bg.width = BW; bg.height = BH;
-  bimg = bctx.createImageData(BW, BH); bbuf = new Uint32Array(bimg.data.buffer);
-}
-function drawBg(t){
-  const mx = mouse.x/PS, my = mouse.y/PS, sy = scrollY/PS*.25;
-  for (let y = 0; y < BH; y++){
-    const yy = y + sy;
-    for (let x = 0; x < BW; x++){
-      // two slow sine bands make the aurora
-      let v = .5*Math.sin(x*.018 + t*.13 + Math.sin(yy*.011 + t*.07)*2.2) + .5*Math.sin(yy*.024 - t*.09 + x*.006);
-      v = v*.5 + .5;
-      v *= clamp(1.25 - y/BH);                       // fades toward the bottom
-      const dx = x - mx, dy = y - my, d2 = dx*dx + dy*dy;
-      const glow = d2 < 3600 ? (1 - d2/3600) : 0;    // cursor lamp
-      let lvl = v*3.2 + glow*2.4 + BAYER[(y&3)*4 + (x&3)];
-      lvl = lvl < 0 ? 0 : lvl > 5 ? 5 : lvl|0;
-      let c = PAL[lvl];
-      const h = hash(x, (yy|0));
-      if (h > .9975){ const tw = Math.sin(t*2 + h*300); if (tw > .2) c = tw > .8 ? 0xffffe6ef : 0xff9f8fbf; }
-      if (glow > .92 && ((x+y)&1)) c = 0xffa34fff;   // pink core
-      bbuf[y*BW + x] = c;
-    }
-  }
-  bctx.putImageData(bimg, 0, 0);
-}
-
-/* ============================================================
-   NAME: pixel particles fly in, rainbow sweep, scatter from the cursor
-   ============================================================ */
-const tc = $('#title'), tctx = tc.getContext('2d');
-let TP = 6, TW = 0, TH = 0, parts = [], timg, tbuf, born = 0;
-function buildTitle(){
-  const avail = Math.min(innerWidth - (innerWidth < 860 ? 32 : innerWidth*.1), 1100);
-  // two lines on wide screens, three on narrow ones; glyphs stay at a crisp 16px font
-  const lines = avail/(12*16) >= 3 ? ['EDWARD', 'LEE KIM KOON'] : ['EDWARD', 'LEE KIM', 'KOON'];
-  const cols = Math.max(...lines.map(l => l.length)), fs = 16;
-  TP = Math.max(1, Math.min(7, Math.floor(avail/(cols*fs))));
-  const lh = Math.round(fs*1.45);
-  TW = cols*fs + 4; TH = lh*(lines.length - 1) + fs + 4;
-  const oc = document.createElement('canvas'); oc.width = TW; oc.height = TH;
-  const o = oc.getContext('2d');
-  o.font = `${fs}px "Press Start 2P"`; o.textBaseline = 'top'; o.fillStyle = '#fff';
-  lines.forEach((l, i) => o.fillText(l, 0, i*lh));
-  const d = o.getImageData(0, 0, TW, TH).data;
-  const old = parts; parts = [];
-  for (let y = 0; y < TH; y++) for (let x = 0; x < TW; x++){
-    if (d[(y*TW + x)*4 + 3] > 128){
-      const a = Math.random()*Math.PI*2, r = 40 + Math.random()*160;
-      parts.push({hx:x, hy:y, x: old.length ? x : x + Math.cos(a)*r, y: old.length ? y : y + Math.sin(a)*r - 40, vx:0, vy:0, delay: RM ? 0 : (x/TW)*.9 + Math.random()*.5});
-    }
-  }
-  tc.width = TW + 2; tc.height = TH + 2;
-  tc.style.width = (TW + 2)*TP + 'px'; tc.style.height = (TH + 2)*TP + 'px';
-  timg = tctx.createImageData(tc.width, tc.height); tbuf = new Uint32Array(timg.data.buffer);
-}
-const hsl = (h) => { h = ((h%1)+1)%1; const f = n => { const k = (n + h*12) % 12; return Math.round(255*(.64 - .34*Math.max(-1, Math.min(k-3, 9-k, 1)))); }; return (255<<24)|(f(4)<<16)|(f(8)<<8)|f(0); };
-const HUE = Array.from({length:96}, (_,i) => hsl(i/96));
-function drawTitle(t){
-  const r = tc.getBoundingClientRect();
-  const mx = (mouse.x - r.left)/TP, my = (mouse.y - r.top)/TP;
-  const age = t - born, W2 = tc.width;
-  tbuf.fill(0);
-  const shadow = 0xff3d0f2a;
-  for (const p of parts){
-    const k = clamp((age - p.delay)/.9);
-    let hx = p.hx, hy = p.hy;
-    // cursor pushes pixels away; springs pull them home
-    const dx = p.x - mx, dy = p.y - my, d2 = dx*dx + dy*dy;
-    if (d2 < 90 && k >= 1 && !RM){ const f = (90 - d2)/90*1.6; p.vx += dx*f*.08; p.vy += dy*f*.08; }
-    if (k < 1){ const e = 1 - Math.pow(1-k, 3); p.x += (hx - p.x)*e*.25; p.y += (hy - p.y)*e*.25; }
-    else { p.vx += (hx - p.x)*.12; p.vy += (hy - p.y)*.12; p.vx *= .72; p.vy *= .72; p.x += p.vx; p.y += p.vy; }
-    if (k <= 0) continue;
-    const X = Math.round(p.x) + 1, Y = Math.round(p.y) + 1;
-    if (X < 0 || Y < 0 || X >= W2 - 1 || Y >= tc.height - 1) continue;
-    if (!tbuf[(Y+1)*W2 + X + 1]) tbuf[(Y+1)*W2 + X + 1] = shadow;
-    const hue = p.hx/TW*.9 + p.hy/TH*.25 - t*.12;
-    const glint = Math.abs(((p.hx + p.hy*.6 - t*60) % 220 + 220) % 220 - 10) < 2.2;
-    tbuf[Y*W2 + X] = glint ? 0xffffffff : HUE[((Math.floor(hue*96) % 96) + 96) % 96];
-  }
-  tctx.putImageData(timg, 0, 0);
-}
-
-/* ---------- typed greeting ---------- */
-function typeHello(){
-  const el = $('#hello'), msg = '> HELLO, WORLD. I AM';
-  if (RM){ el.innerHTML = msg + '<span class="caret"></span>'; return; }
-  let i = 0; const step = () => { el.innerHTML = msg.slice(0, ++i) + '<span class="caret"></span>'; if (i < msg.length) setTimeout(step, 45 + Math.random()*50); };
-  step();
-}
-
-/* ============================================================
-   PROJECT MINIS: tiny live pixel renders of each project
-   ============================================================ */
-function makeMini(card){
-  const cv = card.querySelector('canvas'), c = cv.getContext('2d');
-  const W = cv.width, H = cv.height, img = c.createImageData(W, H), buf = new Uint32Array(img.data.buffer);
-  const set = (x, y, col) => { x |= 0; y |= 0; if (x >= 0 && y >= 0 && x < W && y < H) buf[y*W + x] = col; };
-  const line = (x0, y0, x1, y1, col) => {           // Bresenham
-    x0 = Math.round(x0); y0 = Math.round(y0); x1 = Math.round(x1); y1 = Math.round(y1);
-    const dx = Math.abs(x1-x0), dy = -Math.abs(y1-y0), sx = x0<x1?1:-1, sy = y0<y1?1:-1; let e = dx + dy;
-    for (let n = 0; n < 400; n++){ set(x0, y0, col); if (x0===x1 && y0===y1) break; const e2 = 2*e; if (e2 >= dy){ e += dy; x0 += sx; } if (e2 <= dx){ e += dx; y0 += sy; } }
-  };
-  const rgb = (r,g,b) => (255<<24)|(b<<16)|(g<<8)|r;
-  let speed = 1, target = 1, phase = Math.random()*10, visible = false, lastT = 0;
-  card.addEventListener('pointerenter', () => target = 3.2);
-  card.addEventListener('pointerleave', () => target = 1);
-  card.addEventListener('focus', () => target = 3.2);
-  card.addEventListener('blur', () => target = 1);
-  new IntersectionObserver(es => { visible = es[0].isIntersecting; }, {threshold:.05}).observe(cv);
-
-  const kind = card.dataset.mini;
-  // tesseract geometry
-  const V = []; for (let i = 0; i < 16; i++) V.push([(i&1)?1:-1, (i&2)?1:-1, (i&4)?1:-1, (i&8)?1:-1]);
-  const E = []; for (let i = 0; i < 16; i++) for (let b = 0; b < 4; b++){ const j = i ^ (1<<b); if (j > i) E.push([i, j]); }
-
-  function wheel(t){
-    const cx = W/2, cy = H/2, R = 42;
-    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++){
-      const dx = x - cx, dy = y - cy, d = Math.hypot(dx, dy);
-      let col = rgb(9,5,20);
-      if (d < R){
-        const a = Math.atan2(dy, dx)/(Math.PI*2) + .5, rr = d/R;
-        const hue = a + rr*.3 - t*.1;
-        const v = .25 + .75*rr*rr + BAYER[(y&3)*4 + (x&3)]*.35;
-        if (v > .45) col = HUE[((Math.floor(hue*96)%96)+96)%96]; else if (v > .2) col = rgb(40,18,70);
-      } else if (hash(x, y) > .985) col = rgb(90,80,130);
-      buf[y*W + x] = col;
-    }
-    const lattice = (rot, col) => {
-      for (let k = 0; k < 12; k++){
-        const a0 = rot + k*Math.PI/6, ox = cx + Math.cos(a0)*R/2, oy = cy + Math.sin(a0)*R/2;
-        for (let s = 0; s < 80; s++){ const b = s/80*Math.PI*2; set(ox + Math.cos(b)*R/2, oy + Math.sin(b)*R/2, col); }
-      }
-    };
-    lattice(-t*.5, rgb(20,14,34)); lattice(t*.5, rgb(8,6,14));
-    for (let s = 0; s < 280; s++){ const b = s/280*Math.PI*2; set(cx + Math.cos(b)*R, cy + Math.sin(b)*R, rgb(8,6,14)); set(cx + Math.cos(b)*(R+1), cy + Math.sin(b)*(R+1), rgb(60,50,90)); }
-    for (let s = 0; s < 60; s++){ const b = s/60*Math.PI*2; set(cx + Math.cos(b)*8, cy + Math.sin(b)*8, rgb(8,6,14)); }
-  }
-  function tess(t){
-    const paper = rgb(243,238,227), grain = rgb(235,228,213), ink = rgb(29,27,24), gold = rgb(168,131,47), goldL = rgb(214,196,150), grey = rgb(130,122,108);
-    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) buf[y*W + x] = hash(x, y) > .93 ? grain : paper;
-    const cx = W/2, cy = H/2 + 2;
-    // flower-of-life, dotted
-    for (let k = 0; k < 7; k++){
-      const ox = k ? cx + Math.cos(k*Math.PI/3 + t*.05)*14 : cx, oy = k ? cy + Math.sin(k*Math.PI/3 + t*.05)*14 : cy;
-      for (let s = 0; s < 90; s += 2){ const b = s/90*Math.PI*2; set(ox + Math.cos(b)*14, oy + Math.sin(b)*14, goldL); }
-    }
-    for (let s = 0; s < 240; s += 3){ const b = s/240*Math.PI*2; set(cx + Math.cos(b)*44, cy + Math.sin(b)*44, goldL); }
-    const th = t*.6, c = Math.cos(th), s = Math.sin(th), ry = t*.25, cr = Math.cos(ry), sr = Math.sin(ry);
-    const P = V.map(([x,y,z,w]) => {
-      const xr = x*c - w*s, wr = x*s + w*c, k = 2.4/(2.4 - wr);
-      let X = xr*k, Y = y*k, Z = z*k;
-      const X2 = X*cr + Z*sr, Z2 = -X*sr + Z*cr; X = X2; Z = Z2;
-      const Y2 = Y*.92 - Z*.38; Z = Y*.38 + Z*.92; Y = Y2;
-      const p = 3.6/(3.6 - Z*.35);
-      return [cx + X*p*15, cy + Y*p*15, wr];
-    });
-    const order = E.map(([a,b]) => [a, b, (P[a][2] + P[b][2])/2]).sort((u,v) => u[2] - v[2]);
-    for (const [a, b, w] of order) line(P[a][0], P[a][1], P[b][0], P[b][1], w < -.3 ? gold : w > .3 ? ink : grey);
-    for (const p of P){ const col = p[2] > 0 ? ink : paper; set(p[0], p[1], col); set(p[0]+1, p[1], col); set(p[0], p[1]+1, col); set(p[0]+1, p[1]+1, col); if (p[2] <= 0){ set(p[0]-1, p[1], gold); set(p[0]+2, p[1], gold); set(p[0], p[1]-1, gold); set(p[0], p[1]+2, gold); } }
-  }
-  function sdvx(t){
-    const bgc=rgb(12,4,10), red=rgb(90,14,28);
-    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++){
-      const dx=x-W/2, dy=y-18, r=Math.hypot(dx,dy*1.4), ring=((r*.35 - t*3)%6+6)%6;
-      buf[y*W+x] = ring<.7 && y<70 ? red : bgc;
-    }
-    // highway
-    const top=10, bot=66, hwT=10, hwB=46;
-    for (let y=top;y<=bot;y++){ const k=(y-top)/(bot-top), hw=hwT+(hwB-hwT)*k, cx=W/2;
-      for (let x=Math.round(cx-hw); x<=Math.round(cx+hw); x++) set(x,y,rgb(24,20,40));
-      set(cx-hw-1,y,rgb(41,228,255)); set(cx+hw+1,y,rgb(255,61,166));
-      for (let l=1;l<4;l++) if(y%2) set(Math.round(cx-hw+hw*2*l/4),y,rgb(60,56,86)); }
-    // falling chips
-    for (let i=0;i<7;i++){ const ph=((t*.5+i*.37)%1), y=top+ph*(bot-top), k=ph, hw=hwT+(hwB-hwT)*k, lane=(i*3+Math.floor(t*.5+i*.37))%4;
-      const x0=W/2-hw+hw*2*lane/4+1, x1=W/2-hw+hw*2*(lane+1)/4-1; for(let x=Math.round(x0);x<=Math.round(x1);x++){ set(x,y,0xffffffff); set(x,y+1,0xffffffff); } }
-    // judge line
-    for (let x=W/2-50;x<=W/2+50;x++) set(x,bot,rgb(255,210,140));
-    // controller
-    const cy=72; for (let y=cy;y<cy+22;y++) for (let x=22;x<W-22;x++) set(x,y, y<cy+14?rgb(14,12,22):rgb(150,105,60));
-    const lit=Math.floor(t*4)%4;
-    for (let i=0;i<4;i++){ const x0=50+i*16; for(let y=cy+3;y<cy+9;y++) for(let x=x0;x<x0+12;x++) set(x,y, i===lit?0xffffffff:rgb(170,168,185)); }
-    for (let i=0;i<2;i++){ const x0=58+i*32; for(let y=cy+10;y<cy+13;y++) for(let x=x0;x<x0+12;x++) set(x,y,rgb(255,138,31)); }
-    for (let i=0;i<2;i++){ const kx=i?W-34:34; for(let y=cy+3;y<cy+10;y++) for(let x=kx-3;x<kx+4;x++) set(x,y,rgb(205,208,216)); }
-    set(W/2,cy+2,rgb(58,160,255)); set(W/2+1,cy+2,rgb(58,160,255));
-  }
-  return function(t){
-    if (!visible && lastT) return;
-    const dt = Math.min(.1, t - (lastT || t)); lastT = t;
-    speed += (target - speed)*.12; phase += dt*speed*(RM ? .3 : 1);
-    kind === 'wheel' ? wheel(phase) : kind === 'sdvx' ? sdvx(phase) : tess(phase);
-    c.putImageData(img, 0, 0);
-  };
-}
-const minis = [...document.querySelectorAll('.card')].map(makeMini);
+/* ---------- top bar ---------- */
+const bar = $('#bar');
+const onScroll = () => bar.classList.toggle('scrolled', scrollY > 20);
+addEventListener('scroll', onScroll, {passive:true}); onScroll();
 
 /* ---------- reveals ---------- */
-const io = new IntersectionObserver(es => es.forEach(e => {
-  if (!e.isIntersecting) return; io.unobserve(e.target);
-  const i = [...document.querySelectorAll('.card')].indexOf(e.target);
-  setTimeout(() => e.target.classList.add('in'), RM ? 0 : i*160);
-}), {threshold:.15});
-document.querySelectorAll('.card').forEach(c => io.observe(c));
-let dotN = 0; setInterval(() => { $('#dots').textContent = '.'.repeat(dotN = (dotN + 1) % 4); }, 450);
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }), {threshold:.15});
+document.querySelectorAll('[data-rv]').forEach(el => io.observe(el));
 
 /* ============================================================
-   PIXEL WIPE: cards dissolve the screen into their accent colour
+   LED DOT-MATRIX NAME
+   5x7 glyphs on a panel of unlit dots. Dots flicker on left to
+   right, a slow shimmer passes every few seconds, and unlit dots
+   glow faintly near the cursor. The loop sleeps when idle.
    ============================================================ */
-const wipe = $('#wipe'), wctx = wipe.getContext('2d');
-function go(href, accent, ox, oy){
-  if (RM){ location.href = href; return; }
-  const cell = 24, cols = Math.ceil(innerWidth/cell), rows = Math.ceil(innerHeight/cell);
-  wipe.width = cols; wipe.height = rows;
-  const cx = ox/cell, cy = oy/cell, maxD = Math.hypot(Math.max(cx, cols - cx), Math.max(cy, rows - cy));
-  const order = []; for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) order.push([x, y, Math.hypot(x - cx, y - cy)/maxD + (BAYER[(y&3)*4 + (x&3)] + .5)*.18]);
-  const start = performance.now();
-  wctx.fillStyle = accent;
-  const step = now => {
-    const k = (now - start)/520;
-    for (const [x, y, d] of order) if (d < k*1.2) wctx.fillRect(x, y, 1, 1);
-    if (k < 1.05) requestAnimationFrame(step); else location.href = href;
-  };
-  requestAnimationFrame(step);
+const G = {
+  A:['01110','10001','10001','11111','10001','10001','10001'],
+  D:['11110','10001','10001','10001','10001','10001','11110'],
+  E:['11111','10000','10000','11110','10000','10000','11111'],
+  I:['01110','00100','00100','00100','00100','00100','01110'],
+  K:['10001','10010','10100','11000','10100','10010','10001'],
+  L:['10000','10000','10000','10000','10000','10000','11111'],
+  M:['10001','11011','10101','10101','10001','10001','10001'],
+  N:['10001','11001','10101','10011','10001','10001','10001'],
+  O:['01110','10001','10001','10001','10001','10001','01110'],
+  R:['11110','10001','10001','11110','10100','10010','10001'],
+  W:['10001','10001','10001','10101','10101','10101','01010'],
+  ' ':['00000','00000','00000','00000','00000','00000','00000'],
+};
+const cv = $('#led'), ctx = cv.getContext('2d');
+let COLS = 0, ROWS = 0, P = 12, DPR = 1, lit, boot, level, t0 = 0;
+let spriteLit, spriteOff, mouse = {x:-1e4, y:-1e4}, running = false, lastMove = 0, shimmerAt = -99;
+
+function sprites(){
+  const s = Math.ceil(P*DPR*2), c = s/2;
+  spriteLit = document.createElement('canvas'); spriteLit.width = spriteLit.height = s;
+  const g = spriteLit.getContext('2d');
+  const gr = g.createRadialGradient(c, c, 0, c, c, c);
+  gr.addColorStop(0, 'rgba(255,241,214,1)'); gr.addColorStop(.19, 'rgba(255,241,214,1)');
+  gr.addColorStop(.23, 'rgba(255,214,160,.36)'); gr.addColorStop(.55, 'rgba(255,190,130,.07)'); gr.addColorStop(1, 'rgba(255,190,130,0)');
+  g.fillStyle = gr; g.fillRect(0, 0, s, s);
+  spriteOff = document.createElement('canvas'); spriteOff.width = spriteOff.height = s;
+  const o = spriteOff.getContext('2d');
+  o.fillStyle = '#26262b'; o.beginPath(); o.arc(c, c, P*DPR*.36, 0, Math.PI*2); o.fill();
 }
-document.querySelectorAll('.card').forEach(card => card.addEventListener('click', e => {
-  if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+function layout(){
+  const avail = Math.min(innerWidth < 860 ? innerWidth - 40 : innerWidth*.9, 1200);
+  const lines = avail < 640 ? ['EDWARD','LEE KIM','KOON'] : ['EDWARD','LEE KIM KOON'];
+  const pad = 1, gapRows = 2;
+  COLS = Math.max(...lines.map(l => l.length))*6 - 1 + pad*2;
+  ROWS = lines.length*7 + (lines.length - 1)*gapRows + pad*2;
+  P = Math.max(4, Math.min(15, Math.floor(avail/COLS)));
+  DPR = Math.min(devicePixelRatio || 1, 2);
+  cv.width = COLS*P*DPR; cv.height = ROWS*P*DPR;
+  cv.style.width = COLS*P + 'px'; cv.style.height = ROWS*P + 'px';
+  lit = new Uint8Array(COLS*ROWS); boot = new Float32Array(COLS*ROWS); level = new Float32Array(COLS*ROWS);
+  lines.forEach((line, li) => {
+    const y0 = pad + li*(7 + gapRows);
+    [...line].forEach((ch, ci) => {
+      const g = G[ch] || G[' '], x0 = pad + ci*6;
+      for (let r = 0; r < 7; r++) for (let c = 0; c < 5; c++) if (g[r][c] === '1') lit[(y0 + r)*COLS + x0 + c] = 1;
+    });
+  });
+  for (let i = 0; i < COLS*ROWS; i++) boot[i] = RM ? 0 : .25 + ((i % COLS)/COLS)*.9 + Math.random()*.18;
+  sprites();
+}
+function draw(now){
+  const t = (now - t0)/1000, S = P*DPR;
+  const r = cv.getBoundingClientRect();
+  const mx = (mouse.x - r.left)/P, my = (mouse.y - r.top)/P;
+  const shim = (t - shimmerAt)/1.6, shimX = -8 + shim*(COLS + 16), shimOn = shim >= 0 && shim <= 1;
+  let busy = shimOn || now - lastMove < 700;
+  ctx.clearRect(0, 0, cv.width, cv.height);
+  for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++){
+    const i = y*COLS + x;
+    let want;
+    if (lit[i]){
+      const b = t - boot[i];
+      want = b < 0 ? 0 : b < .14 ? (Math.random() < .5 ? 1 : .15) : 1;   // flicker on
+      if (b < .14) busy = true;
+      if (shimOn){ const d = x - shimX; want *= .7 + .3*Math.exp(-d*d/30); }
+    } else {
+      const dx = x + .5 - mx, dy = y + .5 - my, d2 = dx*dx + dy*dy;
+      want = d2 < 60 ? Math.exp(-d2/14)*.32 : 0;
+    }
+    level[i] += (want - level[i])*(lit[i] ? .5 : .18);
+    if (Math.abs(want - level[i]) > .01) busy = true;
+    const cx = (x + .5)*S - S, cy = (y + .5)*S - S;
+    ctx.globalAlpha = 1; ctx.drawImage(spriteOff, cx, cy);
+    if (level[i] > .02){ ctx.globalAlpha = level[i]; ctx.drawImage(spriteLit, cx, cy); }
+  }
+  ctx.globalAlpha = 1;
+  return busy;
+}
+function loop(now){
+  if (document.hidden){ running = false; return; }
+  if (draw(now)) requestAnimationFrame(loop); else running = false;
+}
+function wake(){ if (!running){ running = true; requestAnimationFrame(loop); } }
+addEventListener('pointermove', e => {
+  mouse.x = e.clientX; mouse.y = e.clientY;
+  const r = cv.getBoundingClientRect();
+  if (e.clientY > r.top - 60 && e.clientY < r.bottom + 60){ lastMove = performance.now(); wake(); }
+}, {passive:true});
+if (!RM) setInterval(() => { if (!document.hidden && cv.getBoundingClientRect().bottom > 0){ shimmerAt = (performance.now() - t0)/1000; wake(); } }, 7000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) wake(); });
+
+/* ============================================================
+   PROJECT INDEX: floating video preview + curtain transition
+   ============================================================ */
+const peek = $('#peek'), rows = [...document.querySelectorAll('.row')];
+const vids = new Map();
+let px = 0, py = 0, tx = 0, ty = 0, peekOn = false, peekRAF = 0;
+function vid(src){
+  if (!vids.has(src)){
+    const v = document.createElement('video');
+    Object.assign(v, {src, muted:true, loop:true, playsInline:true, preload:'auto'});
+    peek.appendChild(v); vids.set(src, v);
+  }
+  return vids.get(src);
+}
+function follow(){
+  px += (tx - px)*.14; py += (ty - py)*.14;
+  peek.style.left = px + 'px'; peek.style.top = py + 'px';
+  peekRAF = (peekOn || Math.abs(tx - px) > .5) ? requestAnimationFrame(follow) : 0;
+}
+if (HOVER && !RM){
+  addEventListener('pointermove', e => { tx = e.clientX + 60; ty = e.clientY - 30; }, {passive:true});
+  rows.forEach(row => row.addEventListener('pointerenter', () => {
+    const v = vid(row.dataset.video);
+    vids.forEach(o => { if (o !== v){ o.classList.remove('on'); o.pause(); } });
+    v.classList.add('on'); v.play().catch(() => {});
+    if (!peekOn){ px = tx; py = ty; }
+    peekOn = true; peek.classList.add('on');
+    if (!peekRAF) follow();
+  }));
+  $('#list').addEventListener('pointerleave', () => {
+    peekOn = false; peek.classList.remove('on');
+    setTimeout(() => { if (!peekOn) vids.forEach(v => v.pause()); }, 300);
+  });
+}
+const curtain = $('#curtain');
+rows.forEach(row => row.querySelector('a').addEventListener('click', e => {
+  if (RM || e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
   e.preventDefault();
-  go(card.getAttribute('href'), card.dataset.accent, e.clientX || innerWidth/2, e.clientY || innerHeight/2);
+  const href = e.currentTarget.getAttribute('href');
+  curtain.style.background = row.dataset.bg;
+  curtain.classList.add('go');
+  setTimeout(() => { location.href = href; }, 560);
 }));
-addEventListener('pageshow', () => { wctx.clearRect(0, 0, wipe.width, wipe.height); });   // back button: clear the wipe
+addEventListener('pageshow', () => curtain.classList.remove('go'));   // back button
 
-/* ============================================================
-   LOOP (30 fps, paused while the tab is hidden)
-   ============================================================ */
-let last = 0;
-function frame(now){
-  requestAnimationFrame(frame);
-  if (document.hidden || now - last < 32) return;
-  last = now; const t = now/1000;
-  drawBg(t);
-  if (tc.getBoundingClientRect().bottom > 0) drawTitle(t);
-  minis.forEach(m => m(t));
-}
-
+/* ---------- boot ---------- */
 (async () => {
-  try { await document.fonts.load('16px "Press Start 2P"'); } catch(e){}
-  sizeBg(); buildTitle();
-  born = performance.now()/1000;
-  typeHello();
-  setTimeout(() => $('#tag').classList.add('on'), RM ? 0 : 1300);
-  setTimeout(() => $('#cta').classList.add('on'), RM ? 0 : 1600);
-  requestAnimationFrame(frame);
+  try { await document.fonts.ready; } catch(e){}
+  layout(); t0 = performance.now(); wake();
 })();
-let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { sizeBg(); buildTitle(); }, 120); });
+let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { layout(); t0 = performance.now() - 5000; wake(); }, 150); });
 })();
 </script>
 </body>

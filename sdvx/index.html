@@ -221,9 +221,9 @@ h1 .plate{display:inline-block;margin-top:10px;font-size:.36em;letter-spacing:.3
       <div class="song"><span>♪ PLEXI DRIVE</span><span>150 BPM · ORIGINAL</span><i><b id="songProg"></b></i></div>
       <div class="keys" id="keys">
         <div class="key" data-code="KeyS"><kbd>S</kbd>BT-A</div><div class="key" data-code="KeyD"><kbd>D</kbd>BT-B</div><div class="key" data-code="KeyK"><kbd>K</kbd>BT-C</div><div class="key" data-code="KeyL"><kbd>L</kbd>BT-D</div>
-        <div class="key vol l" data-code="KeyZ"><kbd>Z</kbd>VOL-L</div><div class="key fx" data-code="KeyC"><kbd>C</kbd>FX-L</div><div class="key fx" data-code="KeyM"><kbd>M</kbd>FX-R</div><div class="key vol r" data-code="Slash"><kbd>/</kbd>VOL-R</div>
+        <div class="key vol l" data-code="KeyZ"><kbd>Z</kbd>VOL-L</div><div class="key fx" data-code="KeyC"><kbd>C</kbd>FX-L</div><div class="key fx" data-code="KeyM"><kbd>M</kbd>FX-R</div><div class="key vol r" data-code="Period"><kbd>&gt;</kbd>VOL-R</div>
       </div>
-      <p class="hint hide-m">Hold <b class="c">Z</b> while the blue laser is live, <b class="p">/</b> for the pink one.</p>
+      <p class="hint hide-m">Hold <b class="c">Z</b> while the blue laser is live, <b class="p">&gt;</b> for the pink one.</p>
       <div class="stats">
         <div class="sc">Score<b id="sScore">00000000</b></div><div class="cr">Crit<b id="sCrit">0</b></div><div class="nr">Near<b id="sNear">0</b></div><div class="er">Error<b id="sErr">0</b></div>
       </div>
@@ -697,7 +697,7 @@ function updateStats(){
   $('#sCrit').textContent=crit; $('#sNear').textContent=near; $('#sErr').textContent=err;
 }
 const KEYMAP={KeyS:0,KeyD:1,KeyK:2,KeyL:3,KeyC:4,KeyM:5};
-const KNOBMAP={KeyZ:0,Slash:1};
+const KNOBMAP={KeyZ:0,Period:1};   // Period = the > key; works with or without Shift
 const keyEl=code=>document.querySelector(`#keys .key[data-code="${code}"]`);
 function playing(){ return S.play>.5; }
 addEventListener('keydown',e=>{
