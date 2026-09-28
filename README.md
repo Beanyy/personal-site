@@ -1,5 +1,7 @@
 # Edward Lee Kim Koon — personal site
 
+Live at https://edwardlkk.com (GitHub Pages, custom domain via the `CNAME` file; DNS on Cloudflare).
+
 Static site, no build step. Open `index.html` through any static server, e.g.
 
     python -m http.server 8000
