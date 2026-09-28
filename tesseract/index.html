@@ -30,8 +30,18 @@ body{
 /* ---------- fixed layers ---------- */
 #halo{position:fixed;left:0;top:0;width:1000px;height:1000px;margin:-500px 0 0 -500px;pointer-events:none;z-index:0;will-change:transform,opacity;transform-origin:50% 50%}
 #halo svg{width:100%;height:100%;overflow:visible}
-#halo .spin{transform-origin:500px 500px;animation:spin 240s linear infinite}
-#halo .spin2{transform-origin:500px 500px;animation:spin 360s linear infinite reverse}
+#halo g{transform-origin:500px 500px;transition:stroke .35s,fill .35s}
+#halo .r1{animation:spin 300s linear infinite}
+#halo .r2{animation:spin 200s linear infinite reverse}
+#halo .r3{animation:spin 420s linear infinite}
+#halo .r4{animation:spin 260s linear infinite reverse}
+#halo .r5{animation:spin 160s linear infinite}
+#halo .tx{opacity:0;animation:fadein 1.6s ease forwards}
+#halo .sym{font-family:"Segoe UI Symbol","Noto Sans Symbols 2","Noto Sans Symbols","Apple Symbols",serif;font-size:22px;text-anchor:middle;dominant-baseline:central}
+#halo.lit g{stroke:#2f7dff}
+#halo.lit .tx,#halo.lit .sym{fill:#2f7dff}
+#halo.lit svg{filter:drop-shadow(0 0 3px rgba(47,125,255,.95)) drop-shadow(0 0 12px rgba(110,170,255,.55))}
+@keyframes fadein{to{opacity:1}}
 #halo [pathLength]{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 2.8s cubic-bezier(.6,.1,.2,1) forwards}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes draw{to{stroke-dashoffset:0}}
@@ -72,6 +82,7 @@ h1 em{font-style:italic;font-weight:400}
 .plate{position:absolute;right:5vw;bottom:8vh;width:clamp(170px,15vw,230px)}
 .plate .frame{aspect-ratio:3/4;padding:6px;background:#fbf8f1;box-shadow:0 1px 0 var(--rule),0 18px 30px -18px rgba(50,35,10,.45);border:1px solid var(--rule)}
 .plate figcaption,.pl figcaption{margin-top:8px;font-size:14px;font-variant:small-caps;letter-spacing:.08em;color:var(--ink2);text-align:center}
+.cue small{display:block;margin-bottom:6px;font-style:italic;font-variant:normal;letter-spacing:0;font-size:14px;color:var(--gold)}
 .cue{position:absolute;left:50%;bottom:4vh;transform:translateX(-50%);font-size:13px;color:var(--ink3);text-align:center}
 .cue:after{content:"";display:block;width:1px;height:34px;margin:10px auto 0;background:linear-gradient(var(--ink3),transparent);animation:cue 2.4s ease-in-out infinite}
 @keyframes cue{0%,100%{transform:scaleY(.4);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}}
@@ -88,6 +99,9 @@ h1 em{font-style:italic;font-weight:400}
 .panel{position:sticky;top:17vh;width:min(460px,calc(100vw - 32px));margin-left:6vw;padding:24px 28px 26px;background:rgba(248,245,237,.95);
   border:1px solid var(--ink);outline:1px solid var(--ink);outline-offset:3px;box-shadow:0 30px 50px -30px rgba(60,40,10,.35)}
 .panel .sec{font-size:14px;color:var(--gold);font-variant:small-caps;letter-spacing:.14em}
+.sec:before{content:"";display:inline-block;width:30px;height:30px;margin-right:10px;vertical-align:-10px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40' fill='none' stroke='%23a8832f' stroke-width='1.1'%3E%3Ccircle cx='20' cy='20' r='18.5'/%3E%3Ccircle cx='20' cy='20' r='15.5'/%3E%3Cpath d='M20 4.5L33.4 27.75H6.6Z'/%3E%3Cpath d='M20 35.5L6.6 12.25H33.4Z'/%3E%3Crect x='14' y='14' width='12' height='12' transform='rotate(45 20 20)'/%3E%3Ccircle cx='20' cy='20' r='3'/%3E%3C/svg%3E") center/contain no-repeat;animation:spin 40s linear infinite}
+.panel:hover .sec:before{animation-duration:6s}
+.panel{background-image:radial-gradient(circle at 100% 0,rgba(168,131,47,.07),transparent 40%)}
 .panel h2{font-family:"Cormorant Garamond",serif;font-weight:400;font-style:italic;font-size:36px;line-height:1.1;margin:4px 0 14px}
 .panel p{font-size:19px;line-height:1.5}
 .panel p b{font-weight:500;font-variant:small-caps;letter-spacing:.05em}
@@ -152,7 +166,8 @@ h1 em{font-style:italic;font-weight:400}
   .pl .pm{height:auto;aspect-ratio:var(--ar)}
 }
 @media (prefers-reduced-motion:reduce){
-  #halo .spin,#halo .spin2,.cue:after{animation:none}
+  #halo g,.cue:after,.sec:before{animation:none!important}
+  #halo .tx{opacity:1}
   #halo [pathLength]{animation:none;stroke-dashoffset:0}
   .pm>img,.pm>video{transform:none;transition:opacity .3s}
 }
@@ -187,7 +202,7 @@ h1 em{font-style:italic;font-weight:400}
       <div class="mat"><span class="lhs">R<sub>xw</sub>(θ) =</span><span class="m" id="mat1"></span></div>
     </div>
     <figure class="plate"><div class="frame pm" data-pm><img src="media/20190511_001201.jpg" alt="The finished tesseract, lit up on its stand" loading="eager"></div><figcaption>Plate I</figcaption></figure>
-    <div class="cue sc">Scroll</div>
+    <div class="cue sc"><small>Click anywhere to transmute</small>Scroll</div>
   </section>
 
   <section id="proj" data-sec="§1 Construction">
@@ -238,9 +253,8 @@ h1 em{font-style:italic;font-weight:400}
     <div class="pl-head"><span class="sec">§3</span><h2>Plates</h2></div>
     <div class="track" id="track">
       <figure class="pl" style="--ar:1920/1080"><div class="pm" data-pm style="aspect-ratio:1920/1080"><video src="media/clip1.mp4" poster="media/clip1.jpg" muted loop playsinline preload="metadata"></video></div><figcaption>II</figcaption></figure>
-      <figure class="pl" style="--ar:3/4"><div class="pm" data-pm style="aspect-ratio:3/4"><img src="media/20190517_161342.jpg" alt="Holding the tesseract up with a friend" loading="lazy"></div><figcaption>III</figcaption></figure>
-      <figure class="pl" style="--ar:1920/1080"><div class="pm" data-pm style="aspect-ratio:1920/1080"><video src="media/clip2.mp4" poster="media/clip2.jpg" muted loop playsinline preload="metadata"></video></div><figcaption>IV</figcaption></figure>
-      <figure class="pl" style="--ar:1920/1080"><div class="pm" data-pm style="aspect-ratio:1920/1080"><video src="media/clip3.mp4" poster="media/clip3.jpg" muted loop playsinline preload="metadata"></video></div><figcaption>V</figcaption></figure>
+      <figure class="pl" style="--ar:1920/1080"><div class="pm" data-pm style="aspect-ratio:1920/1080"><video src="media/clip2.mp4" poster="media/clip2.jpg" muted loop playsinline preload="metadata"></video></div><figcaption>III</figcaption></figure>
+      <figure class="pl" style="--ar:1920/1080"><div class="pm" data-pm style="aspect-ratio:1920/1080"><video src="media/clip3.mp4" poster="media/clip3.jpg" muted loop playsinline preload="metadata"></video></div><figcaption>IV</figcaption></figure>
     </div>
   </div>
 </section>
@@ -258,26 +272,47 @@ const ss = t => t*t*(3-2*t);
 const mob = () => innerWidth<860;
 
 /* ============================================================
-   SACRED GEOMETRY HALO — flower of life + Metatron's cube, drawn in once
+   TRANSMUTATION CIRCLE — nested rings of alchemical script, the seven
+   planetary seals, a hexagram, an octagram (two squares: the cube) and a
+   flower of life at the core. Each ring turns on its own; it draws itself
+   in on load and ignites in blue lightning at key moments.
    ============================================================ */
 (function buildHalo(){
-  const C=500, r=100, out=[];
-  const circ=(x,y,R,cls,d)=>`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${R}" pathLength="1" style="animation-delay:${d}s" ${cls||''}/>`;
-  const line=(a,b,d)=>`<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" pathLength="1" style="animation-delay:${d}s"/>`;
-  // flower of life: 19 circles on a hex lattice
-  const pts=[[0,0]];
-  for(let k=0;k<6;k++){ const a=k*Math.PI/3; pts.push([Math.cos(a)*r,Math.sin(a)*r]); }
-  for(let k=0;k<6;k++){ const a=k*Math.PI/3; pts.push([Math.cos(a)*2*r,Math.sin(a)*2*r]); const b=a+Math.PI/6; pts.push([Math.cos(b)*r*Math.sqrt(3),Math.sin(b)*r*Math.sqrt(3)]); }
-  let flower=pts.map((p,i)=>circ(C+p[0],C+p[1],r,'',.1+i*.05)).join('');
-  // Metatron's cube: 13 centres, every pair joined
-  const m=[[0,0]]; const mr=2*r/Math.sqrt(3)*.9;
-  for(let k=0;k<6;k++){ const a=Math.PI/6+k*Math.PI/3; m.push([Math.cos(a)*mr,Math.sin(a)*mr]); m.push([Math.cos(a)*mr*2,Math.sin(a)*mr*2]); }
-  let met=''; let d=.6;
-  for(let i=0;i<m.length;i++) for(let j=i+1;j<m.length;j++){ met+=line([C+m[i][0],C+m[i][1]],[C+m[j][0],C+m[j][1]], d); d+=.012; }
-  const rings=[circ(C,C,3*r,'',.2),circ(C,C,3*r+8,'',.3),circ(C,C,3.6*r,'stroke-dasharray="2 6"',.4),circ(C,C,4.3*r,'',.5)].join('');
-  $('#halo').innerHTML=`<svg viewBox="0 0 1000 1000" fill="none">
-    <g class="spin" stroke="#a8832f" stroke-width=".7" opacity=".55">${flower}${rings}</g>
-    <g class="spin2" stroke="#a8832f" stroke-width=".45" opacity=".38">${met}</g></svg>`;
+  const C=500, TAU=Math.PI*2;
+  const P=(r,a)=>[C+Math.cos(a)*r, C+Math.sin(a)*r];
+  const f=v=>v.toFixed(1);
+  const circ=(r,d,x='')=>`<circle cx="500" cy="500" r="${r}" pathLength="1" style="animation-delay:${d}s" ${x}/>`;
+  const poly=(pts,d)=>`<polygon points="${pts.map(p=>f(p[0])+','+f(p[1])).join(' ')}" pathLength="1" style="animation-delay:${d}s"/>`;
+  const line=(a,b,d)=>`<line x1="${f(a[0])}" y1="${f(a[1])}" x2="${f(b[0])}" y2="${f(b[1])}" pathLength="1" style="animation-delay:${d}s"/>`;
+  const ngon=(n,r,rot=-Math.PI/2)=>Array.from({length:n},(_,k)=>P(r,rot+k*TAU/n));
+  const ring=(id,r,text,size,d,ls=0)=>`<path id="${id}" d="M ${C-r},500 a ${r},${r} 0 1,1 ${2*r},0 a ${r},${r} 0 1,1 ${-2*r},0" fill="none" stroke="none"/>`+
+    `<text class="tx" style="animation-delay:${d}s" fill="#a8832f" stroke="none" font-family="Cormorant Garamond,serif" font-size="${size}" letter-spacing="${ls}"><textPath href="#${id}" textLength="${Math.round(TAU*r*.997)}" lengthAdjust="spacing">${text}</textPath></text>`;
+
+  // r1: outer frame + script ring + ticks
+  let g1=circ(478,.05)+circ(470,.1)+circ(438,.2);
+  for(let k=0;k<96;k++){ const a=k*TAU/96; g1+=line(P(438,a),P(k%4?432:426,a),.3+k*.004); }
+  g1+=ring('t1',446,'EQUIVALENT EXCHANGE ✦ SOLVE ET COAGULA ✦ AS ABOVE, SO BELOW ✦ ONE IS ALL, ALL IS ONE ✦ '.repeat(2),15,1.4,2);
+  // r2: the seven planetary seals
+  let g2=circ(418,.25,'stroke-dasharray="1 7"')+circ(386,.3);
+  const SYM=['☉','☽','☿','♀','♂','♃','♄'];
+  SYM.forEach((sym,k)=>{ const [x,y]=P(402,-Math.PI/2+k*TAU/7);
+    g2+=`<circle cx="${f(x)}" cy="${f(y)}" r="21" fill="#f3eee3" pathLength="1" style="animation-delay:${.5+k*.08}s"/>`+
+        `<text class="tx sym" x="${f(x)}" y="${f(y)}" fill="#a8832f" stroke="none" style="animation-delay:${1.2+k*.1}s">${sym}</text>`; });
+  // r3: hexagram + spokes
+  let g3=poly(ngon(3,386),.6)+poly(ngon(3,386,Math.PI/2),.7)+circ(223,.8);
+  for(let k=0;k<6;k++){ const a=k*TAU/6; g3+=line(P(223,a),P(386,a),.9+k*.05); }
+  // r4: octagram — two squares, the cube in the circle
+  let g4=poly(ngon(4,223,0),1)+poly(ngon(4,223,Math.PI/4),1.1)+circ(158,1.2);
+  // r5: math script ring + flower-of-life core
+  let g5=circ(150,1.25)+circ(124,1.3)+ring('t2',131,'x² + y² + z² + w² = r² ✦ ℝ⁴ → ℝ³ ✦ '.repeat(3),11,1.8,1);
+  const fl=[[0,0],...Array.from({length:6},(_,k)=>[Math.cos(k*TAU/6)*42,Math.sin(k*TAU/6)*42])];
+  g5+=fl.map((q,i)=>`<circle cx="${f(C+q[0])}" cy="${f(C+q[1])}" r="42" pathLength="1" style="animation-delay:${1.4+i*.06}s"/>`).join('')+circ(84,1.9);
+  $('#halo').innerHTML=`<svg viewBox="0 0 1000 1000" fill="none" stroke="#a8832f">
+    <g class="r1" stroke-width=".9" opacity=".6">${g1}</g>
+    <g class="r2" stroke-width=".8" opacity=".62">${g2}</g>
+    <g class="r3" stroke-width=".7" opacity=".5">${g3}</g>
+    <g class="r4" stroke-width=".7" opacity=".5">${g4}</g>
+    <g class="r5" stroke-width=".6" opacity=".55">${g5}</g></svg>`;
 })();
 
 /* ============================================================
@@ -510,6 +545,8 @@ function frame(now){
   model.rotation.y=RM?0:t*.12*(1-S.user*.7);
 
   // parts: construction (build), explode (ex)
+  if(buildArmed && S.build>.06){ buildArmed=false; ignite(1.25); }
+  if(S.build<.01) buildArmed=true;
   const b=S.build, exf=1+.26*S.ex;
   for(let i=0;i<16;i++){
     const n=nodes[i], appear=clamp((b-.25)*3.4-(DEPTH[i]*.12));
@@ -544,6 +581,7 @@ function frame(now){
 
   renderer.render(scene,camera);
   drawInk(t);
+  drawAlchemy(t,dt);
   placeHalo();
   if(S.heroFade<1 && now-matTick>90){ matTick=now; writeMatrix(); }
   updateHead(y);
@@ -618,13 +656,82 @@ function drawInk(t){
   });
 }
 
-/* ---------- sacred-geometry halo follows the figure ---------- */
+/* ---------- transmutation: ignition + lightning + click circles ---------- */
+const HALO={x:0,y:0,s:1,spin:0,vel:0};
+let ign={t:-9,p:0}, bolts=[], boltT=0, mini=[], buildArmed=true, litTO=0;
+function ignite(p){
+  const now=performance.now()/1000;
+  ign={t:now,p}; HALO.vel=Math.max(HALO.vel,RM?0:p*1.6);
+  haloEl.classList.add('lit'); clearTimeout(litTO);
+  litTO=setTimeout(()=>haloEl.classList.remove('lit'),900+p*900);
+}
+function jag(ctx,pts){ ctx.beginPath(); ctx.moveTo(pts[0][0],pts[0][1]); for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i][0],pts[i][1]); ctx.stroke(); }
+function makeBolts(cx,cy,R,n,radii){
+  const out=[];
+  for(let k=0;k<n;k++){
+    const a0=Math.random()*Math.PI*2, span=.25+Math.random()*.6, r=R*radii[Math.random()*radii.length|0], seg=10+Math.random()*8|0, pts=[];
+    if(Math.random()<.3){   // radial crack outward
+      const r1=r*(1.02+Math.random()*.25);
+      for(let i=0;i<=seg;i++){ const u=i/seg, rr=r+(r1-r)*u, aa=a0+(Math.random()-.5)*.05; pts.push([cx+Math.cos(aa)*rr+(Math.random()-.5)*6, cy+Math.sin(aa)*rr+(Math.random()-.5)*6]); }
+    } else {                // arc crawling along a ring
+      for(let i=0;i<=seg;i++){ const aa=a0+span*i/seg, rr=r+(Math.random()-.5)*R*.035; pts.push([cx+Math.cos(aa)*rr, cy+Math.sin(aa)*rr]); }
+    }
+    out.push(pts);
+  }
+  return out;
+}
+function drawBolts(ctx,list,alpha){
+  ctx.save(); ctx.lineJoin='round'; ctx.lineCap='round';
+  ctx.shadowColor='rgba(47,125,255,.95)'; ctx.shadowBlur=14;
+  ctx.strokeStyle=`rgba(90,160,255,${.55*alpha})`; ctx.lineWidth=3.2; list.forEach(b=>jag(ctx,b));
+  ctx.shadowBlur=4; ctx.strokeStyle=`rgba(235,245,255,${alpha})`; ctx.lineWidth=1.2; list.forEach(b=>jag(ctx,b));
+  ctx.restore();
+}
+function drawMini(ctx,m,now){
+  const age=now-m.t, grow=ss(clamp(age/.45)), fade=clamp(1-(age-.9)/.9), R=m.R*grow;
+  if(fade<=0) return false;
+  const lit=clamp(1-(age-.2)/.9);
+  ctx.save(); ctx.translate(m.x,m.y); ctx.rotate(m.rot+age*.8);
+  ctx.globalAlpha=fade;
+  ctx.strokeStyle=lit>.02?`rgba(${47+121*(1-lit)|0},${125+6*(1-lit)|0},${255-208*(1-lit)|0},.9)`:'rgba(168,131,47,.9)';
+  if(lit>.1){ ctx.shadowColor='rgba(47,125,255,.9)'; ctx.shadowBlur=10*lit; }
+  ctx.lineWidth=1.3;
+  ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.arc(0,0,R*.86,0,Math.PI*2); ctx.stroke();
+  ctx.lineWidth=1;
+  const polyN=(n,r,rot)=>{ ctx.beginPath(); for(let k=0;k<=n;k++){ const a=rot+k*Math.PI*2/n; k?ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r):ctx.moveTo(Math.cos(a)*r,Math.sin(a)*r); } ctx.stroke(); };
+  polyN(3,R*.86,-Math.PI/2); polyN(3,R*.86,Math.PI/2);
+  polyN(4,R*.43,0); polyN(4,R*.43,Math.PI/4);
+  ctx.beginPath(); ctx.arc(0,0,R*.3,0,Math.PI*2); ctx.stroke();
+  for(let k=0;k<24;k++){ const a=k*Math.PI/12; ctx.beginPath(); ctx.moveTo(Math.cos(a)*R*.86,Math.sin(a)*R*.86); ctx.lineTo(Math.cos(a)*R*(k%2?.9:.94),Math.sin(a)*R*(k%2?.9:.94)); ctx.stroke(); }
+  ctx.restore();
+  if(!RM && lit>.05){ if(!m.b||now-m.bt>.06){ m.b=makeBolts(m.x,m.y,R,4,[1,.86,1.08]); m.bt=now; } drawBolts(ctx,m.b,lit); }
+  return true;
+}
+function drawAlchemy(now,dt){
+  // whirl: the circle spins up when it ignites, then settles
+  HALO.vel*=Math.exp(-dt*1.8); HALO.spin+=HALO.vel*dt;
+  const age=now-ign.t, life=.9+ign.p*.9;
+  if(!RM && age<life && S.halo>.05){
+    if(now-boltT>.055){ bolts=makeBolts(HALO.x,HALO.y,HALO.s*478,Math.round(4+10*ign.p*(1-age/life)),[1,.81,.47,.26]); boltT=now; }
+    drawBolts(ictx,bolts,(1-age/life)*Math.min(1,S.halo*1.4));
+  }
+  mini=mini.filter(m=>drawMini(ictx,m,now));
+}
+addEventListener('pointerdown',e=>{
+  if(e.button!==0 || S.dim>.4 || e.target.closest('a,button,input,.panel,.pl,.plate,.head,video')) return;
+  mini.push({x:e.clientX,y:e.clientY,t:performance.now()/1000,R:46+Math.random()*26,rot:Math.random()*6});
+  if(mini.length>6) mini.shift();
+});
+
+/* ---------- transmutation circle follows the figure ---------- */
 const haloEl=$('#halo');
 function placeHalo(){
   const c={x:0,y:0}; toScreen(_n.set(0,0,0),c);
   const e={x:0,y:0}; toScreen(_x.set(0,K*D/(D-1)*1.73,0),e);
   const R=Math.hypot(e.x-c.x,e.y-c.y);
-  haloEl.style.transform=`translate(${c.x}px,${c.y}px) scale(${Math.max(.2,R/300)})`;
+  const sc=Math.max(.2,R/300); HALO.x=c.x; HALO.y=c.y; HALO.s=sc;
+  haloEl.style.transform=`translate(${c.x}px,${c.y}px) scale(${sc}) rotate(${HALO.spin}rad)`;
   haloEl.style.opacity=String(S.halo*(1-S.dim));
 }
 
@@ -659,12 +766,13 @@ $('#focusTabs').addEventListener('click',e=>{
   const b=e.target.closest('button'); if(!b) return;
   const y=lenis?lenis.animatedScroll:scrollY;
   if(b.dataset.f!=='overview' && y<FOCUS_RANGE[0]){ lenis?lenis.scrollTo(FOCUS_RANGE[0]+4,{duration:1.2}):scrollTo(0,FOCUS_RANGE[0]+4); }
-  setFocus(b.dataset.f);
+  setFocus(b.dataset.f); ignite(.4);
 });
 $('#modes').addEventListener('click',e=>{
   const b=e.target.closest('button'); if(!b) return;
   document.querySelectorAll('#modes button').forEach(x=>x.setAttribute('aria-pressed',x===b));
   LEDU.mode.value=+b.dataset.m; $('#modev').textContent=b.textContent;
+  ignite(.55);
 });
 
 // media fades in when it scrolls into view; videos only play while visible
@@ -699,6 +807,7 @@ function resize(){
   }
   addEventListener('scroll',()=>{ if(!lenis) updatePlates(scrollY); },{passive:true});
   requestAnimationFrame(frame);
+  setTimeout(()=>ignite(.75),2600);
 })();
 addEventListener('resize',resize);
 </script>
