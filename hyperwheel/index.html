@@ -83,6 +83,10 @@ section{position:relative}
 .specline{display:flex;gap:36px;margin-top:20px;font-family:"Silkscreen",monospace;font-size:12px;letter-spacing:.08em;color:var(--mute)}
 .specline b{display:block;margin-bottom:6px;font-family:"Press Start 2P",monospace;font-weight:400;font-size:18px;letter-spacing:0;color:var(--ink)}
 .chips{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+.ghl{display:inline-flex;align-items:center;gap:10px;margin-top:20px;font-family:"Silkscreen",monospace;font-size:13px;color:var(--bg);background:var(--sun);padding:8px 14px;text-decoration:none;box-shadow:inset -4px -4px #b8901a;pointer-events:auto}
+.ghl:hover{background:var(--pink);box-shadow:inset -4px -4px #b02a6e}
+.ghl:focus-visible{outline:3px solid var(--cyan);outline-offset:4px}
+.ghl .gi{width:16px;height:16px;background:currentColor;-webkit-mask:var(--i) center/contain no-repeat;mask:var(--i) center/contain no-repeat}
 .chip{font-family:"Silkscreen",monospace;font-size:13px;padding:4px 10px;color:var(--ink);background:var(--bg2);box-shadow:0 -3px var(--line),0 3px var(--line),-3px 0 var(--line),3px 0 var(--line)}
 .irl{position:absolute;right:5vw;bottom:9vh;width:clamp(170px,17vw,260px);z-index:1}
 .irl .pm{aspect-ratio:720/708;box-shadow:0 -4px var(--ink),0 4px var(--ink),-4px 0 var(--ink),4px 0 var(--ink),10px 10px 0 4px rgba(0,0,0,.55)}
@@ -224,6 +228,7 @@ input[type=range]:focus-visible{outline:3px solid var(--cyan);outline-offset:4px
       <p>A counter-rotating LED festival totem. Designed in Fusion 360, 3D printed and wired by me.</p>
       <div class="specline"><span><b>603 mm</b>WHEEL DIAMETER</span><span><b>2 lb</b>TOTAL WEIGHT</span></div>
       <div class="chips"><span class="chip">FUSION 360</span><span class="chip">3D PRINTING</span><span class="chip">STM32</span><span class="chip">BLE</span><span class="chip">ADDRESSABLE LEDS</span></div>
+      <a class="ghl" href="https://github.com/Beanyy/TotemX" target="_blank" rel="noopener"><span class="gi" style="--i:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/github.svg)"></span>FIRMWARE + STL FILES ON GITHUB ↗</a>
     </div>
     <figure class="irl" id="irl"><span class="tag">IRL</span><div class="pm" data-pm><video src="media/home.mp4" poster="media/home.jpg" muted loop playsinline autoplay preload="auto" aria-label="The real wheel spinning and changing colour"></video></div></figure>
     <div class="cue" id="cue">SCROLL TO DISASSEMBLE<span></span></div>
@@ -262,6 +267,7 @@ input[type=range]:focus-visible{outline:3px solid var(--cyan);outline-offset:4px
       <span class="tag" style="background:var(--violet)">STAGE 02</span>
       <h2>Take the controls</h2>
       <p data-type>On the real wheel, speed and lighting are set over Bluetooth.</p>
+      <a class="ghl" href="https://github.com/Beanyy/TotemX" target="_blank" rel="noopener"><span class="gi" style="--i:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/github.svg)"></span>READ THE FIRMWARE ↗</a>
       <div class="ctl">
         <label for="rpm">MOTOR THROTTLE <b id="rpmv">35%</b></label>
         <input id="rpm" type="range" min="0" max="100" value="35">

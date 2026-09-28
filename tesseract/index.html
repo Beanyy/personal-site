@@ -87,6 +87,11 @@ h1 em{font-style:italic;font-weight:400}
 .abstract b{font-weight:500;font-variant:small-caps;letter-spacing:.06em}
 .keywords{margin-top:14px;font-size:15px;color:var(--ink2)}
 .keywords i{color:var(--ink)}
+.keywords.src{margin-top:4px}
+.keywords a,.cite a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--gold);transition:color .2s}
+.keywords a:hover,.cite a:hover{color:var(--gold)}
+.keywords a:focus-visible,.cite a:focus-visible{outline:1px dashed var(--gold);outline-offset:3px}
+.panel p.cite{margin-top:12px;font-size:16px;font-style:italic;color:var(--ink2)}
 .fig1{position:absolute;right:5vw;top:13vh;text-align:right;font-size:15px;color:var(--ink2)}
 .fig1 .cap{font-style:italic}
 .fig1 .cap b{font-style:normal;font-variant:small-caps;letter-spacing:.06em;color:var(--ink);font-weight:500}
@@ -160,6 +165,7 @@ h1 em{font-style:italic;font-weight:400}
   .subtitle{font-size:21px}
   .abstract{margin-top:16px;padding-top:12px;font-size:16px;text-align:left}
   .keywords{display:none}
+  .keywords.src{display:block;margin-top:10px}
   .fig1{display:none}
   .mat{display:none}
   .plate{top:52px;bottom:auto;left:16px;right:auto;width:84px}
@@ -207,6 +213,7 @@ h1 em{font-style:italic;font-weight:400}
       <p class="subtitle">A four-dimensional cube, built in light.</p>
       <p class="abstract"><b>Abstract.</b> A hypercube can't exist in three dimensions, but its shadow can. This is a physical build of that shadow: a cube inside a cube, joined corner to corner by eight struts. Every edge is an aluminium channel with an LED strip inside, held together by 3D-printed joints.</p>
       <p class="keywords"><i>Keywords:</i> Fusion 360, 3D printing, aluminium extrusion, addressable LEDs</p>
+      <p class="keywords src"><i>Source:</i> <a href="https://github.com/Beanyy/Tesseract" target="_blank" rel="noopener">github.com/Beanyy/Tesseract</a></p>
     </div>
     <div class="fig1">
       <div class="cap"><b>Fig. 1.</b> Rotation in the <i>xw</i>-plane</div>
@@ -246,6 +253,7 @@ h1 em{font-style:italic;font-weight:400}
       <div class="sec">§2</div>
       <h2>Patterns</h2>
       <p>Every edge is individually addressable. Try the patterns it runs.</p>
+      <p class="cite">The real patterns live in the <a href="https://github.com/Beanyy/Tesseract" target="_blank" rel="noopener">firmware on GitHub</a>.</p>
       <div class="ctl">
         <label><span>Pattern</span><b id="modev">Spectrum</b></label>
         <div class="modes" id="modes">

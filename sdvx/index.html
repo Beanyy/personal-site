@@ -144,6 +144,11 @@ h1 .plate{display:inline-block;margin-top:10px;font-size:.36em;letter-spacing:.3
 .w-head h2 span{background:linear-gradient(90deg,var(--cyan),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
 .yt{display:inline-flex;align-items:center;gap:10px;pointer-events:auto;font-weight:700;font-size:13px;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;color:#fff;padding:11px 18px;background:linear-gradient(90deg,#c21f3a,var(--pink));clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%)}
 .yt:hover{filter:brightness(1.15)}
+.w-links{display:flex;flex-wrap:wrap;gap:12px}
+.yt.gh{background:#1c1826;border:1px solid rgba(255,255,255,.35)}
+.yt .gi{width:15px;height:15px;background:currentColor;-webkit-mask:var(--i) center/contain no-repeat;mask:var(--i) center/contain no-repeat}
+a.inl{color:var(--cyan);text-decoration:none;border-bottom:1px solid rgba(41,228,255,.5)}
+a.inl:hover{color:#fff;border-color:#fff}
 .yt:focus-visible{outline:2px solid var(--cyan);outline-offset:4px}
 .track{display:flex;gap:34px;padding:0 5vw;align-items:flex-end;will-change:transform}
 .card{flex:none;height:min(60vh,580px)}
@@ -216,7 +221,7 @@ h1 .plate{display:inline-block;margin-top:10px;font-size:.36em;letter-spacing:.3
         <div class="shots"><div class="shot wide pm" data-pm><img src="media/20171025_224014.jpg" alt="The panel layout in CAD beside the artwork in Photoshop" loading="lazy"></div></div>
       </div>
       <div class="fpane" data-f="elec" hidden>
-        <p>Every button and knob runs to a small USB I/O board. I tested each switch and light on a breadboard first.</p>
+        <p>Every button and knob runs to a small USB I/O board. I tested each switch and light on a breadboard first. The <a class="inl" href="https://github.com/Beanyy/sdvx" target="_blank" rel="noopener">firmware and panel art are on GitHub</a>.</p>
         <div class="shots">
           <div class="shot pm" data-pm><img src="media/20171126_201640.jpg" alt="The I/O board with its connectors" loading="lazy"></div>
           <div class="shot pm" data-pm><img src="media/20171127_015326.jpg" alt="Buttons wired to the I/O board under the top panel" loading="lazy"></div>
@@ -248,7 +253,7 @@ h1 .plate{display:inline-block;margin-top:10px;font-size:.36em;letter-spacing:.3
 
 <section id="wild" data-sec="04 PLAYS">
   <div class="w-sticky">
-    <div class="w-head"><h2>ON <span>STAGE</span></h2><a class="yt" href="https://www.youtube.com/watch?v=XFqb6KGZuio" target="_blank" rel="noopener">▶ Full run on YouTube</a></div>
+    <div class="w-head"><h2>ON <span>STAGE</span></h2><div class="w-links"><a class="yt" href="https://www.youtube.com/watch?v=XFqb6KGZuio" target="_blank" rel="noopener">▶ Full run on YouTube</a><a class="yt gh" href="https://github.com/Beanyy/sdvx" target="_blank" rel="noopener"><span class="gi" style="--i:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/github.svg)"></span>Source on GitHub</a></div></div>
     <div class="track" id="track">
       <figure class="card" style="--ar:720/400"><div class="pm" data-pm style="aspect-ratio:720/400"><video src="media/hands.mp4" poster="media/hands.jpg" muted loop playsinline preload="metadata"></video></div></figure>
       <figure class="card" style="--ar:540/960"><div class="pm" data-pm style="aspect-ratio:540/960"><video src="media/play1.mp4" poster="media/play1.jpg" muted loop playsinline preload="metadata"></video></div></figure>

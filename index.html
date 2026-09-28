@@ -103,7 +103,7 @@ h1.name .u path{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1s .9s cub
 .btn.line{background:#fff;box-shadow:4px 4px 0 var(--ink)}
 .btn.line:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
 .btn .lg{width:18px;height:18px}
-.hint{position:absolute;right:0;bottom:-54px;color:var(--mute);display:flex;align-items:center;gap:8px}
+.hint{position:absolute;left:0;bottom:-54px;color:var(--mute);display:flex;align-items:center;gap:8px}
 .hint svg{width:34px;height:20px}
 
 /* ---------- section heads ---------- */
@@ -251,6 +251,7 @@ footer{padding:0 0 50px}
         <a class="btn solid" href="#work">See my projects ↓</a>
         <a class="btn line" href="https://www.linkedin.com/in/edward-lee-kim-koon-92340727/" target="_blank" rel="noopener" aria-label="LinkedIn"><span class="lg" style="--i:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/linkedin.svg);background:#0a66c2"></span>LinkedIn</a>
         <a class="btn line" href="https://www.instagram.com/eddy.lkk" target="_blank" rel="noopener" aria-label="Instagram"><span class="lg" style="--i:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/instagram.svg);background:#e1306c"></span>Instagram</a>
+        <a class="btn line" href="https://github.com/Beanyy" target="_blank" rel="noopener" aria-label="GitHub"><span class="lg" style="--i:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/github.svg);background:#181717"></span>GitHub</a>
       </div>
       <div class="hint mono" aria-hidden="true"><svg viewBox="0 0 34 20" fill="none" stroke="#8f8378" stroke-width="1.6" stroke-linecap="round"><path d="M2 16 C 10 4, 22 2, 30 8"/><path d="M25 3 L30 8 L24 11"/></svg>psst, the stickers peel off</div>
 
@@ -266,7 +267,7 @@ footer{padding:0 0 50px}
         <svg width="112" height="104" viewBox="0 0 112 104"><path d="M56 96 C 20 70, 6 50, 8 30 C 10 10, 34 0, 50 16 L56 22 L62 16 C 78 0, 102 10, 104 30 C 106 50, 92 70, 56 96Z" fill="#ff4b4b" stroke="#fff" stroke-width="8" stroke-linejoin="round"/><path d="M30 28 C 32 20, 40 16, 46 20" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".7"/></svg>
       </span></div>
 
-      <div class="sticker" data-x="50" data-y="90" data-z=".8" style="--r:4deg" aria-hidden="true"><span class="in pop" style="--d:.65s">
+      <div class="sticker" data-x="63" data-y="93" data-z=".8" style="--r:4deg" aria-hidden="true"><span class="in pop" style="--d:.65s">
         <span class="label" style="background:#fff;border-color:#fff;font-size:15px;padding:12px 18px;display:flex;flex-direction:column;gap:2px;border-radius:14px;box-shadow:inset 0 0 0 2px #221c19">
           <span class="mono" style="font-size:11px;color:#8f8378">BOARDING PASS · YYZ ✈ SNA</span>
           <span style="font-size:19px">Toronto, Canada → Irvine, California</span>
@@ -412,6 +413,7 @@ footer{padding:0 0 50px}
         <a class="btn" href="https://www.linkedin.com/in/edward-lee-kim-koon-92340727/" target="_blank" rel="noopener"><span class="lg" style="--i:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/linkedin.svg)"></span>LinkedIn</a>
         <button class="btn" id="mailBtn" type="button" aria-live="polite"><svg class="env" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg><span class="mt">Show email</span></button>
         <a class="btn" href="https://www.instagram.com/eddy.lkk" target="_blank" rel="noopener"><span class="lg" style="--i:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/instagram.svg)"></span>Instagram</a>
+        <a class="btn" href="https://github.com/Beanyy" target="_blank" rel="noopener"><span class="lg" style="--i:url(https://cdn.jsdelivr.net/npm/simple-icons@13/icons/github.svg)"></span>GitHub</a>
       </div>
     </div>
     <div class="small mono"><span>© <span id="yr"></span> Edward Lee Kim Koon</span><a href="#hero">Back to top ↑</a></div>
@@ -455,6 +457,11 @@ function place(){
       s.style.top = (+s.dataset.y/100*h) + 'px';
     }
     s.style.scale = mob() ? .62 : innerWidth < 980 ? .8 : 1;
+    // never let a sticker sit on the buttons: drop it just below them instead
+    if (!mob()){
+      const c = $('.cta').getBoundingClientRect(), r = s.getBoundingClientRect(), d = desk.getBoundingClientRect();
+      if (r.left < c.right && r.right > c.left && r.top < c.bottom && r.bottom > c.top) s.style.top = (c.bottom - d.top + 18) + 'px';
+    }
     s.style.transformOrigin = mob() ? "0 0" : "50% 50%";
   });
 }
