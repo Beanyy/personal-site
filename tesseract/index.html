@@ -38,9 +38,6 @@ body{
 #halo .r5{animation:spin 160s linear infinite}
 #halo .tx{opacity:0;animation:fadein 1.6s ease forwards}
 #halo .sym{font-family:"Segoe UI Symbol","Noto Sans Symbols 2","Noto Sans Symbols","Apple Symbols",serif;font-size:22px;text-anchor:middle;dominant-baseline:central}
-#halo.lit g{stroke:#2f7dff}
-#halo.lit .tx,#halo.lit .sym{fill:#2f7dff}
-#halo.lit svg{filter:drop-shadow(0 0 3px rgba(47,125,255,.95)) drop-shadow(0 0 12px rgba(110,170,255,.55))}
 @keyframes fadein{to{opacity:1}}
 #halo [pathLength]{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 2.8s cubic-bezier(.6,.1,.2,1) forwards}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -275,7 +272,7 @@ const mob = () => innerWidth<860;
    TRANSMUTATION CIRCLE — nested rings of alchemical script, the seven
    planetary seals, a hexagram, an octagram (two squares: the cube) and a
    flower of life at the core. Each ring turns on its own; it draws itself
-   in on load and ignites in blue lightning at key moments.
+   in on load.
    ============================================================ */
 (function buildHalo(){
   const C=500, TAU=Math.PI*2;
@@ -545,8 +542,6 @@ function frame(now){
   model.rotation.y=RM?0:t*.12*(1-S.user*.7);
 
   // parts: construction (build), explode (ex)
-  if(buildArmed && S.build>.06){ buildArmed=false; ignite(1.25); }
-  if(S.build<.01) buildArmed=true;
   const b=S.build, exf=1+.26*S.ex;
   for(let i=0;i<16;i++){
     const n=nodes[i], appear=clamp((b-.25)*3.4-(DEPTH[i]*.12));
@@ -581,7 +576,7 @@ function frame(now){
 
   renderer.render(scene,camera);
   drawInk(t);
-  drawAlchemy(t,dt);
+  drawAlchemy(t);
   placeHalo();
   if(S.heroFade<1 && now-matTick>90){ matTick=now; writeMatrix(); }
   updateHead(y);
@@ -656,82 +651,47 @@ function drawInk(t){
   });
 }
 
-/* ---------- transmutation: ignition + lightning + click circles ---------- */
-const HALO={x:0,y:0,s:1,spin:0,vel:0};
-let ign={t:-9,p:0}, bolts=[], boltT=0, mini=[], buildArmed=true, litTO=0;
-function ignite(p){
-  const now=performance.now()/1000;
-  ign={t:now,p}; HALO.vel=Math.max(HALO.vel,RM?0:p*1.6);
-  haloEl.classList.add('lit'); clearTimeout(litTO);
-  litTO=setTimeout(()=>haloEl.classList.remove('lit'),900+p*900);
-}
-function jag(ctx,pts){ ctx.beginPath(); ctx.moveTo(pts[0][0],pts[0][1]); for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i][0],pts[i][1]); ctx.stroke(); }
-function makeBolts(cx,cy,R,n,radii){
-  const out=[];
-  for(let k=0;k<n;k++){
-    const a0=Math.random()*Math.PI*2, span=.25+Math.random()*.6, r=R*radii[Math.random()*radii.length|0], seg=10+Math.random()*8|0, pts=[];
-    if(Math.random()<.3){   // radial crack outward
-      const r1=r*(1.02+Math.random()*.25);
-      for(let i=0;i<=seg;i++){ const u=i/seg, rr=r+(r1-r)*u, aa=a0+(Math.random()-.5)*.05; pts.push([cx+Math.cos(aa)*rr+(Math.random()-.5)*6, cy+Math.sin(aa)*rr+(Math.random()-.5)*6]); }
-    } else {                // arc crawling along a ring
-      for(let i=0;i<=seg;i++){ const aa=a0+span*i/seg, rr=r+(Math.random()-.5)*R*.035; pts.push([cx+Math.cos(aa)*rr, cy+Math.sin(aa)*rr]); }
-    }
-    out.push(pts);
-  }
-  return out;
-}
-function drawBolts(ctx,list,alpha){
-  ctx.save(); ctx.lineJoin='round'; ctx.lineCap='round';
-  ctx.shadowColor='rgba(47,125,255,.95)'; ctx.shadowBlur=14;
-  ctx.strokeStyle=`rgba(90,160,255,${.55*alpha})`; ctx.lineWidth=3.2; list.forEach(b=>jag(ctx,b));
-  ctx.shadowBlur=4; ctx.strokeStyle=`rgba(235,245,255,${alpha})`; ctx.lineWidth=1.2; list.forEach(b=>jag(ctx,b));
-  ctx.restore();
-}
+/* ---------- click anywhere: a small transmutation circle draws itself in ---------- */
+const HALO={x:0,y:0,s:1};
+let mini=[];
 function drawMini(ctx,m,now){
-  const age=now-m.t, grow=ss(clamp(age/.45)), fade=clamp(1-(age-.9)/.9), R=m.R*grow;
+  const age=now-m.t, fade=clamp(1-(age-1.9)/.8);
   if(fade<=0) return false;
-  const lit=clamp(1-(age-.2)/.9);
-  ctx.save(); ctx.translate(m.x,m.y); ctx.rotate(m.rot+age*.8);
-  ctx.globalAlpha=fade;
-  ctx.strokeStyle=lit>.02?`rgba(${47+121*(1-lit)|0},${125+6*(1-lit)|0},${255-208*(1-lit)|0},.9)`:'rgba(168,131,47,.9)';
-  if(lit>.1){ ctx.shadowColor='rgba(47,125,255,.9)'; ctx.shadowBlur=10*lit; }
-  ctx.lineWidth=1.3;
-  ctx.beginPath(); ctx.arc(0,0,R,0,Math.PI*2); ctx.stroke();
-  ctx.beginPath(); ctx.arc(0,0,R*.86,0,Math.PI*2); ctx.stroke();
+  const R=m.R, TAU=Math.PI*2;
+  // each element traces itself in turn, like the big circle on load
+  const prog=(delay,dur=.45)=>RM?1:ss(clamp((age-delay)/dur));
+  const arc=(r,p)=>{ if(p<=0) return; ctx.beginPath(); ctx.arc(0,0,r,-Math.PI/2,-Math.PI/2+TAU*p); ctx.stroke(); };
+  const polyN=(n,r,rot,p)=>{ if(p<=0) return; const pts=Array.from({length:n+1},(_,k)=>[Math.cos(rot+k*TAU/n)*r,Math.sin(rot+k*TAU/n)*r]);
+    const e=p*n; ctx.beginPath(); ctx.moveTo(pts[0][0],pts[0][1]);
+    for(let k=1;k<=n;k++){ const u=clamp(e-(k-1)); if(u<=0) break; ctx.lineTo(pts[k-1][0]+(pts[k][0]-pts[k-1][0])*u, pts[k-1][1]+(pts[k][1]-pts[k-1][1])*u); }
+    ctx.stroke(); };
+  ctx.save(); ctx.translate(m.x,m.y); ctx.rotate(m.rot+age*.25);
+  ctx.globalAlpha=fade; ctx.strokeStyle='rgba(168,131,47,.95)';
+  ctx.lineWidth=1.3; arc(R,prog(0,.55)); arc(R*.86,prog(.15,.55));
   ctx.lineWidth=1;
-  const polyN=(n,r,rot)=>{ ctx.beginPath(); for(let k=0;k<=n;k++){ const a=rot+k*Math.PI*2/n; k?ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r):ctx.moveTo(Math.cos(a)*r,Math.sin(a)*r); } ctx.stroke(); };
-  polyN(3,R*.86,-Math.PI/2); polyN(3,R*.86,Math.PI/2);
-  polyN(4,R*.43,0); polyN(4,R*.43,Math.PI/4);
-  ctx.beginPath(); ctx.arc(0,0,R*.3,0,Math.PI*2); ctx.stroke();
-  for(let k=0;k<24;k++){ const a=k*Math.PI/12; ctx.beginPath(); ctx.moveTo(Math.cos(a)*R*.86,Math.sin(a)*R*.86); ctx.lineTo(Math.cos(a)*R*(k%2?.9:.94),Math.sin(a)*R*(k%2?.9:.94)); ctx.stroke(); }
+  polyN(3,R*.86,-Math.PI/2,prog(.35)); polyN(3,R*.86,Math.PI/2,prog(.5));
+  polyN(4,R*.43,0,prog(.7)); polyN(4,R*.43,Math.PI/4,prog(.82));
+  arc(R*.3,prog(.95,.4));
+  const tk=prog(1.1,.4);
+  for(let k=0;k<24*tk;k++){ const a=k*Math.PI/12; ctx.beginPath(); ctx.moveTo(Math.cos(a)*R*.86,Math.sin(a)*R*.86); ctx.lineTo(Math.cos(a)*R*(k%2?.9:.94),Math.sin(a)*R*(k%2?.9:.94)); ctx.stroke(); }
   ctx.restore();
-  if(!RM && lit>.05){ if(!m.b||now-m.bt>.06){ m.b=makeBolts(m.x,m.y,R,4,[1,.86,1.08]); m.bt=now; } drawBolts(ctx,m.b,lit); }
   return true;
 }
-function drawAlchemy(now,dt){
-  // whirl: the circle spins up when it ignites, then settles
-  HALO.vel*=Math.exp(-dt*1.8); HALO.spin+=HALO.vel*dt;
-  const age=now-ign.t, life=.9+ign.p*.9;
-  if(!RM && age<life && S.halo>.05){
-    if(now-boltT>.055){ bolts=makeBolts(HALO.x,HALO.y,HALO.s*478,Math.round(4+10*ign.p*(1-age/life)),[1,.81,.47,.26]); boltT=now; }
-    drawBolts(ictx,bolts,(1-age/life)*Math.min(1,S.halo*1.4));
-  }
-  mini=mini.filter(m=>drawMini(ictx,m,now));
-}
+function drawAlchemy(now){ mini=mini.filter(m=>drawMini(ictx,m,now)); }
 addEventListener('pointerdown',e=>{
   if(e.button!==0 || S.dim>.4 || e.target.closest('a,button,input,.panel,.pl,.plate,.head,video')) return;
   mini.push({x:e.clientX,y:e.clientY,t:performance.now()/1000,R:46+Math.random()*26,rot:Math.random()*6});
   if(mini.length>6) mini.shift();
 });
 
-/* ---------- transmutation circle follows the figure ---------- */
+
 const haloEl=$('#halo');
 function placeHalo(){
   const c={x:0,y:0}; toScreen(_n.set(0,0,0),c);
   const e={x:0,y:0}; toScreen(_x.set(0,K*D/(D-1)*1.73,0),e);
   const R=Math.hypot(e.x-c.x,e.y-c.y);
   const sc=Math.max(.2,R/300); HALO.x=c.x; HALO.y=c.y; HALO.s=sc;
-  haloEl.style.transform=`translate(${c.x}px,${c.y}px) scale(${sc}) rotate(${HALO.spin}rad)`;
+  haloEl.style.transform=`translate(${c.x}px,${c.y}px) scale(${sc})`;
   haloEl.style.opacity=String(S.halo*(1-S.dim));
 }
 
@@ -766,13 +726,12 @@ $('#focusTabs').addEventListener('click',e=>{
   const b=e.target.closest('button'); if(!b) return;
   const y=lenis?lenis.animatedScroll:scrollY;
   if(b.dataset.f!=='overview' && y<FOCUS_RANGE[0]){ lenis?lenis.scrollTo(FOCUS_RANGE[0]+4,{duration:1.2}):scrollTo(0,FOCUS_RANGE[0]+4); }
-  setFocus(b.dataset.f); ignite(.4);
+  setFocus(b.dataset.f);
 });
 $('#modes').addEventListener('click',e=>{
   const b=e.target.closest('button'); if(!b) return;
   document.querySelectorAll('#modes button').forEach(x=>x.setAttribute('aria-pressed',x===b));
   LEDU.mode.value=+b.dataset.m; $('#modev').textContent=b.textContent;
-  ignite(.55);
 });
 
 // media fades in when it scrolls into view; videos only play while visible
@@ -807,7 +766,6 @@ function resize(){
   }
   addEventListener('scroll',()=>{ if(!lenis) updatePlates(scrollY); },{passive:true});
   requestAnimationFrame(frame);
-  setTimeout(()=>ignite(.75),2600);
 })();
 addEventListener('resize',resize);
 </script>
